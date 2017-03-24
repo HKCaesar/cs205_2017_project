@@ -6,8 +6,6 @@ M. Manjunathaiah (Manju)
 This repository was created in partial fulfillment of the requirements of CS 205 in Spring 2017.
 ```
 ------
-
-HW2 Group Submission: Kareem Carr, Eric Dunipace, Charlotte Lloyd
-
+Kareem Carr, Eric Dunipace, Charlotte Lloyd
 ------
 
