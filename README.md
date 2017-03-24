@@ -1,4 +1,4 @@
-# Project Algorithm
+# CS205 Project
 CS205, Spring 2017
 Computing Foundations for Computational Science
 M. Manjunathaiah (Manju)
