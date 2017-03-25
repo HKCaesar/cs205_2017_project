@@ -9,7 +9,7 @@ Kareem Carr, Eric Dunipace, Charlotte Lloyd
 ------
 
 
-![GitHub Logo](kmeans.png | width=100)
+<img src="https://github.com/kmeans.png" width="48">
 
 ```
 This repository was created in partial fulfillment of the requirements of CS 205 in Spring 2017.
