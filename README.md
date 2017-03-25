@@ -1,4 +1,5 @@
-# CS205 Project
+# CS205 Project: Using Parallelized Classification to Determine the Structure of a Cladestine Market
+
 CS205, Spring 2017
 Computing Foundations for Computational Science
 M. Manjunathaiah (Manju)
@@ -6,6 +7,9 @@ M. Manjunathaiah (Manju)
 ------
 Kareem Carr, Eric Dunipace, Charlotte Lloyd
 ------
+
+
+![GitHub Logo](/images/kmeans.png)
 
 ```
 This repository was created in partial fulfillment of the requirements of CS 205 in Spring 2017.
