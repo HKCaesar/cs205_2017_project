@@ -9,7 +9,7 @@ Kareem Carr, Eric Dunipace, Charlotte Lloyd
 ------
 
 <p align="center">
-<img align="center" src="https://github.com/kareemcarr/cs205_2017_project/blob/master/KmeansAnimation.gif" width="600">
+<img align="center" src="https://github.com/kareemcarr/cs205_2017_project/blob/master/KmeansAnimation.gif" width="450">
 </p>
 
 ```
