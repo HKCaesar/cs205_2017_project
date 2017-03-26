@@ -1,4 +1,4 @@
-# CS205 Project: Using Parallelized Classification to Determine the Structure of a Cladestine Market
+# CS205 Project: Using Parallelized Classification to Determine the Structure of a Clandestine Market
 
 CS205, Spring 2017
 Computing Foundations for Computational Science
@@ -9,7 +9,7 @@ Kareem Carr, Eric Dunipace, Charlotte Lloyd
 ------
 
 <p align="center">
-<img align="center" src="https://github.com/kareemcarr/cs205_2017_project/blob/master/kmeans_centers.png" width="400">
+<img align="center" src="https://github.com/kareemcarr/cs205_2017_project/blob/master/KmeansAnimation.gif" width="400">
 </p>
 
 ```
