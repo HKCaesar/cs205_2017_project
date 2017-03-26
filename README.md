@@ -9,7 +9,7 @@ Kareem Carr, Eric Dunipace, Charlotte Lloyd
 ------
 
 
-<center><img src="https://github.com/kareemcarr/cs205_2017_project/blob/master/kmeans_centers.png" width="200"></center>
+<center><img  align="center" src="https://github.com/kareemcarr/cs205_2017_project/blob/master/kmeans_centers.png" width="300"></center>
 
 ```
 This repository was created in partial fulfillment of the requirements of CS 205 in Spring 2017.
