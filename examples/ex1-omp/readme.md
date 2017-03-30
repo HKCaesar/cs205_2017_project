@@ -1,4 +1,4 @@
-# MPI Hello World
+# OpenMP Hello World
 
 Step 1. Load modules. *only necessary one time*
 
