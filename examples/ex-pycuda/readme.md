@@ -13,4 +13,4 @@ source setup.sh
 sbatch sbatch.run
 cat cuda_hello.out
 ```
-Code from Ingemar Ragnemalm: https://www.pdc.kth.se/resources/computers/historical-computers/zorn/how-to/how-to-compile-and-run-a-simple-cuda-hello-world
+Code from: https://github.com/davad/pyCUDA-intro
