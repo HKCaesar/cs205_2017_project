@@ -1,0 +1,10 @@
+#!/bin/bash
+#SBATCH -J mpi_hello
+#SBATCH -o mpi_hello.out
+#SBATCH -e mpi_hello.err
+#SBATCH -p seas_iacs
+#SBATCH -n 4
+#SBATCH -t 0-00:30
+#SBATCH --mem-per-cpu=1000
+
+srun -n $SLURM_NTASKS --mpi=pmi2 ./mpi_hello_world
