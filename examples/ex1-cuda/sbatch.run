@@ -1,10 +1,10 @@
 #!/bin/bash 
 
-#SBATCH -p holyseasgpu  #Partition to submit to 
-#SBATCH -n 1  #Number of cores 
-#SBATCH --gres=gpu
 #SBATCH -t 5  #Runtime in minutes 
 #SBATCH --mem-per-cpu=100 #Memory per cpu in MB (see also --mem) 
+#SBATCH -p gpu
+#SBATCH -n 2
+#SBATCH --gres=gpu
 #SBATCH --constraint=cuda-7.5
 
 srun -n $SLURM_NTASKS ./hello.out
