@@ -13,4 +13,4 @@ ${PRO}.x : $(OBJECTS)
 	$(COMPILER) $(CFLAGS) $(<F)
 
 clean :
-	rm -fr *.o *.x *.out *.err
+	rm -fr *.o *.x
