@@ -1,4 +1,4 @@
-# Odyssey MPI resources: https://github.com/fasrc/User_Codes/tree/master/CS205/MPI
+## Odyssey MPI resources: https://github.com/fasrc/User_Codes/tree/master/CS205/MPI
 
 Step 1. Load modules. *only necessary one time*
 
