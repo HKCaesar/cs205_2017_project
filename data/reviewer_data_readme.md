@@ -1,0 +1,137 @@
+Anonymous Reviewer ID: reviewerid 
+Number of Reviews Written: reviewno_reviewers
+Number of Unique Providers Reviewed: unqescorts_reviewers
+
+Total Counts of Act / Number of Reviews (Charlotte's text counts):
+analoral_ct
+cuddling_ct
+cunninlingus_ct
+ejaculationonbody_ct
+fellatio_ct
+intercourseanal_ct
+intercoursevaginal_ct
+kissing_ct
+manualanalstimulation_ct
+manualpenilestimulation_ct
+manualvaginalstimulation_ct
+massage_ct
+sm_ct
+testiclestimulation_ct
+threesome_ct
+
+Number of Reviews in which Act Is Mentioned / Number of Reviews (Charlotte's text counts): 
+analoral_ct_bin
+cuddling_ct_bin
+cunninlingus_ct_bin
+ejaculationonbody_ct_bin
+fellatio_ct_bin
+intercourseanal_ct_bin
+intercoursevaginal_ct_bin
+kissing_ct_bin
+manualanalstimulation_ct_bin
+manualpenilestimulation_ct_bin
+manualvaginalstimulation_ct_bin
+massage_ct_bin
+sm_ct_bin
+testiclestimulation_ct_bin
+threesome_ct_bin
+
+Provider's Average Price Per Hour of All Providers Reviewed by Reviewer (50th percentile, standard deviation, average) [use spph, not pph variables]
+avgspph_p50
+avgspph_sd
+avgspph_avg
+avgpph_p50
+avgpph_sd
+avgpph_avg
+
+[need to check]
+app_reviewer_p50
+app_reviewer_sd
+app_reviewer_avg
+perf_reviewer_p50
+perf_reviewer_sd
+perf_reviewer_avg
+appgap_reviewer_p50
+appgap_reviewer_avg
+cscore_reviewer_p50
+cscore_reviewer_sd
+cscore_reviewer_avg
+
+Time Period of Reviews Left by Reviewer
+rvwdate_last_reviewer
+rvwyear_last_reviewer
+rvwdate_first_reviewer
+rvwyear_first_reviewer
+rvwduration_years_reviewer
+rvwduration_days_reviewer
+rptescorts_reviewers
+
+50th Percentile of Provider Characteristics of All Providers Reviewed by Reviewer
+age_cont2_p50
+height_cont2_p50
+breastsize_cont2_p50
+breastcup_cont_p50
+hairlength_cont_p50
+kiss_bin_p50
+kiss_tongue_bin_p50
+blowjob_bin_p50
+blowjob_condom_bin_p50
+cuminmouth_bin_p50
+touchpussy_bin_p50
+lickpussy_bin_p50
+sex_bin_p50
+multiplepops_bin_p50
+anal_bin_p50
+rimming_bin_p50
+sm_bin_p50
+twogirlaction_bin_p50
+bringsecondprovider_bin_p50
+multipleguys_bin_p50
+
+Average Provider Characteristics of All Providers Reviewed by Reviewer
+age_cont2_avg
+height_cont2_avg
+breastsize_cont2_avg
+breastcup_cont_avg
+hairlength_cont_avg
+kiss_bin_avg
+kiss_tongue_bin_avg
+blowjob_bin_avg
+blowjob_condom_bin_avg
+cuminmouth_bin_avg
+touchpussy_bin_avg
+lickpussy_bin_avg
+sex_bin_avg
+multiplepops_bin_avg
+anal_bin_avg
+rimming_bin_avg
+sm_bin_avg
+twogirlaction_bin_avg
+bringsecondprovider_bin_avg
+multipleguys_bin_avg
+ontime_bin_avg
+smokes_bin_avg
+breastimplants_bin_avg
+pubichair_cont_avg
+transsexual_bin_avg
+servicearea_bin_escort_avg
+servicearea_bin_massage_avg
+servicearea_bin_sm_avg
+servicearea_bin_multiple_avg
+pornstar_bin_avg
+
+Number of Different Characteristics Across All Providers Reviewed by Reviewer (i.e. number of different ethnicities):
+ethnicity_n
+build_n
+breastappearance_n
+haircolor_n
+hairtype_n
+service_n
+
+Mode of Different Characteristics Across All Providers Reviewed by Reviewer (i.e. the modal ethnicity):
+ethnicity_mode
+build_mode
+breastappearance_mode
+haircolor_mode
+hairtype_mode
+service_mode
