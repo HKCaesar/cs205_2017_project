@@ -1,47 +1,42 @@
 // This is the REAL "hello world" for CUDA!
-// It takes the string "Hello ", prints it, then passes it to CUDA
-// with an array of offsets. Then the offsets are added in parallel
-// to produce the string "World!"
+// It takes the string "Hello ", prints it, then passes it to CUDA with an array
+// of offsets. Then the offsets are added in parallel to produce the string "World!"
 // By Ingemar Ragnemalm 2010
-
-// nvcc hello-world.cu -L /usr/local/cuda/lib -lcudart -o hello-world
-
+ 
 #include <stdio.h>
 
-const int N = 16; 
-const int blocksize = 16; 
+const int N = 7;
+const int blocksize = 7;
 
-__global__ 
-void hello(char *a, int *b) 
+__global__
+void hello(char *a, int *b)
 {
-	a[threadIdx.x] += b[threadIdx.x];
+ a[threadIdx.x] += b[threadIdx.x];
 }
 
 int main()
 {
-	char a[N] = "Hello \0\0\0\0\0\0";
-	int b[N] = {15, 10, 6, 0, -11, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+ char a[N] = "Hello ";
+ int b[N] = {15, 10, 6, 0, -11, 1, 0};
 
-	char *ad;
-	int *bd;
-	const int csize = N*sizeof(char);
-	const int isize = N*sizeof(int);
+ char *ad;
+ int *bd;
+ const int csize = N*sizeof(char);
+ const int isize = N*sizeof(int);
 
-	printf("%s", a);
+ printf("%s", a);
 
-	cudaMalloc( (void**)&ad, csize ); 
-	cudaMalloc( (void**)&bd, isize ); 
-	cudaMemcpy( ad, a, csize, cudaMemcpyHostToDevice ); 
-	cudaMemcpy( bd, b, isize, cudaMemcpyHostToDevice ); 
-	
-	dim3 dimBlock( blocksize, 1 );
-	dim3 dimGrid( 1, 1 );
-	hello<<<dimGrid, dimBlock>>>(ad, bd);
-	cudaMemcpy( a, ad, csize, cudaMemcpyDeviceToHost ); 
-	cudaFree( ad );
-	cudaFree( bd );
-	
-	printf("%s\n", a);
-	sleep(1);
-	return EXIT_SUCCESS;
+ cudaMalloc( (void**)&ad, csize );
+ cudaMalloc( (void**)&bd, isize );
+ cudaMemcpy( ad, a, csize, cudaMemcpyHostToDevice );
+ cudaMemcpy( bd, b, isize, cudaMemcpyHostToDevice );
+
+ dim3 dimBlock( blocksize, 1 );
+ dim3 dimGrid( 1, 1 );
+ hello<<<dimGrid, dimBlock>>>(ad, bd);
+ cudaMemcpy( a, ad, csize, cudaMemcpyDeviceToHost );
+ cudaFree( ad );
+
+ printf("%s\n", a);
+ return EXIT_SUCCESS;
 }
