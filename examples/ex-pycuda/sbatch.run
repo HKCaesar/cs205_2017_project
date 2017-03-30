@@ -1,0 +1,12 @@
+#!/bin/bash 
+#SBATCH -J cuda_hello
+#SBATCH -o cuda_hello.out
+#SBATCH -e cuda_hello.err
+#SBATCH -p gpu
+#SBATCH --gres=gpu
+#SBATCH -t 0-00:30
+#SBATCH -n 4
+#SBATCH --mem-per-cpu=100
+#SBATCH --constraint=cuda-7.5
+
+time ./square > output.txt 2> errors.txt
