@@ -6,5 +6,7 @@ source new-modules.sh
 module load cuda/7.5-fasrc01
 
 nvcc hello.cu -o hello.out
-sbatch sbatch.run
+sbatch sbatch.run #change n in the sbatch.run file to change the number of cores
+
+cat slurm-#.out #ls to find the job# of the file
 ```
