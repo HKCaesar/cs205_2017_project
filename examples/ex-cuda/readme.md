@@ -10,7 +10,7 @@ Step 4. Check output. *.out file should contain a line printed by each core*
 
 ```
 source setup.sh
-nvcc hello.cu -o hello.out
+nvcc hello.cu -o hello
 sbatch sbatch.run
 cat cuda_hello.out
 ```
