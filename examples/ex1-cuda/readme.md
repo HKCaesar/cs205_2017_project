@@ -1,14 +1,17 @@
+# CUDA Hello World
+
+Step 1. Load modules. *only necessary one time*
+
+Step 2. Make file. *only necessary if changes were made to mpi_hello_world.c*
+
+Step 3. Submit job. *you can manipulate the -n paramater in the sbatch.run file to change the number of cores*
+
+Step 4. Check output. *.out file should contain a line printed by each core*
+
 ```
-srun --mem-per-cpu=1000 -p gpu -n 1 --gres=gpu:1 --constraint=cuda-7.5 --pty -t 0-01:00 /bin/bash
-cd ~/cs205_2017_project/examples/ex1-cuda
-
-source new-modules.sh
-module load cuda/7.5-fasrc01
-
+source setup.sh
 nvcc hello.cu -o hello.out
-sbatch sbatch.run 
-[change n in the sbatch.run file to change the number of cores]
-
-cat slurm-#.out 
-[ls to find the job# of the file]
+sbatch sbatch.run
+cat cuda_hello.out
 ```
+Code from Ingemar Ragnemalm: https://www.pdc.kth.se/resources/computers/historical-computers/zorn/how-to/how-to-compile-and-run-a-simple-cuda-hello-world
