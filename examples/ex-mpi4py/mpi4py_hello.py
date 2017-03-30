@@ -11,6 +11,6 @@ if iproc == 0: print "This code is a test for mpi4py."
 for i in range(0,nproc):
     MPI.COMM_WORLD.Barrier()
     if iproc == i:
-        print 'Hello world from %d out of %d in %d!' % (iproc,nproc,inode)
+        print 'Hello world from %d out of %d!' % (iproc,nproc)
         
 MPI.Finalize()
