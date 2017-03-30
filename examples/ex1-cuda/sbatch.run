@@ -7,5 +7,4 @@
 #SBATCH --mem-per-cpu=100 #Memory per cpu in MB (see also --mem) 
 #SBATCH --constraint=cuda-7.5
 
-srun --pty --x11=first -p holyseasgpu --mem 4000 -t 0-5:00 -n 1 -N 1 /bin/bash
-./hello.out
+srun -n $SLURM_NTASKS ./hello.out
