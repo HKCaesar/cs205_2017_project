@@ -1,16 +1,25 @@
 Odyssey MPI resources: https://github.com/fasrc/User_Codes/tree/master/CS205/MPI
 
 ```
-srun --mem-per-cpu=1000 -p gpu -n 1 --gres=gpu:1 --constraint=cuda-7.5 --pty -t 0-01:00 /bin/bash
-source new-modules.sh
-module load intel/15.0.0-fasrc01
-module load openmpi/1.10.2-fasrc01
+Step 1. Load modules: [only necessary one time]
+
+source setup.sh
+
+Step 2. Make file: [only necessary if changes were made to mpi_hello_world.c]
+
+make
 ```
 
 ```
-make
+Step 3. Submit job:
+
 sbatch sbatch.run
-cat mpi_hello.out
-```
 
 [you can manipulate the -c paramater in the sbatch.run file to change the number of cores]
+```
+
+```
+Step 4. Check output: 
+
+cat mpi_hello.out
+```
