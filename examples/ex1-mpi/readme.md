@@ -1,4 +1,4 @@
-## Odyssey MPI resources: https://github.com/fasrc/User_Codes/tree/master/CS205/MPI
+# MPI Hello World
 
 Step 1. Load modules. *only necessary one time*
 
@@ -14,3 +14,4 @@ make
 sbatch sbatch.run
 cat mpi_hello.out
 ```
+Odyssey MPI resources: https://github.com/fasrc/User_Codes/tree/master/CS205/MPI
