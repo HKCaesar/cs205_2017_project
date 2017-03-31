@@ -2,6 +2,8 @@
 #SBATCH -J mpi4pycuda_hello
 #SBATCH -o mpi4pycuda_hello.out
 #SBATCH -e mpi4pycuda_hello.err
+#SBATCH -p gpu
+#SBATCH --gres=gpu
 #SBATCH -n 4
 #SBATCH -t 0-00:30
 #SBATCH --mem-per-cpu=1000
