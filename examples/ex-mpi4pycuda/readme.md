@@ -12,6 +12,7 @@ Step 4. Check output. *.out file should contain a line printed by each core*
 source setup.sh
 sbatch sbatch.run
 cat mpi4pycuda_hello.out
+cat mpi4pycuda_hello.err
 ```
 
 ## currently throwing a segmentation fault error :-(
