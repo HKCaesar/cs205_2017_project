@@ -25,7 +25,7 @@ void inline sumSq (float *x, float *c, float *ss, int *D, int *N, int *K, int *n
 void inline selectCluster (float *x, float *c, int *assign, int *N, int *D, int *K, int *conv)
 {
     float *dist;
-    float min = INFINITY;
+    float min;
     int min_idx;
     int convCheck = 1;
     
@@ -33,21 +33,26 @@ void inline selectCluster (float *x, float *c, int *assign, int *N, int *D, int 
     
     for (size_t n = 0; n < N; ++n)
     {
+        min = INFINITY;
+        min_idx = -1;
+        
         for (size_t k = 0; k < K; ++k)
         {
             sumSq (x, c, dist, D, N, K, n, k);
-            if (min > dist){
+            if (min > dist)
+            {
                 min = dist;
                 min_idx = k;
             }
         }
-        if(convCheck){
+        if(convCheck)
+        {
             min_idx == assign[n] ? conv = 1 : conv = 0;
-            if(!conv) convCheck = 1;
+            if(!conv) convCheck = 0;
         }
         
         assign[n] = min_idx;
-        min = INFINITY;
+        
     }
 }
 
@@ -55,7 +60,8 @@ void inline clusterCenter (float *x, float *c, int *assign, int *N, int *K, int 
 {
     int *count;
     
-    count = (int*) malloc(sizeof(int) * K)
+    count = (int*) malloc(sizeof(int) * K);
+    
     for (size_t t; t < (K*D); t++)
     {
         c[t] = 0;
@@ -97,7 +103,7 @@ void inline kMeans (float *x, float *c, int *assign, int *N, int *K, int *D)
     
     while(!conv)
     {
-        selectCluster(x, c, assign, N, D, K, same);
         clusterCenter(x, c, assign, N, D, K);
+        selectCluster(x, c, assign, N, D, K, conv);
     }
 }
