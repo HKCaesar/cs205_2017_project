@@ -72,7 +72,7 @@ void inline clusterCenter (float *x, float *c, int *assign, int *N, int *K, int 
         for (size_t d = 0; d < D; ++d)
         {
             c[assign[n] * K + d] += x[n * D +  d];
-            ++count[assign[n]];
+            count[assign[n]]++;
         }
         
     }
