@@ -1,4 +1,4 @@
-# mpi4py Hello World
+# mpi4pycuda Hello World
 
 Step 1. Load modules. *only necessary one time*
 
@@ -11,6 +11,6 @@ Step 4. Check output. *.out file should contain a line printed by each core*
 ```
 source setup.sh
 sbatch sbatch.run
-cat mpi4py_hello.out
+cat mpi4pycuda_hello.out
 ```
-Code from Odyssey resources: https://github.com/fasrc/User_Codes/tree/master/Parallel_Computing/Python
+Code from: https://gist.github.com/lebedov/8514d3456a94a6c73e6d
