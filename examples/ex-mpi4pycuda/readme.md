@@ -15,6 +15,6 @@ cat mpi4pycuda_hello.out
 cat mpi4pycuda_hello.err
 ```
 
-## currently throwing a segmentation fault error :-(
+## currently throwing a segmentation fault error and running indefinitely :-( maybe this is relevant? https://rc.fas.harvard.edu/resources/documentation/gpgpu-computing-on-odyssey/
 
 Code from: https://gist.github.com/lebedov/8514d3456a94a6c73e6d
