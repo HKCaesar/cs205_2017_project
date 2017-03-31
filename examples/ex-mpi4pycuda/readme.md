@@ -13,4 +13,7 @@ source setup.sh
 sbatch sbatch.run
 cat mpi4pycuda_hello.out
 ```
+
+## currently throwing a segmentation fault error :-(
+
 Code from: https://gist.github.com/lebedov/8514d3456a94a6c73e6d
