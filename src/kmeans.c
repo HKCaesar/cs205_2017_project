@@ -10,7 +10,7 @@
 
 
 void inline sumSq (float *x, float *c, float *ss, int *D, int *N, int *K, int *n, int *k )
-{
+{ //calculates the squared distance
     float sum;
     
     sum = 0;
@@ -23,7 +23,7 @@ void inline sumSq (float *x, float *c, float *ss, int *D, int *N, int *K, int *n
 }
 
 void inline selectCluster (float *x, float *c, int *assign, int *N, int *D, int *K, int *conv)
-{
+{//selects the cluster and calculates the distance (we may want to separate these actions)
     float *dist;
     float min;
     int min_idx;
@@ -57,7 +57,7 @@ void inline selectCluster (float *x, float *c, int *assign, int *N, int *D, int 
 }
 
 void inline clusterCenter (float *x, float *c, int *assign, int *N, int *K, int *D)
-{
+{//calculates the center of the cluster
     int *count;
     
     count = (int*) malloc(sizeof(int) * K);
@@ -85,7 +85,7 @@ void inline clusterCenter (float *x, float *c, int *assign, int *N, int *K, int 
 }
 
 void inline allTrue (int *same, int *conv, int *N)
-{
+{ //not needed at the moment
     size_t n = 0;
     
     while(n < N && conv) {
@@ -96,10 +96,8 @@ void inline allTrue (int *same, int *conv, int *N)
 }
 
 void inline kMeans (float *x, float *c, int *assign, int *N, int *K, int *D)
-{
-    int conv;
-    
-    conv = 1;
+{ //runs the k means algorithm
+    int conv = 0;
     
     while(!conv)
     {
