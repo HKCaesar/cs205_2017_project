@@ -54,12 +54,13 @@ else:
     if rank == 0:
         x_gpu = gpuarray.arange(100, 200, 10, dtype=np.double)
         print ('before (%i): ' % rank)+str(x_gpu)
-        comm.Send([bufint(x_gpu), dtype_to_mpi(x_gpu.dtype)], dest=1)
+ 
+        comm.Send([x_gpu.get() , dtype_to_mpi(x_gpu.dtype)], dest=1)
         print 'sent'
         print ('after  (%i): ' % rank)+str(x_gpu)
     elif rank == 1:
         x_gpu = gpuarray.zeros(10, dtype=np.double)
         print ('before (%i): ' % rank)+str(x_gpu)
-        comm.Recv([bufint(x_gpu), dtype_to_mpi(x_gpu.dtype)], source=0)
+        comm.Recv([x_gpu.get() , dtype_to_mpi(x_gpu.dtype)], source=0)
         print 'received'
         print ('after  (%i): ' % rank)+str(x_gpu)
