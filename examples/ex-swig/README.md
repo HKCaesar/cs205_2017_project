@@ -7,5 +7,6 @@ python setup.py build_ext --inplace
 The module should be accessible via python by using:
 ```
 import simple
+simple.create_list(10)
 ```
 
