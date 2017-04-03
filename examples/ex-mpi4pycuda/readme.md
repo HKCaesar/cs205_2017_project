@@ -2,11 +2,11 @@
 
 Step 1. Load modules. *only necessary one time*
 
-Step 2. Make file. *only necessary if changes were made to Python code*
+Step 2. Run the sbatch.run file. 
 
-Step 3. Nothing.
+[wait]
 
-Step 4. Check output. *.out file should contain a line printed by each core*
+Step 3. Check output. *.out file should contain a line printed by each core*
 
 ```
 source setup.sh
