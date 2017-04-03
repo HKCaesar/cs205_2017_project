@@ -4,9 +4,7 @@ Step 1. Load modules. *only necessary one time*
 
 Step 2. Run the sbatch.run file. 
 
-[wait]
-
-Step 3. Check output. *.out file should contain a line printed by each core*
+Step 3. Check output. 
 
 ```
 source setup.sh
