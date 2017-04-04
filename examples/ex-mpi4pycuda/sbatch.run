@@ -10,6 +10,4 @@
 #SBATCH --constraint=cuda-7.5
 
 gcc -v
-rm mpi4pycuda_hello.err
-rm mpi4pycuda_hello.out
 srun -n $SLURM_NTASKS --mpi=pmi2 python mpi4pycuda_hello.py
