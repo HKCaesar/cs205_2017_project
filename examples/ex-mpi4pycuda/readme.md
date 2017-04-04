@@ -6,7 +6,7 @@ module load python/2.7.11-fasrc01
 conda create -n pycuda --clone $PYTHON_HOME
 ```
 
-## run code
+## command-line code:
 
 Step 1. Start an interactive session:
 
