@@ -1,6 +1,9 @@
-source new-modules.sh
-module load python/2.7.6-fasrc01
-module load pycuda/2015.1.3-fasrc01
-module load intel/15.0.0-fasrc01
-module load cuda/7.5-fasrc01
-srun --mem-per-cpu=1000 -p gpu -n 1 --gres=gpu:2 --constraint=cuda-7.5 --pty -t 0-01:00 /bin/bash
+rm mpi4pycuda_hello.out
+rm mpi4pycuda_hello.err
+
+module load python/2.7.11-fasrc01
+source activate pycuda
+module load cuda/7.5-fasrc02
+pip install pycuda
+module load gcc/5.2.0-fasrc01 openmpi/1.10.4-fasrc01
+pip install mpi4py
