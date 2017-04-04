@@ -1,6 +1,3 @@
-rm mpi4pycuda_hello.out
-rm mpi4pycuda_hello.err
-
 module load python/2.7.11-fasrc01
 source activate pycuda
 module load cuda/7.5-fasrc02
