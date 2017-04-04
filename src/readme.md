@@ -1,10 +1,12 @@
+# mpi4py + pyCUDA environment
+
 ### set-up (do once): 
 ```
 module load python/2.7.11-fasrc01
 conda create -n pycuda --clone $PYTHON_HOME
 ```
 
-# mpi4py + pyCUDA environmetn
+## run code
 
 Step 1. Start an interactive session:
 
