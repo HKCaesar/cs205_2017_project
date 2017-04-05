@@ -12,14 +12,13 @@ pip install mpi4py
 
 ## command-line code:
 
-Step 1. [get on the login node]
-
-Step 2. Run python code via sbatch.run
-
-Step 3. Check output.
-
+Step 1. From the login node: 
 ```
 sbatch sbatch.run
+```
+
+Step 2. Check output:
+```
 cat mpi4pycuda_hello.out
 cat mpi4pycuda_hello.err
 ```
