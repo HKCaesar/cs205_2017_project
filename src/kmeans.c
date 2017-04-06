@@ -9,9 +9,8 @@
 #include "kmeans.h"
 
 
-void inline sumSq (float *x, float *c, float *ss, int *D, int *N, int *K, int *n, int *k )
+void inline sumSq (float *x, float *c, float *ss, int *D, int *N, int *K, int *n, int *k, float *sum )
 { //calculates the squared distance
-    float sum;
     
     sum = 0;
     
@@ -22,7 +21,7 @@ void inline sumSq (float *x, float *c, float *ss, int *D, int *N, int *K, int *n
     ss = sum;
 }
 
-void inline selectCluster (float *x, float *c, int *assign, int *N, int *D, int *K, int *conv)
+void inline selectCluster (float *x, float *c, int *assign, int *N, int *D, int *K, int *conv, float *sum)
 {//selects the cluster and calculates the distance (we may want to separate these actions)
     float *dist;
     float min;
@@ -38,7 +37,7 @@ void inline selectCluster (float *x, float *c, int *assign, int *N, int *D, int 
         
         for (size_t k = 0; k < K; ++k)
         {
-            sumSq (x, c, dist, D, N, K, n, k);
+            sumSq (x, c, dist, D, N, K, n, k, sum);
             if (min > dist)
             {
                 min = dist;
@@ -56,11 +55,9 @@ void inline selectCluster (float *x, float *c, int *assign, int *N, int *D, int 
     }
 }
 
-void inline clusterCenter (float *x, float *c, int *assign, int *N, int *K, int *D)
+void inline clusterCenter (float *x, float *c, int *assign, int *N, int *K, int *D, int *count)
 {//calculates the center of the cluster
-    int *count;
     
-    count = (int*) malloc(sizeof(int) * K);
     
     for (size_t t; t < (K*D); t++)
     {
@@ -98,10 +95,16 @@ void inline allTrue (int *same, int *conv, int *N)
 void inline kMeans (float *x, float *c, int *assign, int *N, int *K, int *D)
 { //runs the k means algorithm
     int conv = 0;
+    float sum = 0;
+    int *count;
+    
+    count = (int*) malloc(sizeof(int) * K);
     
     while(!conv)
     {
-        clusterCenter(x, c, assign, N, D, K);
-        selectCluster(x, c, assign, N, D, K, conv);
+        for(size_t k = 0; k < K; ++k) count[k] = 0;
+        
+        clusterCenter(x, c, assign, N, D, K, count);
+        selectCluster(x, c, assign, N, D, K, conv, sum);
     }
 }
