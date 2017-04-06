@@ -4,7 +4,7 @@ https://slurm.schedmd.com/quickstart.html
 
 ```
 scontrol show partition
-scontrol show node gpu
+scontrol show node holyseasgpu01
 scontrol show job ####
 
 nvidia-smi
