@@ -13,8 +13,8 @@ nvidia-smi
 ### 2 CPUs, 1 GPU
 
 ```
-srun -p gpu -n 2 --pty --mem 1000 --gres gpu:1 -t 500 /bin/bash
-scontrol show job 85362170
+$ srun -p gpu -n 2 --pty --mem 1000 --gres gpu:1 -t 500 /bin/bash
+$ scontrol show job 85362170
 
 JobId=85362170 JobName=bash
    NumNodes=1 NumCPUs=2 NumTasks=2 CPUs/Task=1 ReqB:S:C:T=0:0:*:*
@@ -27,8 +27,8 @@ JobId=85362170 JobName=bash
 ### 1 CPU, 2 GPUs
 
 ```
-srun -p gpu -n 1 --pty --mem 1000 --gres gpu:2 -t 500 /bin/bash
-scontrol show job 85362494
+$ srun -p gpu -n 1 --pty --mem 1000 --gres gpu:2 -t 500 /bin/bash
+$ scontrol show job 85362494
 
 JobId=85362494 JobName=bash
    NumNodes=1 NumCPUs=2 NumTasks=1 CPUs/Task=1 ReqB:S:C:T=0:0:*:*
@@ -41,8 +41,8 @@ JobId=85362494 JobName=bash
 ### 2 CPUs, 2 GPUs
 
 ```
-srun -p gpu -n 2 --pty --mem 1000 --gres gpu:2 -t 500 /bin/bash
-scontrol show job 85362472
+$ srun -p gpu -n 2 --pty --mem 1000 --gres gpu:2 -t 500 /bin/bash
+$ scontrol show job 85362472
 JobId=85362472 JobName=bash
    NumNodes=1 NumCPUs=2 NumTasks=2 CPUs/Task=1 ReqB:S:C:T=0:0:*:*
    TRES=cpu=2,mem=1000M,node=1
