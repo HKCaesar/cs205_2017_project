@@ -8,7 +8,7 @@ OPTS=-O3 #$(ARCH)
 all: $(BIN)
 
 $(BIN): main.o kmeans.o
-	$(COMP) $(OPTS) main.o kmeans.o -o $(BIN)
+	$(COMP) $(OPTS) -o $(BIN) main.o kmeans.o 
 	
 main.o: main.c kmeans.c kmeans.h
 	$(COMP) $(OPTS) -c main.c -o main.o
