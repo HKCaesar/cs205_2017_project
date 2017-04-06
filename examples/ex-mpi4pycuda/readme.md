@@ -7,7 +7,7 @@ conda create -n pycuda --clone $PYTHON_HOME
 pip install pycuda
 pip install mpi4py
 ```
-Note: mpi4py won't compile on login node
+Note: mpi4py didn't compile for me on login node. Maybe it needs some other options (Eric)
 
 ## command-line code:
 
