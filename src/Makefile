@@ -12,7 +12,7 @@ $(BIN): main.o kmeans.o
 	$(COMP) $(OPTS) -o $(BIN) main.o kmeans.o 
 	
 main.o: main.c kmeans.c kmeans.h
-	$(COMP) $(OPTS) -c main.c -o main.o
+	$(COMP) $(OPTS) -c -o main.o main.c kmeans.c kmeans.h
 
 kmeans.o: kmeans.c kmeans.h
 	$(COMP) $(OPTS) -c kmeans.c -o kmeans.o
