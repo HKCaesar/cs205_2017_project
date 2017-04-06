@@ -7,8 +7,9 @@ conda create -n pycuda --clone $PYTHON_HOME
 pip install pycuda
 pip install mpi4py
 ```
-Note: mpi4py didn't compile for me on login node. Maybe it needs some other options (Eric)
-Update: this may work with this compiler ```module load gcc/5.2.0-fasrc01 openmpi/1.10.4-fasrc01```, but haven't tested
+_Note: mpi4py didn't compile for me on login node. Maybe it needs some other options (Eric)_
+
+_Update: this may work with this compiler ```module load gcc/5.2.0-fasrc01 openmpi/1.10.4-fasrc01```, but haven't tested_
 
 ## command-line code:
 
