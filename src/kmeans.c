@@ -9,7 +9,7 @@
 #include "kmeans.h"
 
 
-void inline sumSq (float *x, float *c, float *ss, int D, int N, int K, int n, int k)
+void sumSq (float *x, float *c, float *ss, int D, int N, int K, int n, int k)
 { //calculates the squared distance
     
     float sum = 0;
@@ -21,7 +21,7 @@ void inline sumSq (float *x, float *c, float *ss, int D, int N, int K, int n, in
     (*ss) = sum;
 }
 
-void inline selectCluster (float *x, float *c, int *assign, int N, int D, int K, int *conv, float *dist)
+void selectCluster (float *x, float *c, int *assign, int N, int D, int K, int *conv, float *dist)
 {//selects the cluster and calculates the distance (we may want to separate these actions)
     float min;
     int min_idx;
@@ -53,7 +53,7 @@ void inline selectCluster (float *x, float *c, int *assign, int N, int D, int K,
     }
 }
 
-void inline clusterCenter (float *x, float *c, int *assign, int N, int K, int D, int *count)
+void clusterCenter (float *x, float *c, int *assign, int N, int K, int D, int *count)
 {//calculates the center of the cluster
     
     
@@ -79,7 +79,7 @@ void inline clusterCenter (float *x, float *c, int *assign, int N, int K, int D,
     }
 }
 
-void inline allTrue (int *same, int *conv, int N)
+void allTrue (int *same, int *conv, int N)
 { //not needed at the moment
     size_t n = 0;
     
@@ -90,7 +90,7 @@ void inline allTrue (int *same, int *conv, int N)
     
 }
 
-void inline kMeans (float *x, float *c, int *assign, int N, int K, int D)
+void kMeans (float *x, float *c, int *assign, int N, int K, int D)
 { //runs the k means algorithm
     int *conv;
     int *count;
