@@ -101,30 +101,15 @@ void inline kMeans (float *x, float *c, int *assign, int N, int K, int D)
     conv = (int*) malloc(sizeof(int));
     dist = (float*) malloc(sizeof(float));
     
-    while(!conv)
+    (*conv) = 0;
+    
+    while(!(*conv))
     {
         for(size_t k = 0; k < K; ++k) count[k] = 0;
         
         clusterCenter(x, c, assign, N, D, K, count);
         selectCluster(x, c, assign, N, D, K, conv, dist);
+        
     }
-}
 
-
-int main(){
-    float *x;
-    float *c;
-    int *assign;
-    int N = 100;
-    int K = 5;
-    int D = 5;
-    
-    x = (float*) malloc(sizeof(float) * N * D);
-    c = (float*) malloc(sizeof(float) * K * D);
-    assign = (int*) malloc(sizeof(int) * N);
-    
-    for(int i = 0; i < (N/K); ++i) for(int kk=0; kk < 5; ++kk) assign[kk + i * K] = kk;
-    kMeans (x, c, assign, N, K, D);
-    
-    return 0;
 }
