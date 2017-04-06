@@ -1,5 +1,4 @@
 
-
 #ARCH=-arch sm_30 #not sure if need later for CUDA
 
 BIN=x.kCPU
