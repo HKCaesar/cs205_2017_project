@@ -7,9 +7,10 @@ org="kmean_test"
 #source activate pycuda
 #module load cuda/7.5-fasrc02
 #pip install pycuda
-module load gcc/5.2.0-fasrc01 openmpi/1.10.4-fasrc01
+#module load gcc/5.2.0-fasrc01 openmpi/1.10.4-fasrc01
 #pip install mpi4py
 
+module load gcc/5.2.0-fasrc01
 
 # Pull data from git
 git fetch
