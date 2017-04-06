@@ -3,7 +3,7 @@
 ORG = "kmeans_test"
 
 # Load required modules
-module load python/2.7.11-fasrc01
+# module load python/2.7.11-fasrc01
 #source activate pycuda
 #module load cuda/7.5-fasrc02
 #pip install pycuda
@@ -20,5 +20,5 @@ make -C
 # Run target files
 
 
-./x.kCPU
+./x.kCPU >> kcpu.txt
 
