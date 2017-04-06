@@ -5,7 +5,8 @@ BIN=x.kCPU
 COMP=gcc
 OPTS=-O3 #$(ARCH)
 
-all: $(BIN)
+all: 
+	$(BIN)
 
 $(BIN): main.o kmeans.o
 	$(COMP) $(OPTS) -o $(BIN) main.o kmeans.o 
