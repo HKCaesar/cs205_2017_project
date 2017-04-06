@@ -1,0 +1,15 @@
+Are we doing our sbatch file correctly? — fixed example. 
+How do we get our jobs to run faster?
+
+How many threads are in a GPU core? What are the parameters of the block/grid configuration?
+
+
+
+scontrol show node holyseaspu01
+#k40m says the kind of GPU that it is.
+
+Nvidia-smi 
+# prints out info of the current GPU
+# if we get multiple GPUs they will be the same kind. 
+
+Usually 50-70 cores per GPU
