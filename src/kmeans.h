@@ -11,13 +11,13 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
-void inline sumSq (float *x, float *c, float *ss, int *D, int *N, int *K, int *n, int *k );
-void inline selectCluster (float *x, float *c, int *assign, int *N, int *D, int *K, int *conv);
-void inline clusterCenter (float *x, float *c, int *assign, int *N, int *K, int *D);
-void inline allTrue (int *same, int *conv, int *N);
-void inline kMeans (float *x, float *c, int *assign, int *N, int *K, int *D);
-
+void inline sumSq (float *x, float *c, float *ss, int D, int N, int K, int n, int k);
+void inline selectCluster (float *x, float *c, int *assign, int N, int D, int K, int *conv, float *dist);
+void inline clusterCenter (float *x, float *c, int *assign, int N, int K, int D, int *count);
+void inline allTrue (int *same, int *conv, int N);
+void inline kMeans (float *x, float *c, int *assign, int N, int K, int D);
 
 
 #endif /* kmeans_h */
