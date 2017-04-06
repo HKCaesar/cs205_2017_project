@@ -31,8 +31,6 @@ Code from: https://gist.github.com/lebedov/8514d3456a94a6c73e6d
 module load python/2.7.11-fasrc01
 conda create -n pycuda --clone $PYTHON_HOME
 srun -p gpu --pty --mem 2000 --gres gpu:1 -t 1200 /bin/bash
-pip install mpi4py
-python
 ```
 
 
@@ -42,7 +40,10 @@ module load python/2.7.11-fasrc01
 source activate pycuda
 module load cuda/7.5-fasrc02
 pip install pycuda
-module load gcc/5.2.0-fasrc01 
+module load gcc/5.2.0-fasrc01
+pip install mpi4py
+
+python #if you want python now for some reason
 ```
 
 ### Testing
