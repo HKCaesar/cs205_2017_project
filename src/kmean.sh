@@ -1,6 +1,6 @@
 #!/bin/bash
 
-org="kmean_test"
+org="master"
 
 # Load required modules
 # module load python/2.7.11-fasrc01
