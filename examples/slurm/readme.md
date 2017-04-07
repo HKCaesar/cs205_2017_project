@@ -9,6 +9,10 @@ scontrol show job ####
 
 nvidia-smi
 ```
+## Testing Configurations
+
+---
+
 ### 1 CPU
 #### NumNodes=1 NumCPUs=2 NumTasks=1 CPUs/Task=1
 
@@ -149,5 +153,19 @@ JobId=85402778 JobName=bash
    Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*
    MinCPUsNode=1 MinMemoryNode=100M MinTmpDiskNode=0
    Features=(null) Gres=gpu:2 Reservation=(null)
+```
 
+### 4 CPUs, 6 GPUs
+#### NumNodes=1 NumCPUs=4 NumTasks=4 CPUs/Task=1
+
+```
+$ srun -p gpu -n 4 --pty --mem 100 --gres gpu:6 -t 500 /bin/bash
+$ scontrol show job 85403176
+
+JobId=85403176 JobName=bash
+   NumNodes=1 NumCPUs=4 NumTasks=4 CPUs/Task=1 ReqB:S:C:T=0:0:*:*
+   TRES=cpu=4,mem=100M,node=1
+   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*
+   MinCPUsNode=1 MinMemoryNode=100M MinTmpDiskNode=0
+   Features=(null) Gres=gpu:6 Reservation=(null)
 ```
