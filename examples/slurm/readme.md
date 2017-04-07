@@ -39,6 +39,7 @@ JobId=85402645 JobName=bash
    Features=(null) Gres=gpu:1 Reservation=(null)
 ```  
 
+---
 
 ### 1 CPU, 1 GPU
 #### NumNodes=1 NumCPUs=2 NumTasks=1 CPUs/Task=1
@@ -100,6 +101,10 @@ JobId=85401966 JobName=bash
    Features=(null) Gres=gpu:6 Reservation=(null)
 ```
 
+[max 8 gpu's]
+
+---
+
 ### 2 CPUs, 1 GPU
 #### NumNodes=1 NumCPUs=2 NumTasks=2 CPUs/Task=1
 
@@ -120,12 +125,29 @@ JobId=85402335 JobName=bash
 #### NumNodes=1 NumCPUs=2 NumTasks=2 CPUs/Task=1
 
 ```
-$ srun -p gpu -n 2 --pty --mem 1000 --gres gpu:2 -t 500 /bin/bash
-$ scontrol show job 85362472
-JobId=85362472 JobName=bash
+$ srun -p gpu -n 2 --pty --mem 100 --gres gpu:2 -t 500 /bin/bash
+$ scontrol show job 85402752
+
+JobId=85402752 JobName=bash
    NumNodes=1 NumCPUs=2 NumTasks=2 CPUs/Task=1 ReqB:S:C:T=0:0:*:*
-   TRES=cpu=2,mem=1000M,node=1
+   TRES=cpu=2,mem=100M,node=1
    Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*
-   MinCPUsNode=1 MinMemoryNode=1000M MinTmpDiskNode=0
+   MinCPUsNode=1 MinMemoryNode=100M MinTmpDiskNode=0
    Features=(null) Gres=gpu:2 Reservation=(null)
+```
+
+### 4 CPUs, 2 GPUs
+#### NumNodes=1 NumCPUs=4 NumTasks=4 CPUs/Task=1
+
+```
+$ srun -p gpu -n 4 --pty --mem 100 --gres gpu:2 -t 500 /bin/bash
+$ scontrol show job 85402752
+
+JobId=85402778 JobName=bash
+   NumNodes=1 NumCPUs=4 NumTasks=4 CPUs/Task=1 ReqB:S:C:T=0:0:*:*
+   TRES=cpu=4,mem=100M,node=1
+   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*
+   MinCPUsNode=1 MinMemoryNode=100M MinTmpDiskNode=0
+   Features=(null) Gres=gpu:2 Reservation=(null)
+
 ```
