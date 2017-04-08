@@ -1,4 +1,4 @@
-# code from udacity https://classroom.udacity.com/courses/cs344/lessons/55120467/concepts/672971400923#include <stdio.h>
+#include <stdio.h>
 
 __global__ void cube(float * d_out, float * d_in){
 	// Todo: Fill in this function
