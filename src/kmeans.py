@@ -4,7 +4,6 @@ from pycuda.compiler import SourceModule
 
 import pandas as pd
 
-
 ##################
 ### CONFIGURE ####
 ##################
