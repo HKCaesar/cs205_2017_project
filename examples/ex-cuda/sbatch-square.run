@@ -1,4 +1,3 @@
-
 #!/bin/bash 
 #SBATCH -J cuda_square
 #SBATCH -o cuda_square.out
