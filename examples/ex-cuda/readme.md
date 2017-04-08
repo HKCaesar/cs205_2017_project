@@ -11,7 +11,7 @@ Step 4. Check output. *.out file should contain a line printed by each core*
 ```
 source setup.sh
 nvcc hello.cu -o hello
-sbatch sbatch.run
+sbatch sbatch-hello.run
 cat cuda_hello.out
 ```
 Code from Ingemar Ragnemalm: https://www.pdc.kth.se/resources/computers/historical-computers/zorn/how-to/how-to-compile-and-run-a-simple-cuda-hello-world
@@ -21,7 +21,7 @@ Code from Ingemar Ragnemalm: https://www.pdc.kth.se/resources/computers/historic
 ```
 source setup.sh
 nvcc square.cu -o square
-sbatch sbatch.run
+sbatch sbatch-square.run
 cat cuda_square.out
 ```
 
