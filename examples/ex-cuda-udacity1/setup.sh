@@ -1,5 +1,6 @@
--source new-modules.sh
--module load cuda/7.5-fasrc01
+source new-modules.sh
+module load cuda/7.5-fasrc01
+module load opencv/3.0.0-fasrc01
 
 -rm -f cuda_hello.out
 -rm -f cuda_hello.err
