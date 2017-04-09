@@ -102,7 +102,7 @@ while not converged:
             
     #assign to closest mean
     kernel2 = mod2.get_function("reassign")
-    kernel2d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), grid=(1,1,1))
+    kernel2(d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), grid=(1,1,1))
     
     for n in range(N):
         
