@@ -30,16 +30,16 @@ K = 3
 
 mod = SourceModule("""
 
-__global__ void newmeans(int *N, int *D, int *K, double *data, int *clusters, double *means, int *clustern) {
+__global__ void newmeans(int *N, int *D, int K, double *data, int *clusters, double *means, int *clustern) {
   
   // find the n per cluster with just one lucky thread
   if (threadIdx.x==0 & threadIdx.y==0)
   {
     int l_clustern[(*K)];
     //l_clustern = (int*)malloc(sizeof(int) * (*K));
-    for(int k=0; k < (*K); ++k) l_clustern[k] = 0;
+    for(int k=0; k < (K); ++k) l_clustern[k] = 0;
     for (int n=0; n < (*N); ++n) l_clustern[clusters[n]]++;
-    for(int k =0; k < (*K); ++k) clustern[k] = l_clustern[k];
+    for(int k =0; k < (K); ++k) clustern[k] = l_clustern[k];
    }
    __syncthreads();
    
