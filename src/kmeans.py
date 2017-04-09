@@ -70,8 +70,8 @@ for i in range(len(h_clusters)-2,-1,-1):
 h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
 h_distortion = np.ascontiguousarray(np.empty(1,dtype=np.float64, order='C'))
 
-print(h_clusters)
 print(h_means)
+print(h_clusters)
 print(h_distortion)
 
 ######################################################
