@@ -36,7 +36,7 @@ __global__ void newmeans(int *N, int *D, int *K, double *data, int *clusters, do
   if (threadIdx.x==0 & threadIdx.y==0)
   {
     
-    int l_clustern[K[0]];
+    //int l_clustern[K[0]];
     //l_clustern = (int*)malloc(sizeof(int) * (*K));
     //for(int k=0; k < (K); ++k) l_clustern[k] = 0;
     //for (int n=0; n < (N); ++n) l_clustern[clusters[n]]++;
