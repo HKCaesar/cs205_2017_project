@@ -33,14 +33,10 @@ mod = SourceModule("""
 __global__ void newmeans(double *d_data, double *d_clusters, double *d_means, double *d_clustern) {
   int k = blockIdx.x;
   int d = blockIdx.y;
-  d_means[1,1]=k;
-  d_means[2,2]=d;
   }
 
 __global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_clustern, double *d_distortion) {
   int n = blockIdx.x;
-  d_clusters[n] = 1;
-  d_distortion[0] = n;
   }
   
 """)
