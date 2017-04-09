@@ -34,7 +34,7 @@ mod2 = SourceModule("""
 __global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_clustern, double *d_distortion) {
   int n = blockIdx.x;
   d_clusters[n] = n;
-  d_distortion = 5;
+  d_distortion[0] = 5;
 }""")
 
 ######################################################
