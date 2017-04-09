@@ -71,7 +71,7 @@ cuda.memcpy_htod(d_clusters,h_clusters)
 # Allocate means and clustern variables on device
 d_means = cuda.mem_alloc(np.empty((K,D),dtype=np.float64).nbytes)
 d_clustern = cuda.mem_alloc(np.empty(K,dtype=np.int8).nbytes)
-d_distortion = cuda.mem_all(np.empty(1,dtype=np.float64).nbytes)
+d_distortion = cuda.mem_alloc(np.empty(1,dtype=np.float64).nbytes)
 
 ######################################################
 ### RUN K-MEANS ############# FIX THIS SECTION ######### 
