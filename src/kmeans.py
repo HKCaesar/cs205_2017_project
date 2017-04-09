@@ -74,8 +74,8 @@ cuda.memcpy_htod(d_data,h_data)
 cuda.memcpy_htod(d_clusters,h_clusters)
 
 # FIX!
-means = cuda.mem_alloc(np.zeros((K,D)))
-clustern = cuda.mem_alloc(np.zeros(K))
+#means = cuda.mem_alloc(np.zeros((K,D)))
+#clustern = cuda.mem_alloc(np.zeros(K))
 
 ######################################################
 ### RUN K-MEANS ############# FIX THIS SECTION ######### 
