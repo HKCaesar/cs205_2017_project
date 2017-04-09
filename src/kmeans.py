@@ -3,6 +3,7 @@ import pycuda.autoinit
 from pycuda.compiler import SourceModule
 
 import pandas as pd
+import numpy as np
 
 ######################################################
 ### CONFIGURE ####
@@ -12,6 +13,12 @@ data_fn = "../data/reviewer-data.csv"
 #data_fn = "../data/reviewer-data-sample.csv"
 
 K=3
+
+# h_ and d_ indicate if varialbe is on the host or device
+# data: reviewer data (NxD) -- previously X
+# clusters: cluster assignments for each reviewer (Nx1) -- previously W
+# means: means for each cluster and dimension (KxD) -- previously A
+# clusterloc: location of each cluster (1xK) -- previously m
 
 ######################################################
 ### GPU KERNELS (in C) ####
@@ -40,10 +47,10 @@ h_data = reviewdata[acts][:1000].values
 
 # assign random clusters
 N,D=h_data.shape
-h_clusters = np.zeros(N,dtype=np.int)
+h_data = np.zeros(N,dtype=np.int)
 
 for n in range(N):
-    h_clustersv[n] = n%K
+    h_clusters[n] = n%K
     
 def shuffle(x,n):
     for i in range(n-2,-1,-1): #from n-2 to 0
@@ -54,18 +61,14 @@ def shuffle(x,n):
 
 shuffle(h_clusters,len(h_clusters))
 
-# create ? 
-means = np.zeros((K,D))
-m = np.zeros(K)
-
 ######################################################
 ### ALLOCATE INPUT & COPY DATA TO DEVICE (GPU) ####
 ######################################################
 
 # Allocate input on device ######### FIX THIS SECTION ######### 
-a_gpu = cuda.mem_alloc(a.size * a.dtype.itemsize)
-b_gpu = cuda.mem_alloc(b.size * b.dtype.itemsize)
-c_gpu = cuda.mem_alloc(c.size * c.dtype.itemsize)
+means = cuda.mem_alloc(np.zeros((K,D)))
+clusterloc = cuda.mem_alloc(np.zeros(K))
+#c_gpu = cuda.mem_alloc(c.size * c.dtype.itemsize)
 
 # Copy from host to device
 cuda.memcpy_htod(h_data, d_data)
@@ -75,7 +78,7 @@ cuda.memcpy_htod(h_clusters, d_clusters)
 ### RUN K-MEANS ############# FIX THIS SECTION ######### 
 ######################################################
 
-converged = False
+converged = True
 
 while not converged:
     converged = True
