@@ -9,7 +9,7 @@ import numpy as np
 ### INFO ####
 ######################################################
 
-# Variable*:      Meaning:		            Dim:        Previous name:
+# Variable*:      Meaning:                 Dim:      Previous name:
 # data            reviewer data           (NxD)       X
 # clusters        cluster assignments     (Nx1)       W
 # means           means                   (KxD)       A
