@@ -66,8 +66,8 @@ shuffle(h_clusters,len(h_clusters))
 ######################################################
 
 # Allocate & copy data and cluster assignments from host to device
-d_data = cuda.mem_alloc(h_data.size * h_data.dtype.itemsize)
-d_clusters = cuda.mem_alloc(h_clusters.size * h_clusters.dtype.itemsize)
+d_data = cuda.mem_alloc(h_data.nbytes)
+d_clusters = cuda.mem_alloc(h_clusters.nbytes)
 cuda.memcpy_htod(h_data, d_data)
 cuda.memcpy_htod(h_clusters, d_clusters)
 
