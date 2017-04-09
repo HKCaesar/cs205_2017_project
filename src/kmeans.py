@@ -30,7 +30,7 @@ K=3
 
 mod = SourceModule("""
 
-__global__ void newmeans(int N, int K, double *data, int *clusters, double *means, int *clustern) {
+__global__ void newmeans(int N, int D, int K, double *data, int *clusters, double *means, int *clustern) {
   
   // find the n per cluster with just one lucky thread
   if (threadIdx.x==0 & threadIdx.y==0)
@@ -121,7 +121,7 @@ while not converged:
     
     #compute means
     kernel1 = mod.get_function("newmeans")
-    kernel1(d_K, d_D, d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1))
+    #  
     
     for k in range(K):
         for d in range(D):
@@ -164,7 +164,7 @@ while not converged:
 ######################################################
 
 kernel1 = mod.get_function("newmeans")
-kernel1(d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1))
+kernel1(d_N, d_D, d_K, d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1))
 
 #kernel2 = mod.get_function("reassign")
 #kernel2(d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), grid=(1,1,1))
