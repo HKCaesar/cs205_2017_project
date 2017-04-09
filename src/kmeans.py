@@ -27,11 +27,15 @@ mod1 = SourceModule("""
 __global__ void newmeans(double *d_data, double *d_clusters, double *d_means, double *d_clustern) {
   int k = blockIdx.x;
   int d = blockIdx.y;
+  d_means[k] = k;
+  d_means[d] = d;
 }""")
 
 mod2 = SourceModule("""
 __global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_clustern, double *d_distortion) {
   int n = blockIdx.x;
+  d_clustern[n] = n;
+  d_distortion = 0;
 }""")
 
 ######################################################
@@ -41,7 +45,7 @@ __global__ void reassign(double *d_data, double *d_clusters, double *d_means, do
 # import data file and subset data for k-means
 reviewdata = pd.read_csv(data_fn)
 acts = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
-h_data = reviewdata[acts][:100].values
+h_data = reviewdata[acts][:10].values
 h_data = np.ascontiguousarray(h_data, dtype=np.float32)
 N,D=h_data.shape
 
@@ -60,6 +64,10 @@ h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
 #h_clustern = np.ascontiguousarray(np.empty(K,dtype=np.int8, order='C'))
 h_distortion = np.ascontiguousarray(np.empty(1,dtype=np.float64, order='C'))
 
+print(h_clusters)
+print(h_means)
+print(h_distortion)
+
 ######################################################
 ### ALLOCATE INPUT & COPY DATA TO DEVICE (GPU) ####
 ######################################################
@@ -72,7 +80,7 @@ cuda.memcpy_htod(d_clusters,h_clusters)
 
 # Allocate means and clustern variables on device
 d_means = cuda.mem_alloc(h_means.nbytes)
-d_clustern = cuda.mem_alloc(h_clustern.nbytes)
+d_clustern = cuda.mem_alloc(np.empty(K,dtype=np.int8).nbytes)
 d_distortion = cuda.mem_alloc(h_distortion.nbytes)
 
 ######################################################
@@ -137,5 +145,10 @@ kernel2(d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), gr
 cuda.memcpy_dtoh(h_clusters, d_clusters)
 cuda.memcpy_dtoh(h_means, d_means)
 cuda.memcpy_dtoh(h_distortion, d_distortion)
+
+print('-----')
+print(h_clusters)
+print(h_means)
+print(h_distortion)
 
 print("done")
