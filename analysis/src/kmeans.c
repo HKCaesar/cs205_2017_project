@@ -95,18 +95,18 @@ void clusterCenter (double *x, double *c,  int *assign,  int N,  int K,  int D, 
 //    
 //}
 
-void kMeans (double *x, double *c,  int *assign,  int N,  int K,  int D, double cC)
+extern void kMeans (double *x, double *c,  int *assign,  int N,  int K,  int D)
 { //runs the k means algorithm
     int conv = 0;
     int count[K];
     
     while(!conv)
     {
-    
+        printf("%d", conv);
         clusterCenter(x, c, assign, N, K, D, count);
         selectCluster(x, c, assign, N, K, D, &conv);
         
     }
+    printf("Converged!\n\n");
     
-    cC = (*c);
 }

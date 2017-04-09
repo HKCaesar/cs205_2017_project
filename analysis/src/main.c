@@ -28,7 +28,8 @@ int main(){
     int *assign;
     int N = 100;
     int K = 3;
-    int D = 8;
+    int D = 6;
+    int count = 0;
     
     x = (double*) malloc(sizeof(double) * N * D);
     c = (double*) malloc(sizeof(double) * K * D);
@@ -36,11 +37,40 @@ int main(){
     
     srand ( time(NULL) );
     
-    for(int i = 0; i < (N*D); ++i) x[i] = sampleNormal() *10.0;
-//    for(int n =0; n < (N*D); n++) {
-//        printf("%f", x[n]);
-//        printf("\n");
-//    }
+    for(int i = 0; i < (D*K); ++i){
+        c[i] = count;
+        if(i % 6 ==0) count += 5;
+    }
+    count = 0;
+    
+    for(int n =0; n < N; ++n) {
+        if(n < 33) assign[n] = 0;
+        if(n >= 33 && n < 66) assign[n] = 1;
+        if(n >= 66) assign[n]=2;
+    }
+    
+    printf("true clusters: ");
+    for(int n =0; n < N; n++){
+        printf("%d", assign[n]);
+        printf(", ");
+    }
+    printf("\n");
+    
+    for(int i = 0; i < (N*D); ++i){
+        if(i % D == 0) count++;
+
+        x[i] = sampleNormal() + c[assign[count]*D];
+    }
+    
+    printf("data: ");
+    for(int n =0; n < (N*D); n++) {
+        printf("%f", x[n]);
+        printf(", ");
+    }
+    printf("\n");
+
+    printf("\n");
+
 
     for(int i = 0; i < (K*D); ++i) c[i] = 0;
     for(int i = 0; i < (N/K); ++i) for(int kk=0; kk < K; ++kk) assign[kk + i * K] = kk;
@@ -56,28 +86,34 @@ int main(){
 //        printf("%f", c[n]);
 //        printf("\n");
 //    }
-    for(int n = 0; n < N; n++){
-        for(int k = 0; k < K; k++){
-            printf("%f", sumSq(x, c, D,  N,  n,  k));
-            printf("\n");
-        }
+//    for(int n = 0; n < N; n++){
+//        for(int k = 0; k < K; k++){
+//            printf("%f", sumSq(x, c, D,  N,  n,  k));
+//            printf("\n");
+//        }
+//    }
+//    printf("\n");
+//    printf("\n");
+
+
+    kMeans (x, c, assign, N, K, D);
+    
+    printf("calculated clusters: ");
+    for(int n =0; n < (K*D); n++){
+        printf("%f", c[n]);
+        printf(", ");
     }
     printf("\n");
     printf("\n");
-
-
-//    kMeans (x, c, assign, N, K, D);
-    
-//    for(int n =0; n < (K*D); n++){
-//        printf("%f", c[n]);
-//        printf("\n");
-//    }
-//    
+//
 //    printf("\n");
 //    printf("\n");
 //    printf("\n");
 //
-//    for(int n =0; n < N; n++) printf("%d", assign[n]);
+    for(int n =0; n < N; n++){
+        printf("%d", assign[n]);
+        printf("\n");
+    }
 //
     free(x);
     free(c);
