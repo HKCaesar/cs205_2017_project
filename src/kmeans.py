@@ -66,8 +66,8 @@ shuffle(h_clusters,len(h_clusters))
 ######################################################
 
 # Allocate input on device ######### FIX THIS SECTION ######### 
-means = cuda.mem_alloc(np.zeros((K,D)))
-clusterloc = cuda.mem_alloc(np.zeros(K))
+#means = cuda.mem_alloc(np.zeros((K,D)))
+#clusterloc = cuda.mem_alloc(np.zeros(K))
 #c_gpu = cuda.mem_alloc(c.size * c.dtype.itemsize)
 
 # Copy from host to device
@@ -116,3 +116,40 @@ while not converged:
         if min_ind != W[n]:
             W[n] = min_ind
             converged=False
+ 
+######################################################
+### TEST ###
+######################################################
+
+newmeansf = mod.get_function("newmeans")
+a = numpy.array(8)
+b = numpy.array(2)
+c = numpy.array(0)
+a = a.astype(numpy.int32)
+b = b.astype(numpy.int32)
+c = c.astype(numpy.int32)
+a_gpu = cuda.mem_alloc(a.size * a.dtype.itemsize)
+b_gpu = cuda.mem_alloc(b.size * b.dtype.itemsize)
+c_gpu = cuda.mem_alloc(c.size * c.dtype.itemsize)
+cuda.memcpy_htod(a_gpu, a)
+cuda.memcpy_htod(b_gpu, b)
+cuda.memcpy_dtoh(c, c_gpu)
+print(c)
+
+reassignf = mod.get_function("reassign")
+a = numpy.array(9)
+b = numpy.array(3)
+c = numpy.array(0)
+a = a.astype(numpy.int32)
+b = b.astype(numpy.int32)
+c = c.astype(numpy.int32)
+a_gpu = cuda.mem_alloc(a.size * a.dtype.itemsize)
+b_gpu = cuda.mem_alloc(b.size * b.dtype.itemsize)
+c_gpu = cuda.mem_alloc(c.size * c.dtype.itemsize)
+cuda.memcpy_htod(a_gpu, a)
+cuda.memcpy_htod(b_gpu, b)
+cuda.memcpy_dtoh(c, c_gpu)
+print(c)
+
+print(h_data)
+print(h_clusters)
