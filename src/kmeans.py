@@ -82,11 +82,6 @@ for i in range(len(h_clusters)-2,-1,-1):
 h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
 h_distortion = 0
 
-print(h_means)
-print(h_clusters)
-print(h_distortion)
-print(h_clustern)
-
 ######################################################
 ### ALLOCATE INPUT & COPY DATA TO DEVICE (GPU) ####
 ######################################################
@@ -109,6 +104,11 @@ cuda.memcpy_htod(d_K,K)
 d_means = cuda.mem_alloc(h_means.nbytes)
 d_clustern = cuda.mem_alloc(np.empty(K,dtype=np.int8).nbytes)
 d_distortion = cuda.mem_alloc(4)
+
+print(h_means)
+print(h_clusters)
+print(h_distortion)
+print(h_clustern)
 
 ######################################################
 ### RUN K-MEANS ############# FIX THIS SECTION ######### 
