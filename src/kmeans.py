@@ -27,6 +27,7 @@ mod1 = SourceModule("""
 __global__ void newmeans(double *d_data, double *d_clusters, double *d_means, double *d_clustern) {
   int k = blockIdx.x;
   int d = blockIdx.y;
+  d_means[k,d]=1;
 }""")
 
 mod2 = SourceModule("""
