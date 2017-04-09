@@ -6,18 +6,23 @@ import pandas as pd
 import numpy as np
 
 ######################################################
+### INFO ####
+######################################################
+
+# Variable*:   Meaning:		          Dim:	  Previous name:
+# data        reviewer data 		    (NxD)	  X
+# clusters	  cluster assignments   (Nx1)	  W
+# means		    means 			          (KxD)	  A
+# clustern	  number of clusters 	  (1xK)	  M
+
+# *h_ and d_ prefixes in variable names indicate host vs. device copies
+
+######################################################
 ### CONFIGURE ####
 ######################################################
 
 data_fn = "../data/reviewer-data.csv"
-
 K=3
-
-# h_ and d_ indicate if varialbe is on the host or device
-# data: reviewer data (NxD) -- previously X
-# clusters: cluster assignments for each reviewer (Nx1) -- previously W
-# means: means for each cluster and dimension (KxD) -- previously A
-# clustern: location of each cluster (1xK) -- previously m
 
 ######################################################
 ### GPU KERNELS (in C) ####
@@ -63,7 +68,6 @@ for i in range(len(h_clusters)-2,-1,-1):
     
 # create empty arrays for means, 
 h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
-#h_clustern = np.ascontiguousarray(np.empty(K,dtype=np.int8, order='C'))
 h_distortion = np.ascontiguousarray(np.empty(1,dtype=np.float64, order='C'))
 
 print(h_clusters)
@@ -95,7 +99,7 @@ while not converged:
     converged = True
     
     #compute means
-    kernel1 = mod1.get_function("newmeans")
+    kernel1 = mod.get_function("newmeans")
     kernel1(d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1))
     
     for k in range(K):
@@ -113,7 +117,7 @@ while not converged:
             d_means[k,d] = d_means[k,d]/d_clustern[k]
             
     #assign to closest mean
-    kernel2 = mod2.get_function("reassign")
+    kernel2 = mod.get_function("reassign")
     kernel2(d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), grid=(1,1,1))
     
     for n in range(N):
@@ -141,7 +145,7 @@ while not converged:
 kernel1 = mod.get_function("newmeans")
 kernel1(d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1))
 
-kernel2 = mod2.get_function("reassign")
+kernel2 = mod.get_function("reassign")
 kernel2(d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), grid=(1,1,1))
 
 ######################################################
