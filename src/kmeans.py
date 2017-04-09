@@ -23,11 +23,18 @@ K=3
 ### GPU KERNELS (in C) ####
 ######################################################
 
-mod1 = SourceModule("""
+mod = SourceModule("""
+
 __global__ void newmeans(double *d_data, double *d_clusters, double *d_means, double *d_clustern) {
   int k = blockIdx.x;
   int d = blockIdx.y;
-  d_means[k,d]=1;
+  d_means[1,1]=1;
+
+__global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_clustern, double *d_distortion) {
+  int n = blockIdx.x;
+  d_clusters[n] = n;
+  d_distortion[0] = 5;
+
 }""")
 
 mod2 = SourceModule("""
@@ -135,7 +142,7 @@ while not converged:
 ### COPY DEVICE DATA BACK TO HOST ####
 ######################################################
 
-kernel1 = mod1.get_function("newmeans")
+kernel1 = mod.get_function("newmeans")
 kernel1(d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1))
 
 kernel2 = mod2.get_function("reassign")
