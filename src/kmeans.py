@@ -94,15 +94,15 @@ cuda.memcpy_htod(d_data,h_data)
 cuda.memcpy_htod(d_clusters,h_clusters)
 
 # Allocate & copy N, D, and K variables from host to device
-N = np.array(N).astype(np.int32)
-D = np.array(D).astype(np.int32)
-K = np.array(K).astype(np.int32)
+#N = np.array(N).astype(np.int32)
+#D = np.array(D).astype(np.int32)
+#K = np.array(K).astype(np.int32)
 d_N = cuda.mem_alloc(32)
 d_D = cuda.mem_alloc(32)
 d_K = cuda.mem_alloc(32)
-cuda.memcpy_htod(d_N,N)
-cuda.memcpy_htod(d_D,D)
-cuda.memcpy_htod(d_K,K)
+cuda.memcpy_htod(d_N,np.array(N).astype(np.int32))
+cuda.memcpy_htod(d_D,np.array(D).astype(np.int32))
+cuda.memcpy_htod(d_K,np.array(K).astype(np.int32))
 
 # Allocate means and clustern variables on device
 d_means = cuda.mem_alloc(h_means.nbytes)
@@ -112,7 +112,6 @@ d_distortion = cuda.mem_alloc(4)
 print(h_means)
 print(h_clusters)
 print(h_distortion)
-print(h_clustern)
 
 ######################################################
 ### RUN K-MEANS ############# FIX THIS SECTION ######### 
@@ -180,11 +179,9 @@ kernel1(d_N, d_D, d_K, d_data, d_clusters, d_means, d_clustern, block=(K,D,1), g
 cuda.memcpy_dtoh(h_means, d_means)
 cuda.memcpy_dtoh(h_clusters, d_clusters)
 cuda.memcpy_dtoh(h_distortion, d_distortion)
-cuda.memcpy_dtoh(h_clustern, d_clustern)
 
 print('-----')
 print(h_means)
 print(h_clusters)
 print(h_distortion)
-print(h_clustern)
 print("done")
