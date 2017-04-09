@@ -28,23 +28,17 @@ mod = SourceModule("""
 __global__ void newmeans(double *d_data, double *d_clusters, double *d_means, double *d_clustern) {
   int k = blockIdx.x;
   int d = blockIdx.y;
-  d_means[1,1]=1;
+  d_means[1,1]=k;
+  d_means[2,2]=d;
   }
 
 __global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_clustern, double *d_distortion) {
   int n = blockIdx.x;
-  d_clusters[n] = n;
-  d_distortion[0] = 5;
+  d_clusters[n] = 1;
+  d_distortion[0] = n;
   }
   
 """)
-
-mod2 = SourceModule("""
-__global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_clustern, double *d_distortion) {
-  int n = blockIdx.x;
-  d_clusters[n] = n;
-  d_distortion[0] = 5;
-}""")
 
 ######################################################
 ### DEFINE VARIALBES ON HOST (CPU) ####
@@ -150,13 +144,13 @@ kernel1(d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1))
 kernel2 = mod2.get_function("reassign")
 kernel2(d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), grid=(1,1,1))
 
-cuda.memcpy_dtoh(h_clusters, d_clusters)
 cuda.memcpy_dtoh(h_means, d_means)
+cuda.memcpy_dtoh(h_clusters, d_clusters)
 cuda.memcpy_dtoh(h_distortion, d_distortion)
 
 print('-----')
-print(h_clusters)
 print(h_means)
+print(h_clusters)
 print(h_distortion)
 
 print("done")
