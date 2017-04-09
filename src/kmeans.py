@@ -30,15 +30,16 @@ K = 3
 
 mod = SourceModule("""
 
-__global__ void newmeans(int *N, int *D, int K, double *data, int clusters, double *means, int clustern) {
+__global__ void newmeans(int *N, int *D, int *K, double *data, int *clusters, double *means, int *clustern) {
   
   // find the n per cluster with just one lucky thread
+  printf("%d", clusters[0]);
   if (threadIdx.x==0 & threadIdx.y==0)
   {
     int l_clustern[3];
     //l_clustern = (int*)malloc(sizeof(int) * (*K));
     for(int k=0; k < K; ++k) l_clustern[k] = 0;
-    for (int n=0; n < N; ++n) l_clustern[clusters[n]]++;
+    //for (int n=0; n < N; ++n) l_clustern[clusters[n]]++;
     for(int k =0; k < K; ++k) clustern[k] = l_clustern[k];
    }
    __syncthreads();
@@ -67,7 +68,7 @@ h_data = np.ascontiguousarray(h_data, dtype=np.float32)
 N,D=h_data.shape
 
 # assign random clusters & shuffle 
-h_clusters = np.ascontiguousarray(np.zeros(N,dtype=np.int8, order='C'))
+h_clusters = np.ascontiguousarray(np.zeros(N,dtype=np.intc, order='C'))
 for n in range(N):
     h_clusters[n] = n%K
 for i in range(len(h_clusters)-2,-1,-1):
