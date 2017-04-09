@@ -31,7 +31,7 @@ __global__ void newmeans(double *d_data, double *d_clusters, double *d_means, do
 }""")
 
 mod2 = SourceModule("""
-__global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_clustern) {
+__global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_clustern, double *d_distortion) {
   int n = blockIdx.x;
 }""")
 
@@ -42,7 +42,7 @@ __global__ void reassign(double *d_data, double *d_clusters, double *d_means, do
 # import data file and subset data for k-means
 reviewdata = pd.read_csv(data_fn)
 acts = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
-h_data = reviewdata[acts][:1000].values
+h_data = reviewdata[acts][:100].values
 h_data = np.ascontiguousarray(h_data, dtype=np.float32)
 N,D=h_data.shape
 
@@ -55,6 +55,11 @@ for i in range(len(h_clusters)-2,-1,-1):
     temp = h_clusters[j]
     h_clusters[j] = h_clusters[i]
     h_clusters[i] = temp
+    
+# create empty arrays for means
+#h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
+
+
 
 ######################################################
 ### ALLOCATE INPUT & COPY DATA TO DEVICE (GPU) ####
@@ -67,8 +72,9 @@ cuda.memcpy_htod(d_data,h_data)
 cuda.memcpy_htod(d_clusters,h_clusters)
 
 # Allocate means and clustern variables on device
-d_means = cuda.mem_alloc(np.zeros((K,D),dtype=np.float64).nbytes)
-d_clustern = cuda.mem_alloc(np.zeros(K,dtype=np.int8).nbytes)
+d_means = cuda.mem_alloc(np.empty((K,D),dtype=np.float64).nbytes)
+d_clustern = cuda.mem_alloc(np.empty(K,dtype=np.int8).nbytes)
+d_distortion = cuda.mem_all(np.empty(1,dtype=np.float64).nbytes)
 
 ######################################################
 ### RUN K-MEANS ############# FIX THIS SECTION ######### 
@@ -81,7 +87,7 @@ while not converged:
     
     #compute means
     kernel1 = mod1.get_function("newmeans")
-    #kernel1(d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1))
+    kernel1(d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1))
     
     for k in range(K):
         for d in range(D):
@@ -99,7 +105,7 @@ while not converged:
             
     #assign to closest mean
     kernel2 = mod2.get_function("reassign")
-    #kernel2d_data, d_clusters, d_means, d_clustern, block=(N,1,1), grid=(1,1,1))
+    kernel2d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), grid=(1,1,1))
     
     for n in range(N):
         
@@ -118,41 +124,12 @@ while not converged:
         if min_ind != d_clusters[n]:
             d_clusters[n] = min_ind
             converged=False
- 
+            
 ######################################################
-### TEST ###
+### COPY DEVICE DATA BACK TO HOST ####
 ######################################################
 
 kernel1 = mod1.get_function("newmeans")
-a = np.array(8)
-b = np.array(2)
-c = np.array(0)
-a = a.astype(np.int32)
-b = b.astype(np.int32)
-c = c.astype(np.int32)
-a_gpu = cuda.mem_alloc(a.size * a.dtype.itemsize)
-b_gpu = cuda.mem_alloc(b.size * b.dtype.itemsize)
-c_gpu = cuda.mem_alloc(c.size * c.dtype.itemsize)
-cuda.memcpy_htod(a_gpu, a)
-cuda.memcpy_htod(b_gpu, b)
-kernel1(a_gpu, b_gpu, c_gpu, block=(1,1,1))
-cuda.memcpy_dtoh(c, c_gpu)
-print(c)
+kernel1(d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1))
 
-kernel2 = mod2.get_function("reassign")
-a = np.array(9)
-b = np.array(3)
-c = np.array(0)
-a = a.astype(np.int32)
-b = b.astype(np.int32)
-c = c.astype(np.int32)
-a_gpu = cuda.mem_alloc(a.size * a.dtype.itemsize)
-b_gpu = cuda.mem_alloc(b.size * b.dtype.itemsize)
-c_gpu = cuda.mem_alloc(c.size * c.dtype.itemsize)
-cuda.memcpy_htod(a_gpu, a)
-cuda.memcpy_htod(b_gpu, b)
-kernel2(a_gpu, b_gpu, c_gpu, block=(1,1,1))
-cuda.memcpy_dtoh(c, c_gpu)
-print(c)
-
-print("done")
+cuda.memcpy_dtoh(h_clusters, d_clusters)
