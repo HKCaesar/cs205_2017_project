@@ -151,5 +151,4 @@ cuda.memcpy_htod(b_gpu, b)
 cuda.memcpy_dtoh(c, c_gpu)
 print(c)
 
-print(h_data)
-print(h_clusters)
+print("done")
