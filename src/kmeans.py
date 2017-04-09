@@ -44,10 +44,12 @@ __global__ void reassign(int *a, int *b, int *c)  {
 reviewdata = pd.read_csv(data_fn)
 acts = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
 h_data = reviewdata[acts][:1000].values
+np.ascontiguousarray(h_data, dtype=np.float64)
 
 # assign random clusters
 N,D=h_data.shape
 h_clusters = np.zeros(N,dtype=np.int)
+np.ascontiguousarray(h_clusters, dtype=np.float64)
 
 for n in range(N):
     h_clusters[n] = n%K
