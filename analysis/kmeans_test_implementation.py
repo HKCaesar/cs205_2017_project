@@ -7,8 +7,9 @@ import matplotlib
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from scipy.stats import gaussian_kde
+from kM import kmeansCPY as kM
 
-%matplotlib inline
+#matplotlib inline
 
 
 mpl.rc("savefig", dpi=100)
@@ -19,13 +20,13 @@ greys = sns.color_palette("Greys", 10)
 
 data = pd.read_csv('../data/yeast.csv', header=None).values
 #k-means witk sklearn
-kmeans = KMeans(n_clusters=3,n_init=100,algorithm='full')
+kmeans = KMeans(n_clusters=3,n_init=100)#,algorithm='full')
 kmeans.fit(data)
 
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 
-pca = PCA(n_components=2, svd_solver='full')
+pca = PCA(n_components=2)#, svd_solver='full')
 pca.fit(data)
 
 pcs   = pca.transform(data)
@@ -52,14 +53,15 @@ K=3
 N,D=data.shape
 
 A = np.zeros((K,D))
-W = np.zeros(N,dtype=np.int)
+W = np.zeros(N,dtype=np.intc)
 X = data
 m = np.zeros(K)
 
 #randomization where we make sure there are points in every cluster
 for n in range(N):
     W[n] = n%K
-    
+
+
 def shuffle(x,n):
     for i in range(n-2,-1,-1): #from n-2 to 0
         j= np.random.randint(0,i+1) #from 0<=j<=i
@@ -67,7 +69,11 @@ def shuffle(x,n):
         x[j] = x[i]
         x[i] = temp
 
+
 shuffle(W,len(W))
+
+
+
 
 converged = False
 
@@ -108,7 +114,7 @@ while not converged:
             W[n] = min_ind
             converged=False
 
-pca = PCA(n_components=2, svd_solver='full')
+pca = PCA(n_components=2)#, svd_solver='full')
 pca.fit(data)
 
 pcs   = pca.transform(data)
@@ -133,4 +139,51 @@ phi=0
 for n in range(N):
     for d in range(D):
         phi += (X[n,d]-A[W[n],d])**2
+
+
 print(phi)
+
+c = np.zeros((K,D))
+x = data
+WW = np.zeros(N,dtype=np.intc)
+
+def shuffle(x,n):
+    for i in range(n-2,-1,-1): #from n-2 to 0
+        j= np.random.randint(0,i+1) #from 0<=j<=i
+        temp = x[j]
+        x[j] = x[i]
+        x[i] = temp
+
+
+shuffle(WW,len(WW))
+
+
+c = c.copy(order='C')
+WW = WW.copy(order='C')
+x = x.copy(order='C')
+
+
+X = X.copy(order='C')
+A = A.copy(order='C')
+
+kM.SS(X, A)
+
+kM.kM(x, c, WW)
+
+print("Stock K-mean equal to Eric's clusters?  ", end=" ")
+print(np.array_equal(kmeans.cluster_centers_,c))
+print(c)
+print(kmeans.cluster_centers_)
+
+print("Stock K-mean equal to Kareem's clusters?  ", end=" ")
+print(np.array_equal(kmeans.cluster_centers_,A))
+print(A)
+print(kmeans.cluster_centers_)
+
+print("Did Kareem's slow code do at least as well as Eric's?  ", end=" ")
+print(np.array_equal(W, WW))
+
+print("Kareem v. Eric Clusters", end=" ")
+print(np.array_equal(c,A))
+
+exit()

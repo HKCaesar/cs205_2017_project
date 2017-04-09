@@ -96,22 +96,21 @@ except __builtin__.Exception:
     _newclass = 0
 
 
-def sumSq(x, c, ss, D, N, K, n, k):
-    return _simple.sumSq(x, c, ss, D, N, K, n, k)
+def sumSq(x, c, N, D, n, k):
+    return _simple.sumSq(x, c, N, D, n, k)
 sumSq = _simple.sumSq
 
-def selectCluster(x, c, assign, N, D, K, conv, dist):
-    return _simple.selectCluster(x, c, assign, N, D, K, conv, dist)
+def selectCluster(x, c, assign, K, D, conv):
+    return _simple.selectCluster(x, c, assign, K, D, conv)
 selectCluster = _simple.selectCluster
 
-def clusterCenter(x, c, assign, N, K, D, count):
-    return _simple.clusterCenter(x, c, assign, N, K, D, count)
+def clusterCenter(x, c, assign, K, D, count):
+    return _simple.clusterCenter(x, c, assign, K, D, count)
 clusterCenter = _simple.clusterCenter
 
-def kMeans(x, c, assign, N, K, D):
-    return _simple.kMeans(x, c, assign, N, K, D)
+def kMeans(x, c, assign, K, D, cC):
+    return _simple.kMeans(x, c, assign, K, D, cC)
 kMeans = _simple.kMeans
 # This file is compatible with both classic and new-style classes.
 
-cvar = _simple.cvar
 

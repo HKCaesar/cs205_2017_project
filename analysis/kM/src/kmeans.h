@@ -10,14 +10,13 @@
 #define kmeans_h
 
 #include <stdio.h>
-#include <math.h>
 #include <stdlib.h>
 
-extern void sumSq (double *x, double *c, double *ss,  int D,  int N, int n,  int k);
-extern void selectCluster (double *x, double *c,  int *assign,  int N,  int D,  int K,  int *conv, double *dist);
-extern void clusterCenter (double *x, double *c,  int *assign,  int N,  int K,  int D,  int *count);
-//extern void allTrue ( int *same,  int *conv,  int N);
-extern void kMeans (double *x, double *c,  int *assign,  int N,  int K,  int D);
+double sumSq (double *x, double *c, int N, int D,  int n,  int k);
+void selectCluster (double *x, double *c,  int *assign,  int N,  int K,  int D,  int * conv);
+void clusterCenter (double *x, double *c,  int *assign,  int N,  int K,  int D,  int * count);
+//void allTrue ( int *same,  int *conv,  int N);
+void kMeans (double *x, double *c,  int *assign,  int N,  int K,  int D, double cC);
 
 
 #endif /* kmeans_h */

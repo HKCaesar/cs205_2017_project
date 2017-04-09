@@ -9,36 +9,37 @@
 #include "kmeans.h"
 
 
-extern void sumSq (double *x, double *c, double *ss,  int D,  int N,  int n,  int k)
+double sumSq (double *x, double *c, int N,  int D,  int n,  int k)
 { //calculates the squared distance
     
-    double sum = 0;
+    double ss = 0;
     
-    for(size_t d = 0; d < D; ++d)
+    for(int d = 0; d < D; ++d)
     {
-        sum += (x[d + D * n] - c[d + k * D]) * (x[d + D * n] - c[d + k * D]);
+        ss += (x[d + D * n] - c[d + k * D]) * (x[d + D * n] - c[d + k * D]);
     }
-    (*ss) = sum;
+    return ss;
 }
 
-extern void selectCluster (double *x, double *c,  int *assign,  int N,  int D,  int K,  int *conv, double *dist)
+void selectCluster (double *x, double *c,  int *assign,  int N,  int K,  int D,  int * conv)
 {//selects the cluster and calculates the distance (we may want to separate these actions)
     double min;
-     int min_idx;
-     int convCheck = 1;
+    int min_idx;
+    int convCheck = 1;
+    double dist;
 
     
-    for (size_t n = 0; n < N; ++n)
+    for (int n = 0; n < N; ++n)
     {
-        min = INFINITY;
+        min = 1.0/0.0;
         min_idx = -1;
         
-        for (size_t k = 0; k < K; ++k)
+        for (int k = 0; k < K; ++k)
         {
-            sumSq (x, c, dist, D, N, n, k);
-            if (min > (*dist))
+            dist = sumSq (x, c, N, D, n, k);
+            if (min > dist)
             {
-                min = (*dist);
+                min = dist;
                 min_idx = k;
             }
         }
@@ -53,36 +54,39 @@ extern void selectCluster (double *x, double *c,  int *assign,  int N,  int D,  
     }
 }
 
-extern void clusterCenter (double *x, double *c,  int *assign,  int N,  int K,  int D,  int *count)
+void clusterCenter (double *x, double *c,  int *assign,  int N,  int K,  int D,  int *count)
 {//calculates the center of the cluster
     
     
-    for (size_t k = 0; k < K; k++)
+    for (int k = 0; k < K; ++k)
     {
-        for(size_t d = 0; d < D; ++d) c[k * D + d];
+        for(int d = 0; d < D; ++d){
+            c[k * D + d] = 0;
+        }
         count[k] = 0;
     }
-    
-    for (size_t n = 0; n < N; ++n)
+    for (int n = 0; n < N; ++n)
     {
-        for (size_t d = 0; d < D; ++d)
+        for (int d = 0; d < D; ++d)
         {
             c[assign[n] * D + d] += x[n * D +  d];
-            count[assign[n]]++;
         }
-        
+        count[assign[n]]++;
+
     }
-    
-    for(size_t k = 0; k < K; ++k){
-        for (size_t d = 0; d < D; ++d) {
+
+    for(int k = 0; k < K; k++)
+    {
+        for (int d = 0; d < D; ++d)
+        {
             c[k * D + d] /= count[k];
         }
     }
 }
 
-//extern void allTrue ( int *same,  int *conv,  int N)
+//void allTrue ( int *same,  int *conv,  int N)
 //{ //not needed at the moment
-//    size_t n = 0;
+//    int n = 0;
 //    
 //    while(n < N && conv) {
 //        (*conv) = (same[n] ?  1 : 0);
@@ -91,24 +95,18 @@ extern void clusterCenter (double *x, double *c,  int *assign,  int N,  int K,  
 //    
 //}
 
-extern void kMeans (double *x, double *c,  int *assign,  int N,  int K,  int D)
+void kMeans (double *x, double *c,  int *assign,  int N,  int K,  int D, double cC)
 { //runs the k means algorithm
-    int *conv = ( int*) malloc(sizeof( int));
-    int *count = ( int*) malloc(sizeof( int) * K);
-    double *dist = (double*) malloc(sizeof(double));
-
-    (*conv) = 0;
+    int conv = 0;
+    int count[K];
     
-    while(!(*conv))
+    while(!conv)
     {
-        
-        clusterCenter(x, c, assign, N, D, K, count);
-        selectCluster(x, c, assign, N, D, K, conv, dist);
+    
+        clusterCenter(x, c, assign, N, K, D, count);
+        selectCluster(x, c, assign, N, K, D, &conv);
         
     }
     
-    free(count);
-    free(conv);
-    free(dist);
-
+    cC = (*c);
 }
