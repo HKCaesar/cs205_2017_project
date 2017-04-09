@@ -89,17 +89,17 @@ while not converged:
     #compute means
     for k in range(K):
         for d in range(D):
-            A[k,d] = 0
+            means[k,d] = 0
         clustern[k]=0
             
     for n in range(N):
         for d in range(D):
-            A[W[n],d]+=X[n,d]
+            means[d_clusters[n],d]+=d_data[n,d]
         clustern[ W[n] ] +=1
     
     for k in range(K):
         for d in range(D):
-            A[k,d] = A[k,d]/m[k]
+            means[k,d] = means[k,d]/clustern[k]
             
     #assign to closest mean
     for n in range(N):
@@ -110,7 +110,7 @@ while not converged:
         for k in range(K):
             temp =0
             for d in range(D):
-                temp += (X[n,d]-A[k,d])**2
+                temp += (d_data[n,d]-means[k,d])**2
             
             if temp < min_val:
                 min_val = temp
@@ -124,7 +124,7 @@ while not converged:
 ### TEST ###
 ######################################################
 
-newmeansf = mod.get_function("newmeans")
+func = mod.get_function("newmeans")
 a = numpy.array(8)
 b = numpy.array(2)
 c = numpy.array(0)
@@ -136,10 +136,11 @@ b_gpu = cuda.mem_alloc(b.size * b.dtype.itemsize)
 c_gpu = cuda.mem_alloc(c.size * c.dtype.itemsize)
 cuda.memcpy_htod(a_gpu, a)
 cuda.memcpy_htod(b_gpu, b)
+func(a_gpu, b_gpu, c_gpu, block=(1,1,1))
 cuda.memcpy_dtoh(c, c_gpu)
 print(c)
 
-reassignf = mod.get_function("reassign")
+func = mod.get_function("reassign")
 a = numpy.array(9)
 b = numpy.array(3)
 c = numpy.array(0)
@@ -151,6 +152,7 @@ b_gpu = cuda.mem_alloc(b.size * b.dtype.itemsize)
 c_gpu = cuda.mem_alloc(c.size * c.dtype.itemsize)
 cuda.memcpy_htod(a_gpu, a)
 cuda.memcpy_htod(b_gpu, b)
+func(a_gpu, b_gpu, c_gpu, block=(1,1,1))
 cuda.memcpy_dtoh(c, c_gpu)
 print(c)
 
