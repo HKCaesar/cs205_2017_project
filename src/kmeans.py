@@ -35,7 +35,6 @@ __global__ void newmeans(int N, int D, int K, double *data, int *clusters, doubl
   // find the n per cluster with just one lucky thread
   if (threadIdx.x==0 & threadIdx.y==0)
   {
-    int tempK = K;
     int l_clustern[tempK];
     //l_clustern = (int*)malloc(sizeof(int) * (*K));
     for(int k=0; k < (K); ++k) l_clustern[k] = 0;
@@ -100,7 +99,7 @@ d_D = cuda.mem_alloc(4)
 d_K = cuda.mem_alloc(4)
 cuda.memcpy_htod(d_N,np.array(N).astype(np.int32))
 cuda.memcpy_htod(d_D,np.array(D).astype(np.int32))
-cuda.memcpy_htod(d_K,np.array(K).astype(np.int32))
+cuda.memcpy_htod(d_K,K)
 
 # Allocate means and clustern variables on device
 d_means = cuda.mem_alloc(h_means.nbytes)
