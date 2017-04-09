@@ -47,7 +47,7 @@ h_data = reviewdata[acts][:1000].values
 
 # assign random clusters
 N,D=h_data.shape
-h_data = np.zeros(N,dtype=np.int)
+h_clusters = np.zeros(N,dtype=np.int)
 
 for n in range(N):
     h_clusters[n] = n%K
