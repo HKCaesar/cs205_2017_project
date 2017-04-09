@@ -91,15 +91,12 @@ cuda.memcpy_htod(d_data,h_data)
 cuda.memcpy_htod(d_clusters,h_clusters)
 
 # Allocate & copy N, D, and K variables from host to device
-#N = np.array(N).astype(np.int32)
-#D = np.array(D).astype(np.int32)
-#K = np.array(K).astype(np.int32)
 d_N = cuda.mem_alloc(4)
 d_D = cuda.mem_alloc(4)
 d_K = cuda.mem_alloc(4)
-cuda.memcpy_htod(d_N,np.array(N).astype(np.int32))
-cuda.memcpy_htod(d_D,np.array(D).astype(np.int32))
-cuda.memcpy_htod(d_K,K)
+cuda.memcpy_htod(d_N,np.int32(N))
+cuda.memcpy_htod(d_D,np.int32(D))
+cuda.memcpy_htod(d_K,np.int32(K))
 
 # Allocate means and clustern variables on device
 d_means = cuda.mem_alloc(h_means.nbytes)
