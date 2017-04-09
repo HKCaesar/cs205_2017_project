@@ -48,8 +48,7 @@ h_data = np.ascontiguousarray(h_data, dtype=np.float64)
 
 # assign random clusters
 N,D=h_data.shape
-h_clusters = np.zeros(N,dtype=np.int)
-h_clusters = np.ascontiguousarray(h_clusters, dtype=np.float64)
+h_clusters = np.ascontiguousarray(np.zeros(N,dtype=np.float64, order='C'))
 
 for n in range(N):
     h_clusters[n] = n%K
@@ -69,14 +68,13 @@ shuffle(h_clusters,len(h_clusters))
 
 # Allocate & copy data and cluster assignments from host to device
 d_data = cuda.mem_alloc(h_data.nbytes)
-cuda.memcpy_htod(d_data,h_data)
-
 d_clusters = cuda.mem_alloc(h_clusters.nbytes)
+cuda.memcpy_htod(d_data,h_data)
 cuda.memcpy_htod(d_clusters,h_clusters)
 
-#d_means = cuda.mem_alloc(np.zeros((K,D)))
-
-#d_clustern = cuda.mem_alloc(np.zeros(K))
+# Allocate means and clustern variables on device
+d_means = cuda.mem_alloc(np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C')).nbytes)
+d_clustern = cuda.mem_alloc(np.ascontiguousarray(np.zeros(K,dtype=np.float64, order='C')).nbytes)
 
 ######################################################
 ### RUN K-MEANS ############# FIX THIS SECTION ######### 
@@ -129,12 +127,12 @@ while not converged:
 ######################################################
 
 kernel1 = mod1.get_function("newmeans")
-a = numpy.array(8)
-b = numpy.array(2)
-c = numpy.array(0)
-a = a.astype(numpy.int32)
-b = b.astype(numpy.int32)
-c = c.astype(numpy.int32)
+a = np.array(8)
+b = np.array(2)
+c = np.array(0)
+a = a.astype(np.int32)
+b = b.astype(np.int32)
+c = c.astype(np.int32)
 a_gpu = cuda.mem_alloc(a.size * a.dtype.itemsize)
 b_gpu = cuda.mem_alloc(b.size * b.dtype.itemsize)
 c_gpu = cuda.mem_alloc(c.size * c.dtype.itemsize)
@@ -145,12 +143,12 @@ cuda.memcpy_dtoh(c, c_gpu)
 print(c)
 
 kernel2 = mod2.get_function("reassign")
-a = numpy.array(9)
-b = numpy.array(3)
-c = numpy.array(0)
-a = a.astype(numpy.int32)
-b = b.astype(numpy.int32)
-c = c.astype(numpy.int32)
+a = np.array(9)
+b = np.array(3)
+c = np.array(0)
+a = a.astype(np.int32)
+b = b.astype(np.int32)
+c = c.astype(np.int32)
 a_gpu = cuda.mem_alloc(a.size * a.dtype.itemsize)
 b_gpu = cuda.mem_alloc(b.size * b.dtype.itemsize)
 c_gpu = cuda.mem_alloc(c.size * c.dtype.itemsize)
