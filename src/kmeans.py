@@ -9,11 +9,11 @@ import numpy as np
 ### INFO ####
 ######################################################
 
-# Variable*:      Meaning:		            Dim:      Previous name:
-# data            reviewer data     (NxD)     X
-# clusters        cluster assignments     (Nx1)      W
-# means           means     (KxD)      A
-# clustern        number of clusters      (1xK)     M
+# Variable*:      Meaning:		            Dim:        Previous name:
+# data            reviewer data           (NxD)       X
+# clusters        cluster assignments     (Nx1)       W
+# means           means                   (KxD)       A
+# clustern        number of clusters      (1xK)       M
 
 # *h_ and d_ prefixes in variable names indicate host vs. device copies
 
