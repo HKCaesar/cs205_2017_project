@@ -17,7 +17,7 @@ K=3
 # data: reviewer data (NxD) -- previously X
 # clusters: cluster assignments for each reviewer (Nx1) -- previously W
 # means: means for each cluster and dimension (KxD) -- previously A
-# clusterloc: location of each cluster (1xK) -- previously m
+# clustern: location of each cluster (1xK) -- previously m
 
 ######################################################
 ### GPU KERNELS (in C) ####
@@ -57,8 +57,6 @@ for i in range(len(h_clusters)-2,-1,-1):
     
 # create empty arrays for means
 #h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
-
-
 
 ######################################################
 ### ALLOCATE INPUT & COPY DATA TO DEVICE (GPU) ####
