@@ -22,7 +22,8 @@ import numpy as np
 ######################################################
 
 data_fn = "../data/reviewer-data.csv"
-K=3
+
+K = 3
 
 ######################################################
 ### GPU KERNELS (in C) ####
@@ -92,7 +93,10 @@ d_clusters = cuda.mem_alloc(h_clusters.nbytes)
 cuda.memcpy_htod(d_data,h_data)
 cuda.memcpy_htod(d_clusters,h_clusters)
 
-# Allocate & copy N and D variables from host to device
+# Allocate & copy N, D, and K variables from host to device
+N = np.array(N).astype(np.int32)
+D = np.array(D).astype(np.int32)
+K = np.array(K).astype(np.int32)
 d_N = cuda.mem_alloc(32)
 d_D = cuda.mem_alloc(32)
 d_K = cuda.mem_alloc(32)
