@@ -30,9 +30,22 @@ K=3
 
 mod = SourceModule("""
 
-__global__ void newmeans(double *d_data, double *d_clusters, double *d_means, double *d_clustern) {
-  int k = blockIdx.x;
-  int d = blockIdx.y;
+__global__ void newmeans(int N, int K, double *data, double *clusters, double *means, double *clustern) {
+  if (threadIdx.x==0 & threadIdx.y==0)
+  {
+    int l_clustern[K];
+    for(int k =0; k < K; ++k) l_clustern[k] = 0;
+    
+    for (int n = 0; n < N; ++n)
+    {
+      l_clustern[clusters[n]]++;
+    }
+    
+    for(int k =0; k < K; ++k) clustern[k] = l_clustern[k];
+   }
+   
+   __syncthreads();
+   
   }
 
 __global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_clustern, double *d_distortion) {
@@ -64,11 +77,12 @@ for i in range(len(h_clusters)-2,-1,-1):
     
 # create empty arrays for means, 
 h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
-h_distortion = np.ascontiguousarray(np.empty(1,dtype=np.float64, order='C'))
+h_distortion = 0
 
 print(h_means)
 print(h_clusters)
 print(h_distortion)
+print(h_clustern)
 
 ######################################################
 ### ALLOCATE INPUT & COPY DATA TO DEVICE (GPU) ####
@@ -80,10 +94,18 @@ d_clusters = cuda.mem_alloc(h_clusters.nbytes)
 cuda.memcpy_htod(d_data,h_data)
 cuda.memcpy_htod(d_clusters,h_clusters)
 
+# Allocate & copy N and D variables from host to device
+d_N = cuda.mem_alloc(4)
+d_D = cuda.mem_alloc(4)
+d_K = cuda.mem_alloc(4)
+cuda.memcpy_htod(d_N,N)
+cuda.memcpy_htod(d_D,D)
+cuda.memcpy_htod(d_K,K)
+
 # Allocate means and clustern variables on device
 d_means = cuda.mem_alloc(h_means.nbytes)
 d_clustern = cuda.mem_alloc(np.empty(K,dtype=np.int8).nbytes)
-d_distortion = cuda.mem_alloc(h_distortion.nbytes)
+d_distortion = cuda.mem_alloc(4)
 
 ######################################################
 ### RUN K-MEANS ############# FIX THIS SECTION ######### 
@@ -96,7 +118,7 @@ while not converged:
     
     #compute means
     kernel1 = mod.get_function("newmeans")
-    kernel1(d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1))
+    kernel1(d_K, d_D, d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1))
     
     for k in range(K):
         for d in range(D):
@@ -151,9 +173,11 @@ kernel2(d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), gr
 cuda.memcpy_dtoh(h_means, d_means)
 cuda.memcpy_dtoh(h_clusters, d_clusters)
 cuda.memcpy_dtoh(h_distortion, d_distortion)
+cuda.memcpy_dtoh(h_clustern, d_clustern)
 
 print('-----')
 print(h_means)
 print(h_clusters)
 print(h_distortion)
+print(h_clustern)
 print("done")
