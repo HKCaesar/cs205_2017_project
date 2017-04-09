@@ -41,7 +41,7 @@ __global__ void newmeans(int *N, int *D, int *K, double *data, int *clusters, do
     
     //for(int k=0; k < K; ++k) l_clustern[k] = 0;
     //for (int n=0; n < N; ++n) l_clustern[clusters[n]]++;
-    for(int k =0; k < K; ++k) clustern[k] = l_clustern[k];
+    for(int k =0; k < K; ++k) clustern[k] = (*l_clustern[k]);
    }
    __syncthreads();
    
