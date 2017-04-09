@@ -10,7 +10,6 @@ import numpy as np
 ######################################################
 
 data_fn = "../data/reviewer-data.csv"
-#data_fn = "../data/reviewer-data-sample.csv"
 
 K=3
 
