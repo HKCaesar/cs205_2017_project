@@ -133,4 +133,5 @@ kernel2 = mod2.get_function("reassign")
 kernel2(d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), grid=(1,1,1))
 
 cuda.memcpy_dtoh(h_clusters, d_clusters)
+cuda.memcpy_dtoh(h_means, d_means)
 print("done")
