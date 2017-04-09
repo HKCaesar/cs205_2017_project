@@ -33,8 +33,6 @@ mod = SourceModule("""
 __global__ void newmeans(int *N, int *D, int *K, double *data, int *clusters, double *means, int *clustern) {
   
   // find the n per cluster with just one lucky thread
-  printf("%d", (*K));
-  printf("\n");
   if (threadIdx.x==0 & threadIdx.y==0)
   {
     int l_clustern[3];
