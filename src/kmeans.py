@@ -73,8 +73,8 @@ cuda.memcpy_htod(d_data,h_data)
 cuda.memcpy_htod(d_clusters,h_clusters)
 
 # Allocate means and clustern variables on device
-d_means = cuda.mem_alloc(np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C')).nbytes)
-d_clustern = cuda.mem_alloc(np.ascontiguousarray(np.zeros(K,dtype=np.int8, order='C')).nbytes)
+d_means = cuda.mem_alloc(np.zeros((K,D),dtype=np.float64, order='C').nbytes)
+d_clustern = cuda.mem_alloc(np.zeros(K,dtype=np.int8, order='C').nbytes)
 
 ######################################################
 ### RUN K-MEANS ############# FIX THIS SECTION ######### 
