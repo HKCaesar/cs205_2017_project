@@ -36,9 +36,9 @@ __global__ void newmeans(int N, int K, double *data, int *clusters, double *mean
   if (threadIdx.x==0 & threadIdx.y==0)
   {
     int l_clustern[K];
-    for(int k=0; k < K; ++k) l_clustern[k] = 0;
+    //for(int k=0; k < K; ++k) l_clustern[k] = 0;
     //for (int n=0; n < N; ++n) l_clustern[clusters[n]]++;
-    for(int k =0; k < K; ++k) clustern[k] = l_clustern[k];
+    //for(int k =0; k < K; ++k) clustern[k] = l_clustern[k];
    }
    __syncthreads();
    
