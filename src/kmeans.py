@@ -57,7 +57,7 @@ for i in range(len(h_clusters)-2,-1,-1):
     
 # create empty arrays for means, 
 h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
-h_clustern = np.ascontiguousarray(np.empty(K,dtype=np.int8, order='C'))
+#h_clustern = np.ascontiguousarray(np.empty(K,dtype=np.int8, order='C'))
 h_distortion = np.ascontiguousarray(np.empty(1,dtype=np.float64, order='C'))
 
 ######################################################
@@ -136,4 +136,6 @@ kernel2(d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), gr
 
 cuda.memcpy_dtoh(h_clusters, d_clusters)
 cuda.memcpy_dtoh(h_means, d_means)
+cuda.memcpy_dtoh(h_distortion, d_distortion)
+
 print("done")
