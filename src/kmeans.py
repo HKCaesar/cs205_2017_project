@@ -135,7 +135,7 @@ while not converged:
             converged=False
             
 ######################################################
-### COPY DEVICE DATA BACK TO HOST ####
+### TEST ####
 ######################################################
 
 kernel1 = mod.get_function("newmeans")
@@ -143,6 +143,10 @@ kernel1(d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1))
 
 kernel2 = mod2.get_function("reassign")
 kernel2(d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), grid=(1,1,1))
+
+######################################################
+### COPY DEVICE DATA BACK TO HOST ####
+######################################################
 
 cuda.memcpy_dtoh(h_means, d_means)
 cuda.memcpy_dtoh(h_clusters, d_clusters)
@@ -152,5 +156,4 @@ print('-----')
 print(h_means)
 print(h_clusters)
 print(h_distortion)
-
 print("done")
