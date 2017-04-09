@@ -93,9 +93,9 @@ cuda.memcpy_htod(d_data,h_data)
 cuda.memcpy_htod(d_clusters,h_clusters)
 
 # Allocate & copy N and D variables from host to device
-d_N = cuda.mem_alloc(4)
-d_D = cuda.mem_alloc(4)
-d_K = cuda.mem_alloc(4)
+d_N = cuda.mem_alloc(32)
+d_D = cuda.mem_alloc(32)
+d_K = cuda.mem_alloc(32)
 cuda.memcpy_htod(d_N,N)
 cuda.memcpy_htod(d_D,D)
 cuda.memcpy_htod(d_K,K)
