@@ -65,14 +65,15 @@ shuffle(h_clusters,len(h_clusters))
 ### ALLOCATE INPUT & COPY DATA TO DEVICE (GPU) ####
 ######################################################
 
-# Allocate input on device ######### FIX THIS SECTION ######### 
-#means = cuda.mem_alloc(np.zeros((K,D)))
-#clusterloc = cuda.mem_alloc(np.zeros(K))
-#c_gpu = cuda.mem_alloc(c.size * c.dtype.itemsize)
-
-# Copy from host to device
+# Allocate & copy data and cluster assignments from host to device
+d_data = cuda.mem_alloc(h_data.size * h_data.dtype.itemsize)
+d_clusters = cuda.mem_alloc(h_clusters.size * h_clusters.dtype.itemsize)
 cuda.memcpy_htod(h_data, d_data)
 cuda.memcpy_htod(h_clusters, d_clusters)
+
+# FIX!
+#means = cuda.mem_alloc(np.zeros((K,D)))
+#clusterloc = cuda.mem_alloc(np.zeros(K))
 
 ######################################################
 ### RUN K-MEANS ############# FIX THIS SECTION ######### 
