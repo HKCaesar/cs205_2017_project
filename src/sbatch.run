@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH -J mpi4pycuda_hello
-#SBATCH -o mpi4pycuda_hello.out
-#SBATCH -e mpi4pycuda_hello.err
+#SBATCH -J kmeans
+#SBATCH -o kmeans.out
+#SBATCH -e keans.err
 #SBATCH -p gpu
 #SBATCH -n 1
 #SBATCH --gres=gpu:2
