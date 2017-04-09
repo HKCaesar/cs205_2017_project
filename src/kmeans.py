@@ -25,42 +25,36 @@ K=3
 ######################################################
 
 mod1 = SourceModule("""
-__global__ void newmeans(int *a, int *b, int *c)  {
-  int id = blockIdx.x;
-  c[id] = a[id] + b[id];
+__global__ void newmeans(double *d_data, double *d_clusters, double *d_means, double *d_clustern) {
+  int k = blockIdx.x;
+  int d = blockIdx.y;
 }""")
 
 mod2 = SourceModule("""
-__global__ void reassign(int *a, int *b, int *c)  {
-  int id = blockIdx.x;
-  c[id] = a[id] + b[id];
+__global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_clustern) {
+  int n = blockIdx.x;
 }""")
 
 ######################################################
 ### DEFINE VARIALBES ON HOST (CPU) ####
 ######################################################
 
-# import data file and subset data for k-means and put into numpy ndarrays
+# import data file and subset data for k-means
 reviewdata = pd.read_csv(data_fn)
 acts = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
 h_data = reviewdata[acts][:1000].values
 h_data = np.ascontiguousarray(h_data, dtype=np.float32)
-
-# assign random clusters
 N,D=h_data.shape
-h_clusters = np.ascontiguousarray(np.zeros(N,dtype=np.int8, order='C'))
 
+# assign random clusters & shuffle 
+h_clusters = np.ascontiguousarray(np.zeros(N,dtype=np.int8, order='C'))
 for n in range(N):
     h_clusters[n] = n%K
-    
-def shuffle(x,n):
-    for i in range(n-2,-1,-1): #from n-2 to 0
-        j= np.random.randint(0,i+1) #from 0<=j<=i
-        temp = x[j]
-        x[j] = x[i]
-        x[i] = temp
-
-shuffle(h_clusters,len(h_clusters))
+for i in range(len(h_clusters)-2,-1,-1):
+    j= np.random.randint(0,i+1) 
+    temp = h_clusters[j]
+    h_clusters[j] = h_clusters[i]
+    h_clusters[i] = temp
 
 ######################################################
 ### ALLOCATE INPUT & COPY DATA TO DEVICE (GPU) ####
@@ -87,7 +81,7 @@ while not converged:
     
     #compute means
     kernel1 = mod1.get_function("newmeans")
-    #kernel1(a_gpu, b_gpu, c_gpu, block=(1,1,1))
+    #kernel1(d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1))
     
     for k in range(K):
         for d in range(D):
@@ -105,7 +99,7 @@ while not converged:
             
     #assign to closest mean
     kernel2 = mod2.get_function("reassign")
-    #kernel2(a_gpu, b_gpu, c_gpu, block=(1,1,1))
+    #kernel2d_data, d_clusters, d_means, d_clustern, block=(N,1,1), grid=(1,1,1))
     
     for n in range(N):
         
