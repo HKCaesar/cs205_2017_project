@@ -29,13 +29,15 @@ __global__ void newmeans(double *d_data, double *d_clusters, double *d_means, do
   int k = blockIdx.x;
   int d = blockIdx.y;
   d_means[1,1]=1;
+  }
 
 __global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_clustern, double *d_distortion) {
   int n = blockIdx.x;
   d_clusters[n] = n;
   d_distortion[0] = 5;
-
-}""")
+  }
+  
+""")
 
 mod2 = SourceModule("""
 __global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_clustern, double *d_distortion) {
