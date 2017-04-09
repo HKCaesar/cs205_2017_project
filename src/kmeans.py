@@ -36,7 +36,7 @@ __global__ void newmeans(int *N, int *D, int *K, double *data, int *clusters, do
   if (threadIdx.x==0 & threadIdx.y==0)
   {
     
-    //int l_clustern[K];
+    int l_clustern[K[0]];
     //l_clustern = (int*)malloc(sizeof(int) * (*K));
     //for(int k=0; k < (K); ++k) l_clustern[k] = 0;
     //for (int n=0; n < (N); ++n) l_clustern[clusters[n]]++;
@@ -64,7 +64,7 @@ __global__ void reassign(double *d_data, double *d_clusters, double *d_means, do
 reviewdata = pd.read_csv(data_fn)
 acts = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
 h_data = reviewdata[acts][:10].values
-h_data = np.ascontiguousarray(h_data, dtype=np.float32)
+h_data = np.ascontiguousarray(h_data, dtype=np.float64)
 N,D=h_data.shape
 
 # assign random clusters & shuffle 
@@ -95,13 +95,13 @@ cuda.memcpy_htod(d_clusters,h_clusters)
 d_N = cuda.mem_alloc(4)
 d_D = cuda.mem_alloc(4)
 d_K = cuda.mem_alloc(4)
-cuda.memcpy_htod(d_N,np.int32(N))
-cuda.memcpy_htod(d_D,np.int32(D))
-cuda.memcpy_htod(d_K,np.int32(K))
+cuda.memcpy_htod(d_N,np.intc(N))
+cuda.memcpy_htod(d_D,np.intc(D))
+cuda.memcpy_htod(d_K,np.intc(K))
 
 # Allocate means and clustern variables on device
 d_means = cuda.mem_alloc(h_means.nbytes)
-d_clustern = cuda.mem_alloc(np.empty(K,dtype=np.int8).nbytes)
+d_clustern = cuda.mem_alloc(np.empty(K,dtype=np.intc).nbytes)
 d_distortion = cuda.mem_alloc(4)
 
 print(h_means)
