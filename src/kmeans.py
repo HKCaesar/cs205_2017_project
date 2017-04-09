@@ -44,12 +44,12 @@ __global__ void reassign(int *a, int *b, int *c)  {
 reviewdata = pd.read_csv(data_fn)
 acts = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
 h_data = reviewdata[acts][:1000].values
-np.ascontiguousarray(h_data, dtype=np.float64)
+h_data = np.ascontiguousarray(h_data, dtype=np.float64)
 
 # assign random clusters
 N,D=h_data.shape
 h_clusters = np.zeros(N,dtype=np.int)
-np.ascontiguousarray(h_clusters, dtype=np.float64)
+h_clusters = np.ascontiguousarray(h_clusters, dtype=np.float64)
 
 for n in range(N):
     h_clusters[n] = n%K
@@ -74,8 +74,8 @@ cuda.memcpy_htod(d_data,h_data)
 cuda.memcpy_htod(d_clusters,h_clusters)
 
 # FIX!
-#means = cuda.mem_alloc(np.zeros((K,D)))
-#clusterloc = cuda.mem_alloc(np.zeros(K))
+means = cuda.mem_alloc(np.zeros((K,D)))
+clustern = cuda.mem_alloc(np.zeros(K))
 
 ######################################################
 ### RUN K-MEANS ############# FIX THIS SECTION ######### 
@@ -90,12 +90,12 @@ while not converged:
     for k in range(K):
         for d in range(D):
             A[k,d] = 0
-        m[k]=0
+        clustern[k]=0
             
     for n in range(N):
         for d in range(D):
             A[W[n],d]+=X[n,d]
-        m[ W[n] ] +=1
+        clustern[ W[n] ] +=1
     
     for k in range(K):
         for d in range(D):
