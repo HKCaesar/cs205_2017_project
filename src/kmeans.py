@@ -22,7 +22,6 @@ import numpy as np
 ######################################################
 
 data_fn = "../data/reviewer-data.csv"
-
 K = 3
 
 ######################################################
@@ -37,9 +36,7 @@ __global__ void newmeans(int *N, int *D, int K, double *data, int *clusters, dou
   if (threadIdx.x==0 & threadIdx.y==0)
   {
     int l_clustern[4];
-    
     //l_clustern = (int*)malloc(sizeof(int) * (*K));
-    
     //for(int k=0; k < K; ++k) l_clustern[k] = 0;
     //for (int n=0; n < N; ++n) l_clustern[clusters[n]]++;
     //for(int k =0; k < K; ++k) clustern[k] = l_clustern[k];
@@ -97,9 +94,9 @@ cuda.memcpy_htod(d_clusters,h_clusters)
 #N = np.array(N).astype(np.int32)
 #D = np.array(D).astype(np.int32)
 #K = np.array(K).astype(np.int32)
-d_N = cuda.mem_alloc(32)
-d_D = cuda.mem_alloc(32)
-d_K = cuda.mem_alloc(32)
+d_N = cuda.mem_alloc(4)
+d_D = cuda.mem_alloc(4)
+d_K = cuda.mem_alloc(4)
 cuda.memcpy_htod(d_N,np.array(N).astype(np.int32))
 cuda.memcpy_htod(d_D,np.array(D).astype(np.int32))
 cuda.memcpy_htod(d_K,np.array(K).astype(np.int32))
@@ -111,7 +108,6 @@ d_distortion = cuda.mem_alloc(4)
 
 print(h_means)
 print(h_clusters)
-print(h_distortion)
 
 ######################################################
 ### RUN K-MEANS ############# FIX THIS SECTION ######### 
@@ -124,7 +120,6 @@ while not converged:
     
     #compute means
     kernel1 = mod.get_function("newmeans")
-    #  
     
     for k in range(K):
         for d in range(D):
@@ -142,7 +137,6 @@ while not converged:
             
     #assign to closest mean
     kernel2 = mod.get_function("reassign")
-    kernel2(d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), grid=(1,1,1))
     
     for n in range(N):
         
@@ -178,10 +172,8 @@ kernel1(d_N, d_D, d_K, d_data, d_clusters, d_means, d_clustern, block=(K,D,1), g
 
 cuda.memcpy_dtoh(h_means, d_means)
 cuda.memcpy_dtoh(h_clusters, d_clusters)
-cuda.memcpy_dtoh(h_distortion, d_distortion)
 
 print('-----')
 print(h_means)
 print(h_clusters)
-print(h_distortion)
 print("done")
