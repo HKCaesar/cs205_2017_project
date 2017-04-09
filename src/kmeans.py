@@ -44,11 +44,11 @@ __global__ void reassign(int *a, int *b, int *c)  {
 reviewdata = pd.read_csv(data_fn)
 acts = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
 h_data = reviewdata[acts][:1000].values
-h_data = np.ascontiguousarray(h_data, dtype=np.float64)
+h_data = np.ascontiguousarray(h_data, dtype=np.float32)
 
 # assign random clusters
 N,D=h_data.shape
-h_clusters = np.ascontiguousarray(np.zeros(N,dtype=np.float64, order='C'))
+h_clusters = np.ascontiguousarray(np.zeros(N,dtype=np.int8, order='C'))
 
 for n in range(N):
     h_clusters[n] = n%K
@@ -66,7 +66,7 @@ shuffle(h_clusters,len(h_clusters))
 ### ALLOCATE INPUT & COPY DATA TO DEVICE (GPU) ####
 ######################################################
 
-# Allocate & copy data and cluster assignments from host to device
+# Allocate & copy data and cluster assignment variables from host to device
 d_data = cuda.mem_alloc(h_data.nbytes)
 d_clusters = cuda.mem_alloc(h_clusters.nbytes)
 cuda.memcpy_htod(d_data,h_data)
@@ -74,7 +74,7 @@ cuda.memcpy_htod(d_clusters,h_clusters)
 
 # Allocate means and clustern variables on device
 d_means = cuda.mem_alloc(np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C')).nbytes)
-d_clustern = cuda.mem_alloc(np.ascontiguousarray(np.zeros(K,dtype=np.float64, order='C')).nbytes)
+d_clustern = cuda.mem_alloc(np.ascontiguousarray(np.zeros(K,dtype=np.int8, order='C')).nbytes)
 
 ######################################################
 ### RUN K-MEANS ############# FIX THIS SECTION ######### 
@@ -86,6 +86,9 @@ while not converged:
     converged = True
     
     #compute means
+    kernel1 = mod1.get_function("newmeans")
+    #kernel1(a_gpu, b_gpu, c_gpu, block=(1,1,1))
+    
     for k in range(K):
         for d in range(D):
             d_means[k,d] = 0
@@ -101,8 +104,8 @@ while not converged:
             d_means[k,d] = d_means[k,d]/d_clustern[k]
             
     #assign to closest mean
-    
-    s
+    kernel2 = mod2.get_function("reassign")
+    #kernel2(a_gpu, b_gpu, c_gpu, block=(1,1,1))
     
     for n in range(N):
         
