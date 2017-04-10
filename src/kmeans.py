@@ -119,7 +119,11 @@ def pnaive_mod():
   """)
   
   kernel_code = kernel_code_template % {'N': N, 'D': D, 'K': K}
-  return SourceModule(kernel_code)
+  mod = SourceModule(kernel_code)
+  kernel1 = mod.get_function("newmeans")
+  kernel2 = mod.get_function("reassign")
+  
+  return kernel1, kernel2
 
 ######################################################
 ### DEFINE "IMPROVED" PARALLEL K-MEANS KERNEL FOR GPU ####
@@ -130,6 +134,29 @@ def pimproved_mod():
   kernel_code_template = ("""
 
   __global__ void newmeans(double *data, int *clusters, double *means) {
+    __shared__ int s_clustern[%(K)s];
+    int tid = (%(D)s*threadIdx.x) + threadIdx.y;
+    double l_sum = 0;
+
+    // find the n per cluster with just one lucky thread
+    if (tid==0)
+    {
+      for(int k=0; k < (%(K)s); ++k) s_clustern[k] = 0;
+      for(int n=0; n < (%(N)s); ++n) s_clustern[clusters[n]]++;
+     }
+     __syncthreads();
+
+     // sum stuff  
+     for(int n=0; n < (%(N)s); ++n)
+     {
+       if(clusters[n]==threadIdx.x)
+       {
+         l_sum += data[(%(D)s*n)+threadIdx.y];
+       }
+     }
+
+     // divide local sum by the number in that cluster
+     means[tid] = l_sum/s_clustern[threadIdx.x];
     }
 
   __global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_distortion) {
@@ -138,7 +165,11 @@ def pimproved_mod():
   """)
   
   kernel_code = kernel_code_template % {'N': N, 'D': D, 'K': K}
-  return SourceModule(kernel_code)
+  mod = SourceModule(kernel_code)
+  kernel1 = mod.get_function("newmeans")
+  kernel2 = mod.get_function("reassign")
+  
+  return kernel1, kernel2
 
 ######################################################
 ### DEFINTE FUNCTIONS TO MANAGE DATA ####
@@ -199,16 +230,16 @@ def reset_hvars():
 ### RUN K-MEANS ####
 ######################################################
 
-header = ['algorithm','time','convergence','distortion','n','d','k']
-output = [header]
-
 data, initial_clusters = prep_data()
 prep_host()
+output = [['algorithm','time','convergence','distortion','n','d','k']]
 
 ### Sequential ###
+
 start = time.time()
 seq_means, seq_clusters, seq_count, seq_distortion = sequential(data, initial_clusters)
-output.append(['sequential',time.time()-start, seq_count, seq_distortion, N, D, K])
+stop = time.time()-start
+output.append(['sequential',stop, seq_count, seq_distortion, N, D, K])
 
 print('\n-----Sequential output')
 print(seq_means)
@@ -216,9 +247,7 @@ print(seq_clusters[:10])
 
 ### Naive Parallel ###
 
-mod = pnaive_mod()
-kernel1 = mod.get_function("newmeans")
-#kernel2 = mod.get_function("reassign")
+kernel1, kernel2 = pnaive_mod()
 reset_hvars()
 
 start = time.time()
@@ -227,7 +256,8 @@ kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
 #kernel2(d_data, d_clusters, d_means, d_distortion, block=(N,1,1), grid=(1,1,1))
 cuda.memcpy_dtoh(h_means, d_means)
 cuda.memcpy_dtoh(h_clusters, d_clusters)
-output.append(['naive parallel',time.time()-start, '?', '?', N, D, K])
+stop = time.time()-start
+output.append(['naive parallel',stop, '?', '?', N, D, K])
 
 print('\n-----Naive Parallel output')
 print(h_means)
@@ -236,18 +266,17 @@ print('Equals sequential output: %s' % str(np.array_equal(seq_means,h_means)))
 
 ### Parallel Improved ###
 
-mod = pimproved_mod()
-#kernel1 = mod.get_function("newmeans")
-#kernel2 = mod.get_function("reassign")
+kernel1, kernel2 = pimproved_mod()
 reset_hvars()
 
 start = time.time()
 prep_device()
-#kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
+kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
 #kernel2(d_data, d_clusters, d_means, d_distortion, block=(N,1,1), grid=(1,1,1))
 cuda.memcpy_dtoh(h_means, d_means)
 cuda.memcpy_dtoh(h_clusters, d_clusters)
-output.append(['improved parallel',time.time()-start, '?', '?', N, D, K])
+stop = time.time()-start
+output.append(['improved parallel',stop, '?', '?', N, D, K])
 
 print('\n-----Improved Parallel output')
 print(h_means)
@@ -258,7 +287,7 @@ print('Equals sequential output: %s' % str(np.array_equal(seq_means,h_means)))
 ### COPY DEVICE DATA BACK TO HOST AND COMPARE ####
 ######################################################
 
-with open(output_dir + 'times.csv', 'a') as f:
+with open(output_dir + 'times.csv', 'o') as f:
     writer = csv.writer(f, delimiter = ',')
     writer.writerows(output)
     f.close()
