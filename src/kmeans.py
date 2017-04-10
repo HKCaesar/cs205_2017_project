@@ -23,6 +23,7 @@ import numpy as np
 
 data_fn = "../data/reviewer-data.csv"
 K = 3
+limit = 50
 
 ######################################################
 ### GPU KERNELS (in C) ####
@@ -73,7 +74,7 @@ __global__ void reassign(double *d_data, double *d_clusters, double *d_means, do
 # import data file and subset data for k-means
 reviewdata = pd.read_csv(data_fn)
 acts = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
-h_data = reviewdata[acts][:10].values
+h_data = reviewdata[acts][:limit].values
 h_data = np.ascontiguousarray(h_data, dtype=np.float64)
 N,D=h_data.shape
 
@@ -112,10 +113,6 @@ cuda.memcpy_htod(d_K, np.array(K).astype(np.intc))
 # Allocate means and clustern variables on device
 d_means = cuda.mem_alloc(h_means.nbytes)
 d_distortion = cuda.mem_alloc(4)
-
-print('-----from CPU')
-print(h_means)
-print(h_clusters)
 
 ######################################################
 ### RUN K-MEANS SEQUENTIALLY ###
@@ -185,6 +182,10 @@ kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1), shared=4*K)
 ######################################################
 ### COPY DEVICE DATA BACK TO HOST ####
 ######################################################
+
+print('-----from CPU')
+print(h_means)
+print(h_clusters)
 
 cuda.memcpy_dtoh(h_means, d_means)
 cuda.memcpy_dtoh(h_clusters, d_clusters)
