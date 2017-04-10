@@ -163,7 +163,7 @@ while not converged:
 ######################################################
 
 kernel1 = mod.get_function("newmeans")
-kernel1(d_N, d_D, d_K, d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1))
+kernel1(d_N, d_D, d_K, d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1), shared=100)
 
 #kernel2 = mod.get_function("reassign")
 #kernel2(d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), grid=(1,1,1))
