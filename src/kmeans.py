@@ -35,7 +35,8 @@ __global__ void newmeans(int *N, int *D, int *K, double *data, int *clusters, do
   // find the n per cluster with just one lucky thread
   if (threadIdx.x==0 & threadIdx.y==0)
   {
-    int l_clustern[(K)];
+    int tempk = *K
+    int l_clustern[tempk];
     for(int k=0; k < (*K); ++k) clustern[k] = 0;
     for (int n=0; n < (*N); ++n) clustern[clusters[n]]++;
     for(int k =0; k < (*K); ++k) clustern[k] = clustern[k];
