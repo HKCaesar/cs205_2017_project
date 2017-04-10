@@ -5,7 +5,7 @@ From the login node:
 sbatch sbatch.run
 ```
 
-# run interactive session with kmeans.py (doesn't run mpi4py, just pyCUDA)
+## run interactive session with kmeans.py (doesn't run mpi4py, just pyCUDA)
 
 From the login node:
 ```
@@ -17,7 +17,7 @@ source activate pycuda
 git pull; python kmeans.py
 ```
 
-# mpi4py + pyCUDA environment set-up (do once): 
+## mpi4py + pyCUDA environment set-up (do once): 
 ```
 module load python/2.7.11-fasrc01
 conda create -n pycuda --clone $PYTHON_HOME
