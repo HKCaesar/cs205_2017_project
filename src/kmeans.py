@@ -133,7 +133,7 @@ while not converged:
             
 print('\n-----sequential output')
 print(A)
-print(W)
+print(W[:10])
 print("done")
 
 ######################################################
@@ -159,9 +159,9 @@ d_means = cuda.mem_alloc(h_means.nbytes)
 h_distortion = 0
 d_distortion = cuda.mem_alloc(np.array(h_distortion).astype(np.intc).nbytes)
 
-print('\n-----from CPU 1')
+print('\n-----CPU input')
 print(h_means)
-print(h_clusters)
+print(h_clusters[:10])
 
 ######################################################
 ### RUN K-MEANS IN PARALLEL ####
@@ -191,7 +191,7 @@ print('\n-----GPU output')
 cuda.memcpy_dtoh(h_means, d_means)
 cuda.memcpy_dtoh(h_clusters, d_clusters)
 print(h_means)
-print(h_clusters)
+print(h_clusters[:10])
 
 print('\n-----Sequential and Parallel means are equal:')
 print(np.array_equal(A,h_means))
