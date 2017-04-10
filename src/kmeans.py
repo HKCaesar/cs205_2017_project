@@ -28,7 +28,7 @@ data_fn = "../data/reviewer-data.csv"
 output_dir = "../analysis/"
 d_list = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
 
-K = 4
+K = 5
 limit = 1000 # impose a limit of N on the dataset
 
 ######################################################
