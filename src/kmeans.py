@@ -9,13 +9,13 @@ import numpy as np
 ### INFO ####
 ######################################################
 
-# Variable*:      Meaning:                 Dim:      Sequential name:
-# data            reviewer data           (NxD)       X
-# clusters        cluster assignments     (Nx1)       W
-# means           means                   (KxD)       A
-# clustern        number of clusters      (1xK)       M
+# Parallel*:      Sequential:      Meaning:                 Dim:
+# data            X                reviewer data           (NxD)
+# clusters        W                cluster assignments     (Nx1)
+# means           A                means                   (KxD)
+# clustern        m                number of clusters      (1xK)
 
-# *h_ and d_ prefixes in variable names indicate host vs. device copies
+# *h_ and d_ prefixes in parallel variable names indicate host vs. device copies
 
 ######################################################
 ### CONFIGURE ####
