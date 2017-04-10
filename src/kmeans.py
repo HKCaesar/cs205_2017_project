@@ -131,7 +131,7 @@ while not converged:
             W[n] = min_ind
             converged=False
             
-print('-----sequential output')
+print('/n-----sequential output')
 print(A)
 print(W)
 print("done")
@@ -159,7 +159,7 @@ d_means = cuda.mem_alloc(h_means.nbytes)
 h_distortion = 0
 d_distortion = cuda.mem_alloc(np.array(h_distortion).astype(np.intc).nbytes)
 
-print('-----from CPU 1')
+print('/n-----from CPU 1')
 print(h_means)
 print(h_clusters)
 
@@ -187,10 +187,10 @@ kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
 ### COPY DEVICE DATA BACK TO HOST AND COMPARE ####
 ######################################################
 
-print('-----GPU output')
+print('/n-----GPU output')
 cuda.memcpy_dtoh(h_means, d_means)
 cuda.memcpy_dtoh(h_clusters, d_clusters)
 print(h_means)
 print(h_clusters)
-print('-----Sequential and Parallel means are equal:')
+print('/n-----Sequential and Parallel means are equal:')
 print(np.array_equal(A,h_means))
