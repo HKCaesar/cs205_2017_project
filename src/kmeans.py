@@ -28,7 +28,7 @@ data_fn = "../data/reviewer-data.csv"
 output_dir = "../analysis/"
 d_list = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
 
-K = 3
+K = 4
 limit = 1000 # impose a limit of N on the dataset
 
 ######################################################
@@ -258,7 +258,7 @@ print('Equals sequential output: %s' % str(np.array_equal(seq_means,h_means)))
 ### COPY DEVICE DATA BACK TO HOST AND COMPARE ####
 ######################################################
 
-with open(output_dir + 'times.csv', 'w') as f:
+with open(output_dir + 'times.csv', 'a') as f:
     writer = csv.writer(f, delimiter = ',')
     writer.writerows(output)
     f.close()
