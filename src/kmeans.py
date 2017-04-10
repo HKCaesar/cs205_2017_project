@@ -23,7 +23,7 @@ import numpy as np
 
 data_fn = "../data/reviewer-data.csv"
 K = 3
-limit = 50
+limit = 1000
 
 ######################################################
 ### GPU KERNELS (in C) ####
