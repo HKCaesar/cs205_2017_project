@@ -76,7 +76,7 @@ reviewdata = pd.read_csv(data_fn)
 acts = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
 h_data = reviewdata[acts][:limit].values
 h_data = np.ascontiguousarray(h_data, dtype=np.float64)
-N,D=h_data.shape
+N,D = h_data.shape
 
 # assign random clusters & shuffle 
 h_clusters = np.ascontiguousarray(np.zeros(N,dtype=np.intc, order='C'))
@@ -87,32 +87,46 @@ for i in range(len(h_clusters)-2,-1,-1):
     temp = h_clusters[j]
     h_clusters[j] = h_clusters[i]
     h_clusters[i] = temp
-    
-# create arrays for means and clusters
-h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
-h_distortion = 0
 
 ######################################################
 ### ALLOCATE INPUT & COPY DATA TO DEVICE (GPU) ####
 ######################################################
 
-# Allocate & copy data and cluster assignment variables from host to device
+# allocate memory & copy data variable from host to device
 d_data = cuda.mem_alloc(h_data.nbytes)
-d_clusters = cuda.mem_alloc(h_clusters.nbytes)
 cuda.memcpy_htod(d_data,h_data)
+
+# allocate memory & copy clusters variable from host to device
+d_clusters = cuda.mem_alloc(h_clusters.nbytes)
 cuda.memcpy_htod(d_clusters,h_clusters)
 
-# Allocate & copy N, D, and K variables from host to device
-d_N = cuda.mem_alloc(4)
-d_D = cuda.mem_alloc(4)
-d_K = cuda.mem_alloc(4)
-cuda.memcpy_htod(d_N, np.array(N).astype(np.intc))
-cuda.memcpy_htod(d_D, np.array(D).astype(np.intc))
-cuda.memcpy_htod(d_K, np.array(K).astype(np.intc))
-
-# Allocate means and clustern variables on device
+# create & allocate memory for means variable on device
+h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
 d_means = cuda.mem_alloc(h_means.nbytes)
-d_distortion = cuda.mem_alloc(4)
+
+# create & allocate memory for distortion variable on device
+h_distortion = 0
+d_distortion = cuda.mem_alloc(np.array(h_distortion).astype(np.intc).nbytes)
+
+######################################################
+### RUN K-MEANS IN PARALLEL ####
+######################################################
+
+# define some constants in the kernel code
+kernel_code = kernel_code_template % { 
+  'N': N,
+  'D': D,
+  'K': K,
+}
+mod = SourceModule(kernel_code)
+
+# call the first kernel
+kernel1 = mod.get_function("newmeans")
+kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
+
+# call the second kernel
+#kernel2 = mod.get_function("reassign")
+#kernel2(d_data, d_clusters, d_means, d_distortion, block=(N,1,1), grid=(1,1,1))
 
 ######################################################
 ### RUN K-MEANS SEQUENTIALLY ###
@@ -161,26 +175,9 @@ while not converged:
         if min_ind != W[n]:
             W[n] = min_ind
             converged=False
-            
-######################################################
-### RUN K-MEANS IN PARALLEL ####
-######################################################
-
-kernel_code = kernel_code_template % { 
-  'N': N,
-  'D': D,
-  'K': K,
-}
-mod = SourceModule(kernel_code)
-
-kernel1 = mod.get_function("newmeans")
-kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
-
-#kernel2 = mod.get_function("reassign")
-#kernel2(d_data, d_clusters, d_means, d_distortion, block=(N,1,1), grid=(1,1,1))
 
 ######################################################
-### COPY DEVICE DATA BACK TO HOST ####
+### COPY DEVICE DATA BACK TO HOST AND COMPARE ####
 ######################################################
 
 print('-----from CPU')
