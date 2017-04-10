@@ -54,15 +54,14 @@ __global__ void newmeans(double *data, int *clusters, double *means) {
          if(d==threadIdx.y)
          {
            l_sum += data[(%(D)s*n)+d];
+           cluster[(%(D)s*n)+d] = (%(D)s*n)+d;
          }
        }
      }
    }
   
    // divide local sum by the number in that cluster
-   means[tid] = l_sum/s_clustern[threadIdx.x];
-   clusters[tid] = tid;
-      
+   means[tid] = l_sum/s_clustern[threadIdx.x];      
   }
 
 __global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_distortion) {
