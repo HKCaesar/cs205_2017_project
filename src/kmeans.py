@@ -9,7 +9,7 @@ import numpy as np
 ### INFO ####
 ######################################################
 
-# Variable*:      Meaning:                 Dim:      Previous name:
+# Variable*:      Meaning:                 Dim:      Sequential name:
 # data            reviewer data           (NxD)       X
 # clusters        cluster assignments     (Nx1)       W
 # means           means                   (KxD)       A
@@ -58,7 +58,7 @@ __global__ void newmeans(double *data, int *clusters, double *means) {
    }
    __syncthreads();
   
-   means[tid] = l_means/l_clustern;
+   means[tid] = 1;
    
    __syncthreads();
    
