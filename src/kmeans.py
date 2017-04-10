@@ -114,26 +114,6 @@ print(h_means)
 print(h_clusters)
 
 ######################################################
-### RUN K-MEANS IN PARALLEL ####
-######################################################
-
-# define some constants in the kernel code
-kernel_code = kernel_code_template % { 
-  'N': N,
-  'D': D,
-  'K': K,
-}
-mod = SourceModule(kernel_code)
-
-# call the first kernel
-kernel1 = mod.get_function("newmeans")
-kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
-
-# call the second kernel
-#kernel2 = mod.get_function("reassign")
-#kernel2(d_data, d_clusters, d_means, d_distortion, block=(N,1,1), grid=(1,1,1))
-
-######################################################
 ### RUN K-MEANS SEQUENTIALLY ###
 ######################################################
 
@@ -180,6 +160,31 @@ while not converged:
         if min_ind != W[n]:
             W[n] = min_ind
             converged=False
+            
+print('-----sequential output')
+print(A)
+print(W)
+print("done")
+
+######################################################
+### RUN K-MEANS IN PARALLEL ####
+######################################################
+
+# define some constants in the kernel code
+kernel_code = kernel_code_template % { 
+  'N': N,
+  'D': D,
+  'K': K,
+}
+mod = SourceModule(kernel_code)
+
+# call the first kernel
+kernel1 = mod.get_function("newmeans")
+kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
+
+# call the second kernel
+#kernel2 = mod.get_function("reassign")
+#kernel2(d_data, d_clusters, d_means, d_distortion, block=(N,1,1), grid=(1,1,1))
 
 ######################################################
 ### COPY DEVICE DATA BACK TO HOST AND COMPARE ####
