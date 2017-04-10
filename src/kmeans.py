@@ -32,12 +32,13 @@ kernel_code_template = ("""
 
 __global__ void newmeans(double *data, int *clusters, double *means, int *clustern) {
   __shared__ float s_clustern[%(K)s];
+  
   // find the n per cluster with just one lucky thread
   if (threadIdx.x==0 & threadIdx.y==0)
   {
-    for(int k=0; k < (K); ++k) clustern[k] = 0;
-    for (int n=0; n < (N); ++n) clustern[clusters[n]]++;
-    for(int k =0; k < (K); ++k) clustern[k] = clustern[k];
+    for(int k=0; k < (%(K)s); ++k) clustern[k] = 0;
+    for (int n=0; n < (%(N)s); ++n) clustern[clusters[n]]++;
+    for(int k =0; k < (%(K)s); ++k) clustern[k] = clustern[k];
    }
    __syncthreads();
    
