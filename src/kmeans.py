@@ -37,7 +37,7 @@ __global__ void newmeans(double *data, int *clusters, double *means) {
   if (threadIdx.x==0 & threadIdx.y==0)
   {
     for(int k=0; k < (%(K)s); ++k) s_clustern[k] = 0;
-    for(int n=0; n < (%(N)s); ++n) s_clustern[s_clustern[n]]++;
+    for(int n=0; n < (%(N)s); ++n) s_clustern[clusters[n]]++;
    }
    __syncthreads();
    
@@ -167,7 +167,7 @@ kernel_code = kernel_code_template % {
 mod = SourceModule(kernel_code)
 
 kernel1 = mod.get_function("newmeans")
-kernel1(d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1), shared=100)
+kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1), shared=4*K)
 
 #kernel2 = mod.get_function("reassign")
 #kernel2(d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), grid=(1,1,1))
