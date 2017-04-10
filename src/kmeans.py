@@ -42,15 +42,16 @@ __global__ void newmeans(double *data, int *clusters, double *means) {
    __syncthreads();
    
    // sum stuff
-   //int k = threadIdx.x;
-   //int d = threadIdx.y;
+   int k = threadIdx.x;
+   int d = threadIdx.y;
+   means[k,d] = k*d;
    
    // divide stuff
    //int l_clustern = clustern[k];
    
   }
 
-__global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_clustern, double *d_distortion) {
+__global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_distortion) {
   }
   
 """)
@@ -167,7 +168,7 @@ kernel1 = mod.get_function("newmeans")
 kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1), shared=4*K)
 
 #kernel2 = mod.get_function("reassign")
-#kernel2(d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), grid=(1,1,1))
+#kernel2(d_data, d_clusters, d_means, d_distortion, block=(N,1,1), grid=(1,1,1))
 
 ######################################################
 ### COPY DEVICE DATA BACK TO HOST ####
