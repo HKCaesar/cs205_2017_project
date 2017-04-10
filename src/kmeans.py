@@ -28,9 +28,9 @@ K = 3
 ### GPU KERNELS (in C) ####
 ######################################################
 
-mod = SourceModule("""
+kernel_code_template = ("""
 
-__global__ void newmeans(int *N, int *D, int *K, double *data, int *clusters, double *means, int *clustern) {
+__global__ void newmeans(double *data, int *clusters, double *means, int *clustern) {
   __shared__ float s_clustern[%(*K)s];
   // find the n per cluster with just one lucky thread
   if (threadIdx.x==0 & threadIdx.y==0)
@@ -160,8 +160,15 @@ while not converged:
 ### TEST ####
 ######################################################
 
+kernel_code = kernel_code_template % { 
+  'N': N,
+  'D': D,
+  'K': K,
+}
+mod = compiler.SourceModule(kernel_code)
+
 kernel1 = mod.get_function("newmeans")
-kernel1(d_N, d_D, d_K, d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1), shared=100)
+kernel1(d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1), shared=100)
 
 #kernel2 = mod.get_function("reassign")
 #kernel2(d_data, d_clusters, d_means, d_clustern, d_distortion, block=(N,1,1), grid=(1,1,1))
