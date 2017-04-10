@@ -116,38 +116,40 @@ cuda.memcpy_htod(d_K, np.array(K).astype(np.intc))
 d_means = cuda.mem_alloc(h_means.nbytes)
 d_distortion = cuda.mem_alloc(4)
 
+print('-----from CPU')
 print(h_means)
 print(h_clusters)
 
 ######################################################
-### RUN K-MEANS ############# FIX THIS SECTION ######### 
+### RUN K-MEANS SEQUENTIALLY ###
 ######################################################
 
-converged = True
+A = h_means
+W = h_clusters
+X = h_data
+m = np.zeros(K)
+
+converged = False
 
 while not converged:
     converged = True
     
     #compute means
-    kernel1 = mod.get_function("newmeans")
-    
     for k in range(K):
         for d in range(D):
-            d_means[k,d] = 0
-        d_clustern[k]=0
+            A[k,d] = 0
+        m[k]=0
             
     for n in range(N):
         for d in range(D):
-            d_means[d_clusters[n],d]+=d_data[n,d]
-        d_clustern[ W[n] ] +=1
+            A[W[n],d]+=X[n,d]
+        m[ W[n] ] +=1
     
     for k in range(K):
         for d in range(D):
-            d_means[k,d] = d_means[k,d]/d_clustern[k]
+            A[k,d] = A[k,d]/m[k]
             
     #assign to closest mean
-    kernel2 = mod.get_function("reassign")
-    
     for n in range(N):
         
         min_val = np.inf
@@ -156,14 +158,14 @@ while not converged:
         for k in range(K):
             temp =0
             for d in range(D):
-                temp += (d_data[n,d]-d_means[k,d])**2
+                temp += (X[n,d]-A[k,d])**2
             
             if temp < min_val:
                 min_val = temp
                 min_ind = k
                 
-        if min_ind != d_clusters[n]:
-            d_clusters[n] = min_ind
+        if min_ind != W[n]:
+            W[n] = min_ind
             converged=False
             
 ######################################################
@@ -190,7 +192,10 @@ kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1), shared=4*K)
 cuda.memcpy_dtoh(h_means, d_means)
 cuda.memcpy_dtoh(h_clusters, d_clusters)
 
-print('-----')
+print('-----GPU output')
 print(h_means)
 print(h_clusters)
+print('-----sequential output')
+print(A)
+print(W)
 print("done")
