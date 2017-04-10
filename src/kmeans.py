@@ -35,7 +35,6 @@ __global__ void newmeans(double *data, int *clusters, double *means) {
   __shared__ int s_clustern[%(K)s];
   int tid = (%(K)s*threadIdx.y) + threadIdx.x;
   double l_sum = 0;
-  int l_clustern;
     
   // find the n per cluster with just one lucky thread
   if (tid==0)
@@ -54,7 +53,7 @@ __global__ void newmeans(double *data, int *clusters, double *means) {
        {
          if(d==threadIdx.y)
          {
-           l_sum += data[(n*%(D)s)+d];
+           l_sum += data[(%(D)s*n)+d];
          }
        }
      }
