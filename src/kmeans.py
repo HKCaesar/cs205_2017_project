@@ -45,6 +45,7 @@ __global__ void newmeans(double *data, int *clusters, double *means) {
    int k = threadIdx.x;
    int d = threadIdx.y;
    means[(k*d)+d] = 1;
+   __syncthreads();
    
    // divide stuff
    //int l_clustern = clustern[k];
