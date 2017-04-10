@@ -42,8 +42,13 @@ __global__ void newmeans(int *N, int *D, int *K, double *data, int *clusters, do
    __syncthreads();
    
    // sum stuff
+   int k = threadIdx.x;
+   int d = threadIdx.y;
+   
    
    // divide stuff
+   int l_clustern = clustern[k];
+   //means[k,d] = sums[k,d] / l_clustern;
    
   }
 
