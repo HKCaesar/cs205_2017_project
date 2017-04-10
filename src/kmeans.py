@@ -134,29 +134,6 @@ def pimproved_mod():
   kernel_code_template = ("""
 
   __global__ void newmeans(double *data, int *clusters, double *means) {
-    __shared__ int s_clustern[%(K)s];
-    int tid = (%(D)s*threadIdx.x) + threadIdx.y;
-    double l_sum = 0;
-
-    // find the n per cluster with just one lucky thread
-    if (tid==0)
-    {
-      for(int k=0; k < (%(K)s); ++k) s_clustern[k] = 0;
-      for(int n=0; n < (%(N)s); ++n) s_clustern[clusters[n]]++;
-     }
-     __syncthreads();
-
-     // sum stuff  
-     for(int n=0; n < (%(N)s); ++n)
-     {
-       if(clusters[n]==threadIdx.x)
-       {
-         l_sum += data[(%(D)s*n)+threadIdx.y];
-       }
-     }
-
-     // divide local sum by the number in that cluster
-     means[tid] = l_sum/s_clustern[threadIdx.x];
     }
 
   __global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_distortion) {
