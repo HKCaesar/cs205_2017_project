@@ -56,8 +56,11 @@ __global__ void newmeans(double *data, int *clusters, double *means) {
        }
      }
    }
+   __syncthreads();
   
    means[tid] = l_means/l_clustern;
+   
+   __syncthreads();
    
   }
 
