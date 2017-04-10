@@ -48,7 +48,7 @@ __global__ void newmeans(double *data, int *clusters, double *means) {
    int l_clustern;
    
    l_means = 0;
-   l_clustern=clustern[k];
+   l_clustern=s_clustern[threadIdx.x];
    
    for(int n=0; n < (%(N)s); ++n)
    {
