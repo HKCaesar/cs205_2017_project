@@ -33,7 +33,7 @@ kernel_code_template = ("""
 
 __global__ void newmeans(double *data, int *clusters, double *means) {
   __shared__ int s_clustern[%(K)s];
-  int tid = threadIdx.x + (%(K)s*threadIdx.y);
+  int tid = (%(K)s*threadIdx.y) + threadIdx.x;
   double l_sum = 0;
   int l_clustern;
     
@@ -48,7 +48,7 @@ __global__ void newmeans(double *data, int *clusters, double *means) {
    // sum stuff  
    for(int n=0; n < (%(N)s); ++n)
    {
-     if(clusters[n]==threadIdx.y)
+     if(clusters[n]==threadIdx.x)
      {
        for(int d=0; d < (%(D)s); ++d)
        {
@@ -58,7 +58,7 @@ __global__ void newmeans(double *data, int *clusters, double *means) {
    }
   
    // divide local sum by the number in that cluster
-   means[tid] = l_sum/s_clustern[threadIdx.y];
+   means[tid] = l_sum/s_clustern[threadIdx.x];
    clusters[tid] = tid;
       
   }
@@ -183,7 +183,7 @@ mod = SourceModule(kernel_code)
 
 # call the first kernel
 kernel1 = mod.get_function("newmeans")
-kernel1(d_data, d_clusters, d_means, block=(D,K,1), grid=(1,1,1))
+kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
 
 # call the second kernel
 #kernel2 = mod.get_function("reassign")
