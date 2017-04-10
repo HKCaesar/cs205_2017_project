@@ -163,7 +163,7 @@ while not converged:
             converged=False
             
 ######################################################
-### TEST ####
+### RUN K-MEANS IN PARALLEL ####
 ######################################################
 
 kernel_code = kernel_code_template % { 
@@ -174,7 +174,7 @@ kernel_code = kernel_code_template % {
 mod = SourceModule(kernel_code)
 
 kernel1 = mod.get_function("newmeans")
-kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1), shared=4*K)
+kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1), shared=K)
 
 #kernel2 = mod.get_function("reassign")
 #kernel2(d_data, d_clusters, d_means, d_distortion, block=(N,1,1), grid=(1,1,1))
