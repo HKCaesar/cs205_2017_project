@@ -33,7 +33,7 @@ kernel_code_template = ("""
 __global__ void newmeans(double *data, int *clusters, double *means) {
   __shared__ int s_clustern[%(K)s];
   int tid = threadIdx.x + (threadIdx.x*threadIdx.y);
-  double l_means = 0;
+  double l_sum = 0;
   int l_clustern;
     
   // find the n per cluster with just one lucky thread
@@ -44,24 +44,21 @@ __global__ void newmeans(double *data, int *clusters, double *means) {
    }
    __syncthreads();
    
-   // sum stuff
-   l_clustern=s_clustern[threadIdx.x];   
+   // sum stuff  
    for(int n=0; n < (%(N)s); ++n)
    {
      if(clusters[n]==threadIdx.y)
      {
        for(int d=0; d < (%(D)s); ++d)
        {
-         l_means += data[(n*%(D)s)+d];
+         l_sum += data[(n*%(D)s)+d];
        }
      }
    }
-   __syncthreads();
   
-   means[tid] = 1;
-   
-   __syncthreads();
-   
+   // divide local sum by the number in that cluster
+   means[tid] = l_sum/s_clustern[threadIdx.x];
+      
   }
 
 __global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_distortion) {
