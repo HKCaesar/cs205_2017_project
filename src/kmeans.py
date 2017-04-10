@@ -33,7 +33,7 @@ kernel_code_template = ("""
 
 __global__ void newmeans(double *data, int *clusters, double *means) {
   __shared__ int s_clustern[%(K)s];
-  int tid = threadIdx.x + (threadIdx.x*threadIdx.y);
+  int tid = threadIdx.x + (%(K)s*threadIdx.y);
   double l_sum = 0;
   int l_clustern;
     
@@ -58,7 +58,7 @@ __global__ void newmeans(double *data, int *clusters, double *means) {
    }
   
    // divide local sum by the number in that cluster
-   means[tid] = l_sum/s_clustern[threadIdx.x];
+   means[tid] = l_sum/s_clustern[threadIdx.y];
    clusters[tid] = tid;
       
   }
