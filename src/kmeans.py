@@ -243,7 +243,7 @@ start = time.time()
 #kernel2(d_data, d_clusters, d_means, d_distortion, block=(N,1,1), grid=(1,1,1))
 cuda.memcpy_dtoh(h_means, d_means)
 cuda.memcpy_dtoh(h_clusters, d_clusters)
-output.append(['improved parallel',time.time()-start, '?', '?', N, D, K]
+output.append(['improved parallel',time.time()-start, '?', '?', N, D, K])
 
 print('\n-----Improved Parallel output')
 cuda.memcpy_dtoh(h_means, d_means)
