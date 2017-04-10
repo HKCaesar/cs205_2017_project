@@ -74,9 +74,9 @@ for i in range(len(h_clusters)-2,-1,-1):
     h_clusters[j] = h_clusters[i]
     h_clusters[i] = temp
     
-# create empty arrays for means, 
+# create empty arrays for means and clusters
 h_means = np.ascontiguousarray(np.empty((K,D),dtype=np.float64, order='C'))
-h_clustern = np.ascontiguousarray(np.empty(K,dtype=np.intc, order='C'))
+h_clustern = np.ascontiguousarray(np.empty(K,dtype=np.int32, order='C'))
 h_distortion = 0
 
 ######################################################
