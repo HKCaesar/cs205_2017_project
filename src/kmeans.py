@@ -69,57 +69,33 @@ __global__ void reassign(double *d_data, double *d_clusters, double *d_means, do
 """)
 
 ######################################################
-### DEFINE VARIALBES ON HOST (CPU) ####
+### DOWNLOAD DATA & ASSIGN INITIAL CLUSTERS ####
 ######################################################
 
 # import data file and subset data for k-means
 reviewdata = pd.read_csv(data_fn)
 acts = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
-h_data = reviewdata[acts][:limit].values
-h_data = np.ascontiguousarray(h_data, dtype=np.float64)
-N,D = h_data.shape
+data = reviewdata[acts][:limit].values
+data = np.ascontiguousarray(h_data, dtype=np.float64)
+N,D = data.shape
 
 # assign random clusters & shuffle 
-h_clusters = np.ascontiguousarray(np.zeros(N,dtype=np.intc, order='C'))
+initial_clusters = np.ascontiguousarray(np.zeros(N,dtype=np.intc, order='C'))
 for n in range(N):
-    h_clusters[n] = n%K
-for i in range(len(h_clusters)-2,-1,-1):
+    initial_clusters[n] = n%K
+for i in range(len(initial_clusters)-2,-1,-1):
     j= np.random.randint(0,i+1) 
-    temp = h_clusters[j]
-    h_clusters[j] = h_clusters[i]
-    h_clusters[i] = temp
-
-######################################################
-### ALLOCATE INPUT & COPY DATA TO DEVICE (GPU) ####
-######################################################
-
-# allocate memory & copy data variable from host to device
-d_data = cuda.mem_alloc(h_data.nbytes)
-cuda.memcpy_htod(d_data,h_data)
-
-# allocate memory & copy clusters variable from host to device
-d_clusters = cuda.mem_alloc(h_clusters.nbytes)
-cuda.memcpy_htod(d_clusters,h_clusters)
-
-# create & allocate memory for means variable on device
-h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
-d_means = cuda.mem_alloc(h_means.nbytes)
-
-# create & allocate memory for distortion variable on device
-h_distortion = 0
-d_distortion = cuda.mem_alloc(np.array(h_distortion).astype(np.intc).nbytes)
-
-print('-----from CPU 1')
-print(h_means)
-print(h_clusters)
+    temp = initial_clusters[j]
+    initial_clusters[j] = initial_clusters[i]
+    initial_clusters[i] = temp
 
 ######################################################
 ### RUN K-MEANS SEQUENTIALLY ###
 ######################################################
 
-A = h_means
-W = h_clusters
-X = h_data
+A = np.zeros((K,D))
+W = initial_clusters
+X = data
 m = np.zeros(K)
 
 converged = False
@@ -165,6 +141,33 @@ print('-----sequential output')
 print(A)
 print(W)
 print("done")
+
+######################################################
+### ALLOCATE INPUT & COPY DATA TO DEVICE (GPU) ####
+######################################################
+
+h_data = data
+h_clusters = initial_clusters
+
+# allocate memory & copy data variable from host to device
+d_data = cuda.mem_alloc(h_data.nbytes)
+cuda.memcpy_htod(d_data,h_data)
+
+# allocate memory & copy clusters variable from host to device
+d_clusters = cuda.mem_alloc(h_clusters.nbytes)
+cuda.memcpy_htod(d_clusters,h_clusters)
+
+# create & allocate memory for means variable on device
+h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
+d_means = cuda.mem_alloc(h_means.nbytes)
+
+# create & allocate memory for distortion variable on device
+h_distortion = 0
+d_distortion = cuda.mem_alloc(np.array(h_distortion).astype(np.intc).nbytes)
+
+print('-----from CPU 1')
+print(h_means)
+print(h_clusters)
 
 ######################################################
 ### RUN K-MEANS IN PARALLEL ####
