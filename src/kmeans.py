@@ -183,7 +183,7 @@ mod = SourceModule(kernel_code)
 
 # call the first kernel
 kernel1 = mod.get_function("newmeans")
-kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
+kernel1(d_data, d_clusters, d_means, block=(D,K,1), grid=(1,1,1))
 
 # call the second kernel
 #kernel2 = mod.get_function("reassign")
