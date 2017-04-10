@@ -75,7 +75,8 @@ for i in range(len(h_clusters)-2,-1,-1):
     h_clusters[i] = temp
     
 # create empty arrays for means, 
-h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
+h_means = np.ascontiguousarray(np.empty((K,D),dtype=np.float64, order='C'))
+h_clustern = np.ascontiguousarray(np.empty(K,dtype=np.intc, order='C'))
 h_distortion = 0
 
 ######################################################
@@ -98,10 +99,11 @@ cuda.memcpy_htod(d_K, np.array(K).astype(np.intc))
 
 # Allocate means and clustern variables on device
 d_means = cuda.mem_alloc(h_means.nbytes)
-d_clustern = cuda.mem_alloc(np.empty(K,dtype=np.intc).nbytes)
+d_clustern = cuda.mem_alloc(h_clustern.nbytes)
 d_distortion = cuda.mem_alloc(4)
 
 print(h_means)
+print(h_clustern)
 print(h_clusters)
 
 ######################################################
@@ -166,9 +168,11 @@ kernel1(d_N, d_D, d_K, d_data, d_clusters, d_means, d_clustern, block=(K,D,1), g
 ######################################################
 
 cuda.memcpy_dtoh(h_means, d_means)
+cuda.memcpy_dtoh(h_clustern, d_clustern)
 cuda.memcpy_dtoh(h_clusters, d_clusters)
 
 print('-----')
 print(h_means)
+print(h_clustern)
 print(h_clusters)
 print("done")
