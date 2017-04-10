@@ -224,7 +224,6 @@ kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
 #kernel2(d_data, d_clusters, d_means, d_distortion, block=(N,1,1), grid=(1,1,1))
 cuda.memcpy_dtoh(h_means, d_means)
 cuda.memcpy_dtoh(h_clusters, d_clusters)
-times.append(time.time()-start)
 output.append(['naive parallel',time.time()-start, '?', '?', N, D, K])
 
 print('\n-----Naive Parallel output')
