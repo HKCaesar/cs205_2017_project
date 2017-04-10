@@ -165,7 +165,7 @@ def prep_data():
       initial_clusters[j] = initial_clusters[i]
       initial_clusters[i] = temp
   
-  return data, intital_clusters
+  return data, initial_clusters
 
 # define h_vars on host
 def prep_host():
@@ -203,7 +203,7 @@ def reset_hvars():
 header = ['algorithm','time','convergence','distortion','n','d','k']
 output = [header]
 
-data, intital_clusters = prep_data()
+data, initial_clusters = prep_data()
 prep_host()
 prep_device()
 
