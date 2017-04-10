@@ -189,11 +189,10 @@ def prep_device():
 
 # reset h_vars
 def reset_hvars(): 
-  global h_clusters, hmeans, h_distortion, d_clusters
+  global h_clusters, hmeans, h_distortion
   h_clusters = initial_clusters
   h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
   h_distortion = 0
-  cuda.memcpy_htod(d_clusters,h_clusters)
   return
 
 ######################################################
@@ -205,12 +204,15 @@ output = [header]
 
 data, initial_clusters = prep_data()
 prep_host()
-prep_device()
 
 ### Sequential ###
 start = time.time()
 seq_means, seq_clusters, seq_count, seq_distortion = sequential(data, initial_clusters)
 output.append(['sequential',time.time()-start, seq_count, seq_distortion, N, D, K])
+
+print('\n-----Sequential output')
+print(seq_means)
+print(seq_clusters[:10])
 
 ### Naive Parallel ###
 
@@ -220,6 +222,7 @@ kernel1 = mod.get_function("newmeans")
 reset_hvars()
 
 start = time.time()
+prep_device()
 kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
 #kernel2(d_data, d_clusters, d_means, d_distortion, block=(N,1,1), grid=(1,1,1))
 cuda.memcpy_dtoh(h_means, d_means)
@@ -227,8 +230,6 @@ cuda.memcpy_dtoh(h_clusters, d_clusters)
 output.append(['naive parallel',time.time()-start, '?', '?', N, D, K])
 
 print('\n-----Naive Parallel output')
-cuda.memcpy_dtoh(h_means, d_means)
-cuda.memcpy_dtoh(h_clusters, d_clusters)
 print(h_means)
 print(h_clusters[:10])
 print('Equals sequential output: %s' % str(np.array_equal(seq_means,h_means)))
@@ -241,6 +242,7 @@ mod = pimproved_mod()
 reset_hvars()
 
 start = time.time()
+prep_device()
 #kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
 #kernel2(d_data, d_clusters, d_means, d_distortion, block=(N,1,1), grid=(1,1,1))
 cuda.memcpy_dtoh(h_means, d_means)
@@ -248,8 +250,6 @@ cuda.memcpy_dtoh(h_clusters, d_clusters)
 output.append(['improved parallel',time.time()-start, '?', '?', N, D, K])
 
 print('\n-----Improved Parallel output')
-cuda.memcpy_dtoh(h_means, d_means)
-cuda.memcpy_dtoh(h_clusters, d_clusters)
 print(h_means)
 print(h_clusters[:10])
 print('Equals sequential output: %s' % str(np.array_equal(seq_means,h_means)))
