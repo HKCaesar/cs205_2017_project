@@ -36,18 +36,18 @@ __global__ void newmeans(double *data, int *clusters, double *means, int *cluste
   // find the n per cluster with just one lucky thread
   if (threadIdx.x==0 & threadIdx.y==0)
   {
-    for(int k=0; k < (%(K)s); ++k) clustern[k] = 0;
-    for (int n=0; n < (%(N)s); ++n) clustern[clusters[n]]++;
-    for(int k =0; k < (%(K)s); ++k) clustern[k] = clustern[k];
+    for(int k=0; k < (%(K)s); ++k) s_clustern[k] = 0;
+    for(int n=0; n < (%(N)s); ++n) s_clustern[s_clustern[n]]++;
+    for(int k =0; k < (%(K)s); ++k) clustern[k] = s_clustern[k];
    }
    __syncthreads();
    
    // sum stuff
-   int k = threadIdx.x;
-   int d = threadIdx.y;
+   //int k = threadIdx.x;
+   //int d = threadIdx.y;
    
    // divide stuff
-   int l_clustern = clustern[k];
+   //int l_clustern = clustern[k];
    
   }
 
