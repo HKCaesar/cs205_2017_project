@@ -54,7 +54,7 @@ __global__ void newmeans(double *data, int *clusters, double *means) {
          if(d==threadIdx.y)
          {
            l_sum += data[(%(D)s*n)+d];
-           cluster[(%(D)s*n)+d] = (%(D)s*n)+d;
+           clusters[(%(D)s*n)+d] = (%(D)s*n)+d;
          }
        }
      }
