@@ -109,7 +109,7 @@ d_means = cuda.mem_alloc(h_means.nbytes)
 h_distortion = 0
 d_distortion = cuda.mem_alloc(np.array(h_distortion).astype(np.intc).nbytes)
 
-print('-----from CPU')
+print('-----from CPU 1')
 print(h_means)
 print(h_clusters)
 
@@ -185,7 +185,7 @@ while not converged:
 ### COPY DEVICE DATA BACK TO HOST AND COMPARE ####
 ######################################################
 
-print('-----from CPU')
+print('-----from CPU 2')
 print(h_means)
 print(h_clusters)
 
