@@ -76,7 +76,7 @@ __global__ void reassign(double *d_data, double *d_clusters, double *d_means, do
 reviewdata = pd.read_csv(data_fn)
 acts = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
 data = reviewdata[acts][:limit].values
-data = np.ascontiguousarray(h_data, dtype=np.float64)
+data = np.ascontiguousarray(data, dtype=np.float64)
 N,D = data.shape
 
 # assign random clusters & shuffle 
