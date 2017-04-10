@@ -31,7 +31,7 @@ K = 3
 kernel_code_template = ("""
 
 __global__ void newmeans(double *data, int *clusters, double *means, int *clustern) {
-  __shared__ float s_clustern[K;
+  __shared__ float s_clustern[K];
   // find the n per cluster with just one lucky thread
   if (threadIdx.x==0 & threadIdx.y==0)
   {
@@ -44,7 +44,6 @@ __global__ void newmeans(double *data, int *clusters, double *means, int *cluste
    // sum stuff
    int k = threadIdx.x;
    int d = threadIdx.y;
-   
    
    // divide stuff
    int l_clustern = clustern[k];
