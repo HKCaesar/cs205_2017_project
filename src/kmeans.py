@@ -38,7 +38,7 @@ __global__ void newmeans(double *data, int *clusters, double *means, int *cluste
   {
     for(int k=0; k < (%(K)s); ++k) s_clustern[k] = 0;
     for(int n=0; n < (%(N)s); ++n) s_clustern[s_clustern[n]]++;
-    for(int k =0; k < (%(K)s); ++k) clustern[k] = s_clustern[k];
+    //for(int k=0; k < (%(K)s); ++k) clustern[k] = s_clustern[k];
    }
    __syncthreads();
    
