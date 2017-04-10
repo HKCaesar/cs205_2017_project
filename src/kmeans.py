@@ -5,6 +5,9 @@ from pycuda.compiler import SourceModule
 import pandas as pd
 import numpy as np
 
+import time
+import csv
+
 ######################################################
 ### INFO ####
 ######################################################
@@ -22,45 +25,142 @@ import numpy as np
 ######################################################
 
 data_fn = "../data/reviewer-data.csv"
+output_dir = "../analysis/"
+
 K = 3
-limit = 1000
+limit = 1000 # impose a limit of N on the dataset
+
+header = ['n','d','k','convergence','distortion','sequential','pnaive', 'pimproved']
+output = []
 
 ######################################################
-### GPU KERNELS (in C) ####
+### DEFINE SEQUENTIAL K-MEANS FUNCTiON ###
 ######################################################
 
-kernel_code_template = ("""
+def sequential(initial_clusters, data):
+  A = np.zeros((K,D))
+  W = initial_clusters
+  X = data
+  m = np.zeros(K)
 
-__global__ void newmeans(double *data, int *clusters, double *means) {
-  __shared__ int s_clustern[%(K)s];
-  int tid = (%(D)s*threadIdx.x) + threadIdx.y;
-  double l_sum = 0;
-    
-  // find the n per cluster with just one lucky thread
-  if (tid==0)
-  {
-    for(int k=0; k < (%(K)s); ++k) s_clustern[k] = 0;
-    for(int n=0; n < (%(N)s); ++n) s_clustern[clusters[n]]++;
-   }
-   __syncthreads();
-   
-   // sum stuff  
-   for(int n=0; n < (%(N)s); ++n)
-   {
-     if(clusters[n]==threadIdx.x)
-     {
-       l_sum += data[(%(D)s*n)+threadIdx.y];
+  start = time.time()
+  converged = False
+  while not converged:
+      converged = True
+
+      #compute means
+      for k in range(K):
+          for d in range(D):
+              A[k,d] = 0
+          m[k]=0
+
+      for n in range(N):
+          for d in range(D):
+              A[W[n],d]+=X[n,d]
+          m[ W[n] ] +=1
+
+      for k in range(K):
+          for d in range(D):
+              A[k,d] = A[k,d]/m[k]
+
+      #assign to closest mean
+      for n in range(N):
+
+          min_val = np.inf
+          min_ind = -1
+
+          for k in range(K):
+              temp =0
+              for d in range(D):
+                  temp += (X[n,d]-A[k,d])**2
+
+              if temp < min_val:
+                  min_val = temp
+                  min_ind = k
+
+          if min_ind != W[n]:
+              W[n] = min_ind
+              converged=False
+
+  print('\n-----sequential output')
+  print(A)
+  print(W[:10])
+  print("done")
+  
+  return A, seq_time
+
+######################################################
+### DEFINE "NAIVE" PARALLEL K-MEANS KERNEL FOR GPU ####
+######################################################
+
+def pnaive_mod():
+  pnaive_code_template = ("""
+
+  __global__ void newmeans(double *data, int *clusters, double *means) {
+    __shared__ int s_clustern[%(K)s];
+    int tid = (%(D)s*threadIdx.x) + threadIdx.y;
+    double l_sum = 0;
+
+    // find the n per cluster with just one lucky thread
+    if (tid==0)
+    {
+      for(int k=0; k < (%(K)s); ++k) s_clustern[k] = 0;
+      for(int n=0; n < (%(N)s); ++n) s_clustern[clusters[n]]++;
      }
-   }
-  
-   // divide local sum by the number in that cluster
-   means[tid] = l_sum/s_clustern[threadIdx.x];
-  }
+     __syncthreads();
 
-__global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_distortion) {
+     // sum stuff  
+     for(int n=0; n < (%(N)s); ++n)
+     {
+       if(clusters[n]==threadIdx.x)
+       {
+         l_sum += data[(%(D)s*n)+threadIdx.y];
+       }
+     }
+
+     // divide local sum by the number in that cluster
+     means[tid] = l_sum/s_clustern[threadIdx.x];
+    }
+
+  __global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_distortion) {
+    }
+
+  """)
+  
+  kernel_code = pnaive_code_template % { 
+    'N': N,
+    'D': D,
+    'K': K,
   }
   
-""")
+  SourceModule(kernel_code)
+  
+  return SourceModule(kernel_code)
+
+######################################################
+### DEFINE "IMPROVED" PARALLEL K-MEANS KERNEL FOR GPU ####
+######################################################
+
+def pimproved_mod():
+  pimproved_code_template = ("""
+
+  __global__ void newmeans(double *data, int *clusters, double *means) {
+    }
+
+  __global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_distortion) {
+    }
+
+  """)
+  
+  kernel_code = pimproved_code_template % { 
+    'N': N,
+    'D': D,
+    'K': K,
+  }
+  
+  SourceModule(kernel_code)
+  
+  return SourceModule(kernel_code)
 
 ######################################################
 ### DOWNLOAD DATA & ASSIGN INITIAL CLUSTERS ####
@@ -82,59 +182,6 @@ for i in range(len(initial_clusters)-2,-1,-1):
     temp = initial_clusters[j]
     initial_clusters[j] = initial_clusters[i]
     initial_clusters[i] = temp
-
-######################################################
-### RUN K-MEANS SEQUENTIALLY ###
-######################################################
-
-A = np.zeros((K,D))
-W = initial_clusters
-X = data
-m = np.zeros(K)
-
-converged = False
-
-while not converged:
-    converged = True
-    
-    #compute means
-    for k in range(K):
-        for d in range(D):
-            A[k,d] = 0
-        m[k]=0
-            
-    for n in range(N):
-        for d in range(D):
-            A[W[n],d]+=X[n,d]
-        m[ W[n] ] +=1
-    
-    for k in range(K):
-        for d in range(D):
-            A[k,d] = A[k,d]/m[k]
-            
-    #assign to closest mean
-    for n in range(N):
-        
-        min_val = np.inf
-        min_ind = -1
-        
-        for k in range(K):
-            temp =0
-            for d in range(D):
-                temp += (X[n,d]-A[k,d])**2
-            
-            if temp < min_val:
-                min_val = temp
-                min_ind = k
-                
-        if min_ind != W[n]:
-            W[n] = min_ind
-            converged=False
-            
-print('\n-----sequential output')
-print(A)
-print(W[:10])
-print("done")
 
 ######################################################
 ### ALLOCATE INPUT & COPY DATA TO DEVICE (GPU) ####
@@ -164,22 +211,24 @@ print(h_means)
 print(h_clusters[:10])
 
 ######################################################
-### RUN K-MEANS IN PARALLEL ####
+### RUN K-MEANS ####
 ######################################################
 
-# define some constants in the kernel code
-kernel_code = kernel_code_template % { 
-  'N': N,
-  'D': D,
-  'K': K,
-}
-mod = SourceModule(kernel_code)
+# Sequential 
 
-# call the first kernel
+# Parallel Naive
+
+mod = pnaive_mod()
 kernel1 = mod.get_function("newmeans")
 kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
+#kernel2 = mod.get_function("reassign")
+#kernel2(d_data, d_clusters, d_means, d_distortion, block=(N,1,1), grid=(1,1,1))
 
-# call the second kernel
+# Parallel Improved
+
+mod = pimproved_mod()
+#kernel1 = mod.get_function("newmeans")
+#kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
 #kernel2 = mod.get_function("reassign")
 #kernel2(d_data, d_clusters, d_means, d_distortion, block=(N,1,1), grid=(1,1,1))
 
@@ -195,3 +244,9 @@ print(h_clusters[:10])
 
 print('\n-----Sequential and Parallel means are equal:')
 print(np.array_equal(A,h_means))
+
+with open(output_dir + 'times.csv', 'w') as f:
+    writer = csv.writer(f, delimiter = ',')
+    writer.writerow([i for i in header])
+    writer.writerow([str(i) for i in MATRIX_SIZES])
+    f.close()
