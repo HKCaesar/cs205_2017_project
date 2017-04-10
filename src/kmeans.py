@@ -146,10 +146,14 @@ def pimproved_mod():
 
 # download data and assign initial clusters
 def prep_data():
+  
+  global N, D
+  
   # import data file and subset data for k-means
   reviewdata = pd.read_csv(data_fn)
   data = reviewdata[d_list][:limit].values
   data = np.ascontiguousarray(data, dtype=np.float64)
+  N,D=data.shape
 
   # assign random clusters & shuffle 
   initial_clusters = np.ascontiguousarray(np.zeros(N,dtype=np.intc, order='C'))
@@ -200,7 +204,6 @@ header = ['algorithm','time','convergence','distortion','n','d','k']
 output = [header]
 
 data, intital_clusters = prep_data()
-N,D=data.shape
 prep_host()
 prep_device()
 
