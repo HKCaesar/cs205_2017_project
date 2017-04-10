@@ -165,7 +165,7 @@ kernel_code = kernel_code_template % {
   'D': D,
   'K': K,
 }
-mod = compiler.SourceModule(kernel_code)
+mod = SourceModule(kernel_code)
 
 kernel1 = mod.get_function("newmeans")
 kernel1(d_data, d_clusters, d_means, d_clustern, block=(K,D,1), grid=(1,1,1), shared=100)
