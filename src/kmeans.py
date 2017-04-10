@@ -169,7 +169,7 @@ def prep_data():
 
 # define h_vars on host
 def prep_host():
-  global h_data, h_clusters, hmeans, h_distortion
+  global h_data, h_clusters, h_means, h_distortion
   h_data = data
   h_clusters = initial_clusters
   h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
