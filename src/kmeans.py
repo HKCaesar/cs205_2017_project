@@ -31,8 +31,9 @@ K = 3
 mod = SourceModule("""
 
 __global__ void newmeans(int *N, int *D, int *K, double *data, int *clusters, double *means, int *clustern) {
-  __shared__ float sums[10];
+  __shared__ float s_sums[10];
   // find the n per cluster with just one lucky thread
+  int l_clustern[K]; 
   if (threadIdx.x==0 & threadIdx.y==0)
   {
     for(int k=0; k < (*K); ++k) clustern[k] = 0;
