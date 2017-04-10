@@ -287,7 +287,7 @@ print('Equals sequential output: %s' % str(np.array_equal(seq_means,h_means)))
 ### COPY DEVICE DATA BACK TO HOST AND COMPARE ####
 ######################################################
 
-with open(output_dir + 'times.csv', 'o') as f:
+with open(output_dir + 'times.csv', 'w') as f:
     writer = csv.writer(f, delimiter = ',')
     writer.writerows(output)
     f.close()
