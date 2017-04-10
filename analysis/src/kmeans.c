@@ -108,5 +108,4 @@ extern void kMeans (double *x, double *c,  int *assign,  int N,  int K,  int D)
         
     }
     printf("Converged!\n\n");
-    
 }

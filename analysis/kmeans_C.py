@@ -104,8 +104,8 @@ x = x.copy(order='C')
 X = X.copy(order='C')
 A = A.copy(order='C')
 
-
-kM.kMeans(x, c, WW)
+cc = np.zeros((K*D), dtype=np.float64)
+kM.kM(x, c, WW, cc)
 
 print("Stock K-mean equal to Eric's clusters?  ", end=" ")
 print(np.array_equal(kmeans.cluster_centers_,c))

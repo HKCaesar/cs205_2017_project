@@ -96,8 +96,12 @@ except __builtin__.Exception:
     _newclass = 0
 
 
-def kMeans(*args):
-    return _kM.kMeans(*args)
+def kM(x, c, assign, out):
+    return _kM.kM(x, c, assign, out)
+kM = _kM.kM
+
+def kMeans(x, c, assign, N, K, D):
+    return _kM.kMeans(x, c, assign, N, K, D)
 kMeans = _kM.kMeans
 # This file is compatible with both classic and new-style classes.
 

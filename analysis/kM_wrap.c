@@ -3016,7 +3016,7 @@ static swig_module_info swig_module = {swig_types, 3, 0, 0, 0, 0};
 
 
   #define SWIG_FILE_WITH_INIT
-  #include "kmeans.h"
+  #include "src/kmeans.h"
 
 
 #ifndef SWIG_FILE_WITH_INIT
@@ -3027,13 +3027,16 @@ static swig_module_info swig_module = {swig_types, 3, 0, 0, 0, 0};
 #include <numpy/arrayobject.h>
 
 
-    void kM_wrap(double *x, int N, int D, double *c, int K, int DD, int *assign, int NN) {
+     void kM_wrap(double *x, int N, int DD, double *c, int K, int D, int *assign, int NN, double *out, int DDD) {
         if (N != NN) {
             PyErr_Format(PyExc_ValueError,
                          "Arrays of lengths (%d,%d) given",
                          N, NN);
         }
+    
         kMeans(x, c, assign, N, K, D);
+        for(int i = 0; i < (D*K); ++i) out[i] = c[i];
+
     }
 
 
@@ -3660,7 +3663,7 @@ SWIG_AsVal_int (PyObject * obj, int *val)
 #ifdef __cplusplus
 extern "C" {
 #endif
-SWIGINTERN PyObject *_wrap_kMeans__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_kM(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   double *arg1 = (double *) 0 ;
   int arg2 ;
@@ -3670,17 +3673,21 @@ SWIGINTERN PyObject *_wrap_kMeans__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObje
   int arg6 ;
   int *arg7 = (int *) 0 ;
   int arg8 ;
+  double *arg9 = (double *) 0 ;
+  int arg10 ;
   PyArrayObject *array1 = NULL ;
   int is_new_object1 = 0 ;
   PyArrayObject *array4 = NULL ;
   int is_new_object4 = 0 ;
   PyArrayObject *array7 = NULL ;
   int is_new_object7 = 0 ;
+  PyObject *array9 = NULL ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOO:kMeans",&obj0,&obj1,&obj2)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:kM",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
   {
     npy_intp size[2] = {
       -1, -1 
@@ -3718,10 +3725,29 @@ SWIGINTERN PyObject *_wrap_kMeans__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObje
     arg8 = (int) array_size(array7,0);
   }
   {
-    kM_wrap(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8);
+    npy_intp dims[1];
+    if (!PyInt_Check(obj3))
+    {
+      const char* typestring = pytype_string(obj3);
+      PyErr_Format(PyExc_TypeError,
+        "Int dimension expected.  '%s' given.",
+        typestring);
+      SWIG_fail;
+    }
+    arg10 = (int) PyInt_AsLong(obj3);
+    dims[0] = (npy_intp) arg10;
+    array9 = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+    if (!array9) SWIG_fail;
+    arg9 = (double*) array_data(array9);
+  }
+  {
+    kM_wrap(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10);
     if (PyErr_Occurred()) SWIG_fail;
   }
   resultobj = SWIG_Py_Void();
+  {
+    resultobj = SWIG_Python_AppendOutput(resultobj,(PyObject*)array9);
+  }
   {
     if (is_new_object1 && array1)
     {
@@ -3764,7 +3790,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_kMeans__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_kMeans(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   double *arg1 = (double *) 0 ;
   double *arg2 = (double *) 0 ;
@@ -3830,89 +3856,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_kMeans(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[7] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 6) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 3) {
-    int _v;
-    {
-      _v = is_array(argv[0]) || PySequence_Check(argv[0]);
-    }
-    if (_v) {
-      {
-        _v = is_array(argv[1]) || PySequence_Check(argv[1]);
-      }
-      if (_v) {
-        {
-          _v = is_array(argv[2]) || PySequence_Check(argv[2]);
-        }
-        if (_v) {
-          if (argc <= 3) {
-            return _wrap_kMeans__SWIG_0(self, args);
-          }
-          return _wrap_kMeans__SWIG_0(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 6) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_double, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      void *vptr = 0;
-      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_double, 0);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_int, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          {
-            int res = SWIG_AsVal_int(argv[3], NULL);
-            _v = SWIG_CheckState(res);
-          }
-          if (_v) {
-            {
-              int res = SWIG_AsVal_int(argv[4], NULL);
-              _v = SWIG_CheckState(res);
-            }
-            if (_v) {
-              {
-                int res = SWIG_AsVal_int(argv[5], NULL);
-                _v = SWIG_CheckState(res);
-              }
-              if (_v) {
-                return _wrap_kMeans__SWIG_1(self, args);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'kMeans'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    kM_wrap(double *,int,int,double *,int,int,int *,int)\n"
-    "    kMeans(double *,double *,int *,int,int,int)\n");
-  return 0;
-}
-
-
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
+	 { (char *)"kM", _wrap_kM, METH_VARARGS, NULL},
 	 { (char *)"kMeans", _wrap_kMeans, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
