@@ -207,7 +207,7 @@ prep_device()
 ### Sequential ###
 start = time.time()
 seq_means, seq_clusters, seq_count, seq_distortion = sequential(data, initial_clusters)
-output.append(['sequential',time.time()-start, seq_count, seq_distortion, N, D, K]
+output.append(['sequential',time.time()-start, seq_count, seq_distortion, N, D, K])
 
 ### Naive Parallel ###
 
