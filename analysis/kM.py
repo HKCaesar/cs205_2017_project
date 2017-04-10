@@ -9,12 +9,12 @@ if _swig_python_version_info >= (2, 7, 0):
     def swig_import_helper():
         import importlib
         pkg = __name__.rpartition('.')[0]
-        mname = '.'.join((pkg, '_simple')).lstrip('.')
+        mname = '.'.join((pkg, '_kM')).lstrip('.')
         try:
             return importlib.import_module(mname)
         except ImportError:
-            return importlib.import_module('_simple')
-    _simple = swig_import_helper()
+            return importlib.import_module('_kM')
+    _kM = swig_import_helper()
     del swig_import_helper
 elif _swig_python_version_info >= (2, 6, 0):
     def swig_import_helper():
@@ -22,20 +22,20 @@ elif _swig_python_version_info >= (2, 6, 0):
         import imp
         fp = None
         try:
-            fp, pathname, description = imp.find_module('_simple', [dirname(__file__)])
+            fp, pathname, description = imp.find_module('_kM', [dirname(__file__)])
         except ImportError:
-            import _simple
-            return _simple
+            import _kM
+            return _kM
         try:
-            _mod = imp.load_module('_simple', fp, pathname, description)
+            _mod = imp.load_module('_kM', fp, pathname, description)
         finally:
             if fp is not None:
                 fp.close()
         return _mod
-    _simple = swig_import_helper()
+    _kM = swig_import_helper()
     del swig_import_helper
 else:
-    import _simple
+    import _kM
 del _swig_python_version_info
 
 try:
@@ -96,22 +96,13 @@ except __builtin__.Exception:
     _newclass = 0
 
 
-def sumSq(x, c, ss, D, N, K, n, k):
-    return _simple.sumSq(x, c, ss, D, N, K, n, k)
-sumSq = _simple.sumSq
-
-def selectCluster(x, c, assign, N, D, K, conv, dist):
-    return _simple.selectCluster(x, c, assign, N, D, K, conv, dist)
-selectCluster = _simple.selectCluster
-
-def clusterCenter(x, c, assign, N, K, D, count):
-    return _simple.clusterCenter(x, c, assign, N, K, D, count)
-clusterCenter = _simple.clusterCenter
+def kM(x, c, assign, out):
+    return _kM.kM(x, c, assign, out)
+kM = _kM.kM
 
 def kMeans(x, c, assign, N, K, D):
-    return _simple.kMeans(x, c, assign, N, K, D)
-kMeans = _simple.kMeans
+    return _kM.kMeans(x, c, assign, N, K, D)
+kMeans = _kM.kMeans
 # This file is compatible with both classic and new-style classes.
 
-cvar = _simple.cvar
 

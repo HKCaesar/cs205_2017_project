@@ -2980,7 +2980,7 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 /* -------- TYPES TABLE (BEGIN) -------- */
 
 #define SWIGTYPE_p_char swig_types[0]
-#define SWIGTYPE_p_float swig_types[1]
+#define SWIGTYPE_p_double swig_types[1]
 #define SWIGTYPE_p_int swig_types[2]
 static swig_type_info *swig_types[4];
 static swig_module_info swig_module = {swig_types, 3, 0, 0, 0, 0};
@@ -2996,16 +2996,16 @@ static swig_module_info swig_module = {swig_types, 3, 0, 0, 0, 0};
 #endif
 
 /*-----------------------------------------------
-              @(target):= _simple.so
+              @(target):= _kM.so
   ------------------------------------------------*/
 #if PY_VERSION_HEX >= 0x03000000
-#  define SWIG_init    PyInit__simple
+#  define SWIG_init    PyInit__kM
 
 #else
-#  define SWIG_init    init_simple
+#  define SWIG_init    init_kM
 
 #endif
-#define SWIG_name    "_simple"
+#define SWIG_name    "_kM"
 
 #define SWIGVERSION 0x030012 
 #define SWIG_VERSION SWIGVERSION
@@ -3016,7 +3016,7 @@ static swig_module_info swig_module = {swig_types, 3, 0, 0, 0, 0};
 
 
   #define SWIG_FILE_WITH_INIT
-  #include "../kmeans.h"
+  #include "src/kmeans.h"
 
 
 #ifndef SWIG_FILE_WITH_INIT
@@ -3025,6 +3025,489 @@ static swig_module_info swig_module = {swig_types, 3, 0, 0, 0, 0};
 #include "stdio.h"
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
+
+
+     void kM_wrap(double *x, int N, int DD, double *c, int K, int D, int *assign, int NN, double *out, int DDD) {
+        if (N != NN) {
+            PyErr_Format(PyExc_ValueError,
+                         "Arrays of lengths (%d,%d) given",
+                         N, NN);
+        }
+    
+        kMeans(x, c, assign, N, K, D);
+        for(int i = 0; i < (D*K); ++i) out[i] = c[i];
+
+    }
+
+
+#if NPY_API_VERSION < 0x00000007
+#define NPY_ARRAY_DEFAULT NPY_DEFAULT
+#define NPY_ARRAY_FARRAY  NPY_FARRAY
+#define NPY_FORTRANORDER  NPY_FORTRAN
+#endif
+
+
+/* Macros to extract array attributes.
+ */
+#if NPY_API_VERSION < 0x00000007
+#define is_array(a)            ((a) && PyArray_Check((PyArrayObject*)a))
+#define array_type(a)          (int)(PyArray_TYPE((PyArrayObject*)a))
+#define array_numdims(a)       (((PyArrayObject*)a)->nd)
+#define array_dimensions(a)    (((PyArrayObject*)a)->dimensions)
+#define array_size(a,i)        (((PyArrayObject*)a)->dimensions[i])
+#define array_strides(a)       (((PyArrayObject*)a)->strides)
+#define array_stride(a,i)      (((PyArrayObject*)a)->strides[i])
+#define array_data(a)          (((PyArrayObject*)a)->data)
+#define array_descr(a)         (((PyArrayObject*)a)->descr)
+#define array_flags(a)         (((PyArrayObject*)a)->flags)
+#define array_enableflags(a,f) (((PyArrayObject*)a)->flags) = f
+#define array_is_fortran(a)    (PyArray_ISFORTRAN((PyArrayObject*)a))
+#else
+#define is_array(a)            ((a) && PyArray_Check(a))
+#define array_type(a)          PyArray_TYPE((PyArrayObject*)a)
+#define array_numdims(a)       PyArray_NDIM((PyArrayObject*)a)
+#define array_dimensions(a)    PyArray_DIMS((PyArrayObject*)a)
+#define array_strides(a)       PyArray_STRIDES((PyArrayObject*)a)
+#define array_stride(a,i)      PyArray_STRIDE((PyArrayObject*)a,i)
+#define array_size(a,i)        PyArray_DIM((PyArrayObject*)a,i)
+#define array_data(a)          PyArray_DATA((PyArrayObject*)a)
+#define array_descr(a)         PyArray_DESCR((PyArrayObject*)a)
+#define array_flags(a)         PyArray_FLAGS((PyArrayObject*)a)
+#define array_enableflags(a,f) PyArray_ENABLEFLAGS((PyArrayObject*)a,f)
+#define array_is_fortran(a)    (PyArray_IS_F_CONTIGUOUS((PyArrayObject*)a))
+#endif
+#define array_is_contiguous(a) (PyArray_ISCONTIGUOUS((PyArrayObject*)a))
+#define array_is_native(a)     (PyArray_ISNOTSWAPPED((PyArrayObject*)a))
+
+
+  /* Given a PyObject, return a string describing its type.
+   */
+  const char* pytype_string(PyObject* py_obj)
+  {
+    if (py_obj == NULL          ) return "C NULL value";
+    if (py_obj == Py_None       ) return "Python None" ;
+    if (PyCallable_Check(py_obj)) return "callable"    ;
+    if (PyString_Check(  py_obj)) return "string"      ;
+    if (PyInt_Check(     py_obj)) return "int"         ;
+    if (PyFloat_Check(   py_obj)) return "float"       ;
+    if (PyDict_Check(    py_obj)) return "dict"        ;
+    if (PyList_Check(    py_obj)) return "list"        ;
+    if (PyTuple_Check(   py_obj)) return "tuple"       ;
+#if PY_MAJOR_VERSION < 3
+    if (PyFile_Check(    py_obj)) return "file"        ;
+    if (PyModule_Check(  py_obj)) return "module"      ;
+    if (PyInstance_Check(py_obj)) return "instance"    ;
+#endif
+
+    return "unknown type";
+  }
+
+  /* Given a NumPy typecode, return a string describing the type.
+   */
+  const char* typecode_string(int typecode)
+  {
+    static const char* type_names[25] = {"bool",
+                                         "byte",
+                                         "unsigned byte",
+                                         "short",
+                                         "unsigned short",
+                                         "int",
+                                         "unsigned int",
+                                         "long",
+                                         "unsigned long",
+                                         "long long",
+                                         "unsigned long long",
+                                         "float",
+                                         "double",
+                                         "long double",
+                                         "complex float",
+                                         "complex double",
+                                         "complex long double",
+                                         "object",
+                                         "string",
+                                         "unicode",
+                                         "void",
+                                         "ntypes",
+                                         "notype",
+                                         "char",
+                                         "unknown"};
+    return typecode < 24 ? type_names[typecode] : type_names[24];
+  }
+
+  /* Make sure input has correct numpy type.  This now just calls
+     PyArray_EquivTypenums().
+   */
+  int type_match(int actual_type,
+                 int desired_type)
+  {
+    return PyArray_EquivTypenums(actual_type, desired_type);
+  }
+
+#ifdef SWIGPY_USE_CAPSULE
+  void free_cap(PyObject * cap)
+  {
+    void* array = (void*) PyCapsule_GetPointer(cap,SWIGPY_CAPSULE_NAME);
+    if (array != NULL) free(array);
+  }
+#endif
+
+
+
+
+  /* Given a PyObject pointer, cast it to a PyArrayObject pointer if
+   * legal.  If not, set the python error string appropriately and
+   * return NULL.
+   */
+  PyArrayObject* obj_to_array_no_conversion(PyObject* input,
+                                            int        typecode)
+  {
+    PyArrayObject* ary = NULL;
+    if (is_array(input) && (typecode == NPY_NOTYPE ||
+                            PyArray_EquivTypenums(array_type(input), typecode)))
+    {
+      ary = (PyArrayObject*) input;
+    }
+    else if is_array(input)
+    {
+      const char* desired_type = typecode_string(typecode);
+      const char* actual_type  = typecode_string(array_type(input));
+      PyErr_Format(PyExc_TypeError,
+                   "Array of type '%s' required.  Array of type '%s' given",
+                   desired_type, actual_type);
+      ary = NULL;
+    }
+    else
+    {
+      const char* desired_type = typecode_string(typecode);
+      const char* actual_type  = pytype_string(input);
+      PyErr_Format(PyExc_TypeError,
+                   "Array of type '%s' required.  A '%s' was given",
+                   desired_type,
+                   actual_type);
+      ary = NULL;
+    }
+    return ary;
+  }
+
+  /* Convert the given PyObject to a NumPy array with the given
+   * typecode.  On success, return a valid PyArrayObject* with the
+   * correct type.  On failure, the python error string will be set and
+   * the routine returns NULL.
+   */
+  PyArrayObject* obj_to_array_allow_conversion(PyObject* input,
+                                               int       typecode,
+                                               int*      is_new_object)
+  {
+    PyArrayObject* ary = NULL;
+    PyObject*      py_obj;
+    if (is_array(input) && (typecode == NPY_NOTYPE ||
+                            PyArray_EquivTypenums(array_type(input),typecode)))
+    {
+      ary = (PyArrayObject*) input;
+      *is_new_object = 0;
+    }
+    else
+    {
+      py_obj = PyArray_FROMANY(input, typecode, 0, 0, NPY_ARRAY_DEFAULT);
+      /* If NULL, PyArray_FromObject will have set python error value.*/
+      ary = (PyArrayObject*) py_obj;
+      *is_new_object = 1;
+    }
+    return ary;
+  }
+
+  /* Given a PyArrayObject, check to see if it is contiguous.  If so,
+   * return the input pointer and flag it as not a new object.  If it is
+   * not contiguous, create a new PyArrayObject using the original data,
+   * flag it as a new object and return the pointer.
+   */
+  PyArrayObject* make_contiguous(PyArrayObject* ary,
+                                 int*           is_new_object,
+                                 int            min_dims,
+                                 int            max_dims)
+  {
+    PyArrayObject* result;
+    if (array_is_contiguous(ary))
+    {
+      result = ary;
+      *is_new_object = 0;
+    }
+    else
+    {
+      result = (PyArrayObject*) PyArray_ContiguousFromObject((PyObject*)ary,
+                                                              array_type(ary),
+                                                              min_dims,
+                                                              max_dims);
+      *is_new_object = 1;
+    }
+    return result;
+  }
+
+  /* Given a PyArrayObject, check to see if it is Fortran-contiguous.
+   * If so, return the input pointer, but do not flag it as not a new
+   * object.  If it is not Fortran-contiguous, create a new
+   * PyArrayObject using the original data, flag it as a new object
+   * and return the pointer.
+   */
+  PyArrayObject* make_fortran(PyArrayObject* ary,
+                              int*           is_new_object)
+  {
+    PyArrayObject* result;
+    if (array_is_fortran(ary))
+    {
+      result = ary;
+      *is_new_object = 0;
+    }
+    else
+    {
+      Py_INCREF(array_descr(ary));
+      result = (PyArrayObject*) PyArray_FromArray(ary,
+                                                  array_descr(ary),
+#if NPY_API_VERSION < 0x00000007
+                                                  NPY_FORTRANORDER);
+#else
+                                                  NPY_ARRAY_F_CONTIGUOUS);
+#endif
+      *is_new_object = 1;
+    }
+    return result;
+  }
+
+  /* Convert a given PyObject to a contiguous PyArrayObject of the
+   * specified type.  If the input object is not a contiguous
+   * PyArrayObject, a new one will be created and the new object flag
+   * will be set.
+   */
+  PyArrayObject* obj_to_array_contiguous_allow_conversion(PyObject* input,
+                                                          int       typecode,
+                                                          int*      is_new_object)
+  {
+    int is_new1 = 0;
+    int is_new2 = 0;
+    PyArrayObject* ary2;
+    PyArrayObject* ary1 = obj_to_array_allow_conversion(input,
+                                                        typecode,
+                                                        &is_new1);
+    if (ary1)
+    {
+      ary2 = make_contiguous(ary1, &is_new2, 0, 0);
+      if ( is_new1 && is_new2)
+      {
+        Py_DECREF(ary1);
+      }
+      ary1 = ary2;
+    }
+    *is_new_object = is_new1 || is_new2;
+    return ary1;
+  }
+
+  /* Convert a given PyObject to a Fortran-ordered PyArrayObject of the
+   * specified type.  If the input object is not a Fortran-ordered
+   * PyArrayObject, a new one will be created and the new object flag
+   * will be set.
+   */
+  PyArrayObject* obj_to_array_fortran_allow_conversion(PyObject* input,
+                                                       int       typecode,
+                                                       int*      is_new_object)
+  {
+    int is_new1 = 0;
+    int is_new2 = 0;
+    PyArrayObject* ary2;
+    PyArrayObject* ary1 = obj_to_array_allow_conversion(input,
+                                                        typecode,
+                                                        &is_new1);
+    if (ary1)
+    {
+      ary2 = make_fortran(ary1, &is_new2);
+      if (is_new1 && is_new2)
+      {
+        Py_DECREF(ary1);
+      }
+      ary1 = ary2;
+    }
+    *is_new_object = is_new1 || is_new2;
+    return ary1;
+  }
+
+
+  /* Test whether a python object is contiguous.  If array is
+   * contiguous, return 1.  Otherwise, set the python error string and
+   * return 0.
+   */
+  int require_contiguous(PyArrayObject* ary)
+  {
+    int contiguous = 1;
+    if (!array_is_contiguous(ary))
+    {
+      PyErr_SetString(PyExc_TypeError,
+                      "Array must be contiguous.  A non-contiguous array was given");
+      contiguous = 0;
+    }
+    return contiguous;
+  }
+
+  /* Test whether a python object is (C_ or F_) contiguous.  If array is
+   * contiguous, return 1.  Otherwise, set the python error string and
+   * return 0.
+   */
+  int require_c_or_f_contiguous(PyArrayObject* ary)
+  {
+    int contiguous = 1;
+    if (!(array_is_contiguous(ary) || array_is_fortran(ary)))
+    {
+      PyErr_SetString(PyExc_TypeError,
+                      "Array must be contiguous (C_ or F_).  A non-contiguous array was given");
+      contiguous = 0;
+    }
+    return contiguous;
+  }
+
+  /* Require that a numpy array is not byte-swapped.  If the array is
+   * not byte-swapped, return 1.  Otherwise, set the python error string
+   * and return 0.
+   */
+  int require_native(PyArrayObject* ary)
+  {
+    int native = 1;
+    if (!array_is_native(ary))
+    {
+      PyErr_SetString(PyExc_TypeError,
+                      "Array must have native byteorder.  "
+                      "A byte-swapped array was given");
+      native = 0;
+    }
+    return native;
+  }
+
+  /* Require the given PyArrayObject to have a specified number of
+   * dimensions.  If the array has the specified number of dimensions,
+   * return 1.  Otherwise, set the python error string and return 0.
+   */
+  int require_dimensions(PyArrayObject* ary,
+                         int            exact_dimensions)
+  {
+    int success = 1;
+    if (array_numdims(ary) != exact_dimensions)
+    {
+      PyErr_Format(PyExc_TypeError,
+                   "Array must have %d dimensions.  Given array has %d dimensions",
+                   exact_dimensions,
+                   array_numdims(ary));
+      success = 0;
+    }
+    return success;
+  }
+
+  /* Require the given PyArrayObject to have one of a list of specified
+   * number of dimensions.  If the array has one of the specified number
+   * of dimensions, return 1.  Otherwise, set the python error string
+   * and return 0.
+   */
+  int require_dimensions_n(PyArrayObject* ary,
+                           int*           exact_dimensions,
+                           int            n)
+  {
+    int success = 0;
+    int i;
+    char dims_str[255] = "";
+    char s[255];
+    for (i = 0; i < n && !success; i++)
+    {
+      if (array_numdims(ary) == exact_dimensions[i])
+      {
+        success = 1;
+      }
+    }
+    if (!success)
+    {
+      for (i = 0; i < n-1; i++)
+      {
+        sprintf(s, "%d, ", exact_dimensions[i]);
+        strcat(dims_str,s);
+      }
+      sprintf(s, " or %d", exact_dimensions[n-1]);
+      strcat(dims_str,s);
+      PyErr_Format(PyExc_TypeError,
+                   "Array must have %s dimensions.  Given array has %d dimensions",
+                   dims_str,
+                   array_numdims(ary));
+    }
+    return success;
+  }
+
+  /* Require the given PyArrayObject to have a specified shape.  If the
+   * array has the specified shape, return 1.  Otherwise, set the python
+   * error string and return 0.
+   */
+  int require_size(PyArrayObject* ary,
+                   npy_intp*      size,
+                   int            n)
+  {
+    int i;
+    int success = 1;
+    int len;
+    char desired_dims[255] = "[";
+    char s[255];
+    char actual_dims[255] = "[";
+    for(i=0; i < n;i++)
+    {
+      if (size[i] != -1 &&  size[i] != array_size(ary,i))
+      {
+        success = 0;
+      }
+    }
+    if (!success)
+    {
+      for (i = 0; i < n; i++)
+      {
+        if (size[i] == -1)
+        {
+          sprintf(s, "*,");
+        }
+        else
+        {
+          sprintf(s, "%ld,", (long int)size[i]);
+        }
+        strcat(desired_dims,s);
+      }
+      len = strlen(desired_dims);
+      desired_dims[len-1] = ']';
+      for (i = 0; i < n; i++)
+      {
+        sprintf(s, "%ld,", (long int)array_size(ary,i));
+        strcat(actual_dims,s);
+      }
+      len = strlen(actual_dims);
+      actual_dims[len-1] = ']';
+      PyErr_Format(PyExc_TypeError,
+                   "Array must have shape of %s.  Given array has shape of %s",
+                   desired_dims,
+                   actual_dims);
+    }
+    return success;
+  }
+
+  /* Require the given PyArrayObject to to be Fortran ordered.  If the
+   * the PyArrayObject is already Fortran ordered, do nothing.  Else,
+   * set the Fortran ordering flag and recompute the strides.
+   */
+  int require_fortran(PyArrayObject* ary)
+  {
+    int success = 1;
+    int nd = array_numdims(ary);
+    int i;
+    npy_intp * strides = array_strides(ary);
+    if (array_is_fortran(ary)) return success;
+    /* Set the Fortran ordered flag */
+    array_enableflags(ary,NPY_ARRAY_FARRAY);
+    /* Recompute the strides */
+    strides[0] = strides[nd-1];
+    for (i=1; i < nd; ++i)
+      strides[i] = strides[i-1] * array_size(ary,i-1);
+    return success;
+  }
+
+
 
 
 #include <limits.h>
@@ -3177,401 +3660,140 @@ SWIG_AsVal_int (PyObject * obj, int *val)
   return res;
 }
 
-
-SWIGINTERNINLINE PyObject*
-  SWIG_From_int  (int value)
-{
-  return PyInt_FromLong((long) value);
-}
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-SWIGINTERN int Swig_var_ss_set(PyObject *_val) {
-  {
-    void *argp = 0;
-    int res = SWIG_ConvertPtr(_val, &argp, SWIGTYPE_p_float,  0 );  
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""ss""' of type '""float *""'");
-    }
-    ss = (float *)(argp);
-  }
-  return 0;
-fail:
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_ss_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(ss), SWIGTYPE_p_float,  0 );
-  return pyobj;
-}
-
-
-SWIGINTERN int Swig_var_K_set(PyObject *_val) {
-  {
-    int val;
-    int res = SWIG_AsVal_int(_val, &val);
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""K""' of type '""int""'");
-    }
-    K = (int)(val);
-  }
-  return 0;
-fail:
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_K_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_From_int((int)(K));
-  return pyobj;
-}
-
-
-SWIGINTERN int Swig_var_n_set(PyObject *_val) {
-  {
-    int val;
-    int res = SWIG_AsVal_int(_val, &val);
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""n""' of type '""int""'");
-    }
-    n = (int)(val);
-  }
-  return 0;
-fail:
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_n_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_From_int((int)(n));
-  return pyobj;
-}
-
-
-SWIGINTERN int Swig_var_k_set(PyObject *_val) {
-  {
-    int val;
-    int res = SWIG_AsVal_int(_val, &val);
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""k""' of type '""int""'");
-    }
-    k = (int)(val);
-  }
-  return 0;
-fail:
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_k_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_From_int((int)(k));
-  return pyobj;
-}
-
-
-SWIGINTERN int Swig_var_conv_set(PyObject *_val) {
-  {
-    void *argp = 0;
-    int res = SWIG_ConvertPtr(_val, &argp, SWIGTYPE_p_int,  0 );  
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""conv""' of type '""int *""'");
-    }
-    conv = (int *)(argp);
-  }
-  return 0;
-fail:
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_conv_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(conv), SWIGTYPE_p_int,  0 );
-  return pyobj;
-}
-
-
-SWIGINTERN int Swig_var_dist_set(PyObject *_val) {
-  {
-    void *argp = 0;
-    int res = SWIG_ConvertPtr(_val, &argp, SWIGTYPE_p_float,  0 );  
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""dist""' of type '""float *""'");
-    }
-    dist = (float *)(argp);
-  }
-  return 0;
-fail:
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_dist_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(dist), SWIGTYPE_p_float,  0 );
-  return pyobj;
-}
-
-
-SWIGINTERN PyObject *_wrap_sumSq(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_kM(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  float *arg1 = (float *) 0 ;
-  float *arg2 = (float *) 0 ;
-  float *arg3 = (float *) 0 ;
-  int arg4 ;
+  double *arg1 = (double *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  double *arg4 = (double *) 0 ;
   int arg5 ;
   int arg6 ;
-  int arg7 ;
+  int *arg7 = (int *) 0 ;
   int arg8 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  int val4 ;
-  int ecode4 = 0 ;
-  int val5 ;
-  int ecode5 = 0 ;
-  int val6 ;
-  int ecode6 = 0 ;
-  int val7 ;
-  int ecode7 = 0 ;
-  int val8 ;
-  int ecode8 = 0 ;
+  double *arg9 = (double *) 0 ;
+  int arg10 ;
+  PyArrayObject *array1 = NULL ;
+  int is_new_object1 = 0 ;
+  PyArrayObject *array4 = NULL ;
+  int is_new_object4 = 0 ;
+  PyArrayObject *array7 = NULL ;
+  int is_new_object7 = 0 ;
+  PyObject *array9 = NULL ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
   PyObject * obj3 = 0 ;
-  PyObject * obj4 = 0 ;
-  PyObject * obj5 = 0 ;
-  PyObject * obj6 = 0 ;
-  PyObject * obj7 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOOOOOOO:sumSq",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5,&obj6,&obj7)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_float, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "sumSq" "', argument " "1"" of type '" "float *""'"); 
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:kM",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  {
+    npy_intp size[2] = {
+      -1, -1 
+    };
+    array1 = obj_to_array_contiguous_allow_conversion(obj0, NPY_DOUBLE,
+      &is_new_object1);
+    if (!array1 || !require_dimensions(array1, 2) ||
+      !require_size(array1, size, 2)) SWIG_fail;
+    arg1 = (double*) array_data(array1);
+    arg2 = (int) array_size(array1,0);
+    arg3 = (int) array_size(array1,1);
   }
-  arg1 = (float *)(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_float, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "sumSq" "', argument " "2"" of type '" "float *""'"); 
+  {
+    npy_intp size[2] = {
+      -1, -1 
+    };
+    array4 = obj_to_array_contiguous_allow_conversion(obj1, NPY_DOUBLE,
+      &is_new_object4);
+    if (!array4 || !require_dimensions(array4, 2) ||
+      !require_size(array4, size, 2)) SWIG_fail;
+    arg4 = (double*) array_data(array4);
+    arg5 = (int) array_size(array4,0);
+    arg6 = (int) array_size(array4,1);
   }
-  arg2 = (float *)(argp2);
-  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_float, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "sumSq" "', argument " "3"" of type '" "float *""'"); 
+  {
+    npy_intp size[1] = {
+      -1 
+    };
+    array7 = obj_to_array_contiguous_allow_conversion(obj2,
+      NPY_INT,
+      &is_new_object7);
+    if (!array7 || !require_dimensions(array7, 1) ||
+      !require_size(array7, size, 1)) SWIG_fail;
+    arg7 = (int*) array_data(array7);
+    arg8 = (int) array_size(array7,0);
   }
-  arg3 = (float *)(argp3);
-  ecode4 = SWIG_AsVal_int(obj3, &val4);
-  if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "sumSq" "', argument " "4"" of type '" "int""'");
-  } 
-  arg4 = (int)(val4);
-  ecode5 = SWIG_AsVal_int(obj4, &val5);
-  if (!SWIG_IsOK(ecode5)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "sumSq" "', argument " "5"" of type '" "int""'");
-  } 
-  arg5 = (int)(val5);
-  ecode6 = SWIG_AsVal_int(obj5, &val6);
-  if (!SWIG_IsOK(ecode6)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "sumSq" "', argument " "6"" of type '" "int""'");
-  } 
-  arg6 = (int)(val6);
-  ecode7 = SWIG_AsVal_int(obj6, &val7);
-  if (!SWIG_IsOK(ecode7)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode7), "in method '" "sumSq" "', argument " "7"" of type '" "int""'");
-  } 
-  arg7 = (int)(val7);
-  ecode8 = SWIG_AsVal_int(obj7, &val8);
-  if (!SWIG_IsOK(ecode8)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode8), "in method '" "sumSq" "', argument " "8"" of type '" "int""'");
-  } 
-  arg8 = (int)(val8);
-  sumSq(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8);
+  {
+    npy_intp dims[1];
+    if (!PyInt_Check(obj3))
+    {
+      const char* typestring = pytype_string(obj3);
+      PyErr_Format(PyExc_TypeError,
+        "Int dimension expected.  '%s' given.",
+        typestring);
+      SWIG_fail;
+    }
+    arg10 = (int) PyInt_AsLong(obj3);
+    dims[0] = (npy_intp) arg10;
+    array9 = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+    if (!array9) SWIG_fail;
+    arg9 = (double*) array_data(array9);
+  }
+  {
+    kM_wrap(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10);
+    if (PyErr_Occurred()) SWIG_fail;
+  }
   resultobj = SWIG_Py_Void();
+  {
+    resultobj = SWIG_Python_AppendOutput(resultobj,(PyObject*)array9);
+  }
+  {
+    if (is_new_object1 && array1)
+    {
+      Py_DECREF(array1); 
+    }
+  }
+  {
+    if (is_new_object4 && array4)
+    {
+      Py_DECREF(array4); 
+    }
+  }
+  {
+    if (is_new_object7 && array7)
+    {
+      Py_DECREF(array7); 
+    }
+  }
   return resultobj;
 fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_selectCluster(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  float *arg1 = (float *) 0 ;
-  float *arg2 = (float *) 0 ;
-  int *arg3 = (int *) 0 ;
-  int arg4 ;
-  int arg5 ;
-  int arg6 ;
-  int *arg7 = (int *) 0 ;
-  float *arg8 = (float *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  int val4 ;
-  int ecode4 = 0 ;
-  int val5 ;
-  int ecode5 = 0 ;
-  int val6 ;
-  int ecode6 = 0 ;
-  void *argp7 = 0 ;
-  int res7 = 0 ;
-  void *argp8 = 0 ;
-  int res8 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  PyObject * obj3 = 0 ;
-  PyObject * obj4 = 0 ;
-  PyObject * obj5 = 0 ;
-  PyObject * obj6 = 0 ;
-  PyObject * obj7 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOOOOOOO:selectCluster",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5,&obj6,&obj7)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_float, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "selectCluster" "', argument " "1"" of type '" "float *""'"); 
+  {
+    if (is_new_object1 && array1)
+    {
+      Py_DECREF(array1); 
+    }
   }
-  arg1 = (float *)(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_float, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "selectCluster" "', argument " "2"" of type '" "float *""'"); 
+  {
+    if (is_new_object4 && array4)
+    {
+      Py_DECREF(array4); 
+    }
   }
-  arg2 = (float *)(argp2);
-  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "selectCluster" "', argument " "3"" of type '" "int *""'"); 
+  {
+    if (is_new_object7 && array7)
+    {
+      Py_DECREF(array7); 
+    }
   }
-  arg3 = (int *)(argp3);
-  ecode4 = SWIG_AsVal_int(obj3, &val4);
-  if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "selectCluster" "', argument " "4"" of type '" "int""'");
-  } 
-  arg4 = (int)(val4);
-  ecode5 = SWIG_AsVal_int(obj4, &val5);
-  if (!SWIG_IsOK(ecode5)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "selectCluster" "', argument " "5"" of type '" "int""'");
-  } 
-  arg5 = (int)(val5);
-  ecode6 = SWIG_AsVal_int(obj5, &val6);
-  if (!SWIG_IsOK(ecode6)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "selectCluster" "', argument " "6"" of type '" "int""'");
-  } 
-  arg6 = (int)(val6);
-  res7 = SWIG_ConvertPtr(obj6, &argp7,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res7)) {
-    SWIG_exception_fail(SWIG_ArgError(res7), "in method '" "selectCluster" "', argument " "7"" of type '" "int *""'"); 
-  }
-  arg7 = (int *)(argp7);
-  res8 = SWIG_ConvertPtr(obj7, &argp8,SWIGTYPE_p_float, 0 |  0 );
-  if (!SWIG_IsOK(res8)) {
-    SWIG_exception_fail(SWIG_ArgError(res8), "in method '" "selectCluster" "', argument " "8"" of type '" "float *""'"); 
-  }
-  arg8 = (float *)(argp8);
-  selectCluster(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_clusterCenter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  float *arg1 = (float *) 0 ;
-  float *arg2 = (float *) 0 ;
-  int *arg3 = (int *) 0 ;
-  int arg4 ;
-  int arg5 ;
-  int arg6 ;
-  int *arg7 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  int val4 ;
-  int ecode4 = 0 ;
-  int val5 ;
-  int ecode5 = 0 ;
-  int val6 ;
-  int ecode6 = 0 ;
-  void *argp7 = 0 ;
-  int res7 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  PyObject * obj3 = 0 ;
-  PyObject * obj4 = 0 ;
-  PyObject * obj5 = 0 ;
-  PyObject * obj6 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOOOOOO:clusterCenter",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5,&obj6)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_float, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "clusterCenter" "', argument " "1"" of type '" "float *""'"); 
-  }
-  arg1 = (float *)(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_float, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "clusterCenter" "', argument " "2"" of type '" "float *""'"); 
-  }
-  arg2 = (float *)(argp2);
-  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "clusterCenter" "', argument " "3"" of type '" "int *""'"); 
-  }
-  arg3 = (int *)(argp3);
-  ecode4 = SWIG_AsVal_int(obj3, &val4);
-  if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "clusterCenter" "', argument " "4"" of type '" "int""'");
-  } 
-  arg4 = (int)(val4);
-  ecode5 = SWIG_AsVal_int(obj4, &val5);
-  if (!SWIG_IsOK(ecode5)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "clusterCenter" "', argument " "5"" of type '" "int""'");
-  } 
-  arg5 = (int)(val5);
-  ecode6 = SWIG_AsVal_int(obj5, &val6);
-  if (!SWIG_IsOK(ecode6)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "clusterCenter" "', argument " "6"" of type '" "int""'");
-  } 
-  arg6 = (int)(val6);
-  res7 = SWIG_ConvertPtr(obj6, &argp7,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res7)) {
-    SWIG_exception_fail(SWIG_ArgError(res7), "in method '" "clusterCenter" "', argument " "7"" of type '" "int *""'"); 
-  }
-  arg7 = (int *)(argp7);
-  clusterCenter(arg1,arg2,arg3,arg4,arg5,arg6,arg7);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
   return NULL;
 }
 
 
 SWIGINTERN PyObject *_wrap_kMeans(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  float *arg1 = (float *) 0 ;
-  float *arg2 = (float *) 0 ;
+  double *arg1 = (double *) 0 ;
+  double *arg2 = (double *) 0 ;
   int *arg3 = (int *) 0 ;
   int arg4 ;
   int arg5 ;
@@ -3596,16 +3818,16 @@ SWIGINTERN PyObject *_wrap_kMeans(PyObject *SWIGUNUSEDPARM(self), PyObject *args
   PyObject * obj5 = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"OOOOOO:kMeans",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_float, 0 |  0 );
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_double, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "kMeans" "', argument " "1"" of type '" "float *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "kMeans" "', argument " "1"" of type '" "double *""'"); 
   }
-  arg1 = (float *)(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_float, 0 |  0 );
+  arg1 = (double *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_double, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "kMeans" "', argument " "2"" of type '" "float *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "kMeans" "', argument " "2"" of type '" "double *""'"); 
   }
-  arg2 = (float *)(argp2);
+  arg2 = (double *)(argp2);
   res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_int, 0 |  0 );
   if (!SWIG_IsOK(res3)) {
     SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "kMeans" "', argument " "3"" of type '" "int *""'"); 
@@ -3636,9 +3858,7 @@ fail:
 
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
-	 { (char *)"sumSq", _wrap_sumSq, METH_VARARGS, NULL},
-	 { (char *)"selectCluster", _wrap_selectCluster, METH_VARARGS, NULL},
-	 { (char *)"clusterCenter", _wrap_clusterCenter, METH_VARARGS, NULL},
+	 { (char *)"kM", _wrap_kM, METH_VARARGS, NULL},
 	 { (char *)"kMeans", _wrap_kMeans, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
@@ -3647,22 +3867,22 @@ static PyMethodDef SwigMethods[] = {
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_float = {"_p_float", "float *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_double = {"_p_double", "double *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_int = {"_p_int", "int *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_char,
-  &_swigt__p_float,
+  &_swigt__p_double,
   &_swigt__p_int,
 };
 
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_float[] = {  {&_swigt__p_float, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_double[] = {  {&_swigt__p_double, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_int[] = {  {&_swigt__p_int, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_char,
-  _swigc__p_float,
+  _swigc__p_double,
   _swigc__p_int,
 };
 
@@ -4357,13 +4577,6 @@ SWIG_init(void) {
   
   import_array();
   
-  PyDict_SetItemString(md,(char *)"cvar", SWIG_globals());
-  SWIG_addvarlink(SWIG_globals(),(char *)"ss",Swig_var_ss_get, Swig_var_ss_set);
-  SWIG_addvarlink(SWIG_globals(),(char *)"K",Swig_var_K_get, Swig_var_K_set);
-  SWIG_addvarlink(SWIG_globals(),(char *)"n",Swig_var_n_get, Swig_var_n_set);
-  SWIG_addvarlink(SWIG_globals(),(char *)"k",Swig_var_k_get, Swig_var_k_set);
-  SWIG_addvarlink(SWIG_globals(),(char *)"conv",Swig_var_conv_get, Swig_var_conv_set);
-  SWIG_addvarlink(SWIG_globals(),(char *)"dist",Swig_var_dist_get, Swig_var_dist_set);
 #if PY_VERSION_HEX >= 0x03000000
   return m;
 #else
