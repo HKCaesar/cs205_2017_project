@@ -193,17 +193,8 @@ kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
 ### COPY DEVICE DATA BACK TO HOST AND COMPARE ####
 ######################################################
 
-print('-----from CPU 2')
-print(h_means)
-print(h_clusters)
-
 print('-----GPU output')
 cuda.memcpy_dtoh(h_means, d_means)
 cuda.memcpy_dtoh(h_clusters, d_clusters)
 print(h_means)
 print(h_clusters)
-
-print('-----sequential output')
-print(A)
-print(W)
-print("done")
