@@ -59,6 +59,7 @@ __global__ void newmeans(double *data, int *clusters, double *means) {
   
    // divide local sum by the number in that cluster
    means[tid] = l_sum/s_clustern[threadIdx.x];
+   clusters[tid] = tid;
       
   }
 
@@ -184,7 +185,9 @@ while not converged:
 ### COPY DEVICE DATA BACK TO HOST AND COMPARE ####
 ######################################################
 
-
+print('-----from CPU')
+print(h_means)
+print(h_clusters)
 
 print('-----GPU output')
 cuda.memcpy_dtoh(h_means, d_means)
