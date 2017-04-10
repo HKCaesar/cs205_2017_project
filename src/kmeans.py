@@ -74,7 +74,7 @@ def sequential(data, initial_clusters):
           if min_ind != W[n]:
               W[n] = min_ind
               converged=False
-    count +=1
+      count +=1
   
   distortion = '?'
   return A, W, count, distortion
