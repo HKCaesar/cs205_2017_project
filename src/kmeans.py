@@ -44,12 +44,26 @@ __global__ void newmeans(double *data, int *clusters, double *means) {
    __syncthreads();
    
    // sum stuff
-   means[tid] = 1;
-   __syncthreads();
+   double l_means;
+   int l_means = 0;
+   int l_clustern = clustern[k];
    
-   // divide stuff
-   //int l_clustern = clustern[k];
    
+   for(int n=0; n < (%(N)s); ++n)
+   {
+     if(clusters[n]==threadIdx.y)
+       {
+          for(int d=0; d < (%(D)s); ++d)
+          {
+            l_means += data[(n*%(D)s)+d];
+          }
+        }
+     }
+   }
+   
+   means[tid] = l_means/l_clustern;
+   
+  
   }
 
 __global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_distortion) {
