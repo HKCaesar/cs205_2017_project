@@ -14,7 +14,7 @@ import csv
 ######################################################
 
 
-def sequential(data, initial_clusters):
+def sequential(N, K, D, data, initial_clusters):
   
   A = np.zeros((K,D))
   W = initial_clusters.copy()
@@ -85,6 +85,7 @@ def pimproved_mod(N, K, D):
   code = template.substitute(N = N,
                                  K = K,
                                  D = D)
+  mod = SourceModule(code)
   kernel1 = mod.get_function("newMeans")
   kernel2 = mod.get_function("reassign")
   
@@ -97,10 +98,8 @@ def pimproved_mod(N, K, D):
 ######################################################
 
 # download data and assign initial clusters
-def prep_data():
-  
-  global N, D
-  
+def prep_data(K, data_fn, d_list, limit):
+
   # import data file and subset data for k-means
   reviewdata = pd.read_csv(data_fn)
   data = reviewdata[d_list][:limit].values
@@ -117,32 +116,30 @@ def prep_data():
       initial_clusters[j] = initial_clusters[i]
       initial_clusters[i] = temp
   
-  return data, initial_clusters
+  return data, initial_clusters, N, D
 
 # define h_vars on host
-def prep_host():
-  global h_data, h_clusters, h_means, h_distortion
+def prep_host(data, initial_clusters, K, D):
   h_data = data
-  h_clusters = initial_clusters
+  h_clusters = initial_clusters.copy()
   h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
   h_distortion = 0
-  return
+  return h_data, h_clusters, h_means, h_distortion
 
 # allocate memory and copy data to d_vars on device
-def prep_device():
-  global d_data, d_clusters, d_means, d_distortion
+def prep_device(h_data, h_clusters, h_means, h_distortion):
   d_data = cuda.mem_alloc(h_data.nbytes)
   d_clusters = cuda.mem_alloc(h_clusters.nbytes)
   d_means = cuda.mem_alloc(h_means.nbytes)
   d_distortion = cuda.mem_alloc(np.array(h_distortion).astype(np.intc).nbytes)
   cuda.memcpy_htod(d_data,h_data)
   cuda.memcpy_htod(d_clusters,h_clusters)
-  return
+  return d_data, d_clusters, d_means, d_distortion
 
 # reset h_vars
-def reset_hvars(): 
-  global h_clusters, hmeans, h_distortion
-  h_clusters = initial_clusters
+def reset_hvars(initial_clusters, h_means, h_distortion, K, D):
+  
+  h_clusters = initial_clusters.copy()
   h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
   h_distortion = 0
   return

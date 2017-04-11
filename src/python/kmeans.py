@@ -9,7 +9,9 @@ import time
 import csv
 
 import string
-import functions
+from functions import *
+
+from sklearn.cluster import KMeans
 
 
 
@@ -41,8 +43,8 @@ limit = 1000 # impose a limit of N on the dataset
 ### RUN K-MEANS ####
 ######################################################
 
-data, initial_clusters = prep_data()
-prep_host()
+data, initial_clusters, N, D = prep_data(K, data_fn, d_list, limit)
+h_data, h_clusters, h_means, h_distortion = prep_host(data, initial_clusters, K, D)
 output = [['algorithm','time','convergence','distortion','n','d','k']]
 
 ### Stock k-means ###
@@ -55,7 +57,7 @@ print(kmeans.cluster_centers_)
 ### Sequential ###
 
 start = time.time()
-seq_means, seq_clusters, seq_count, seq_distortion = sequential(data, initial_clusters)
+seq_means, seq_clusters, seq_count, seq_distortion = sequential(N, K, D, data, initial_clusters)
 stop = time.time()-start
 output.append(['sequential',stop, seq_count, seq_distortion, N, D, K])
 
@@ -65,11 +67,11 @@ print(seq_clusters[:10])
 
 ### Naive Parallel ###
 
-kernel1, kernel2 = pnaive_mod()
-reset_hvars()
+kernel1, kernel2 = pnaive_mod(N, K, D)
+reset_hvars(initial_clusters, h_means, h_distortion, K, D)
 
 start = time.time()
-prep_device()
+d_data, d_clusters, d_means, d_distortion = prep_device(h_data, h_clusters, h_means, h_distortion)
 kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
 #kernel2(d_data, d_clusters, d_means, d_distortion, block=(N,1,1), grid=(1,1,1))
 cuda.memcpy_dtoh(h_means, d_means)
@@ -84,11 +86,11 @@ print('Equals sequential output: %s' % str(np.array_equal(seq_means,h_means)))
 
 ### Parallel Improved ###
 
-kernel1, kernel2 = pimproved_mod()
-reset_hvars()
+kernel1, kernel2 = pimproved_mod(N, K, D)
+reset_hvars(initial_clusters, h_means, h_distortion, K, D)
 
 start = time.time()
-prep_device()
+d_data, d_clusters, d_means, d_distortion = prep_device(h_data, h_clusters, h_means, h_distortion)
 #kernel1(d_data, d_clusters, d_means, block=(K,D,1), grid=(1,1,1))
 #kernel2(d_data, d_clusters, d_means, d_distortion, block=(N,1,1), grid=(1,1,1))
 cuda.memcpy_dtoh(h_means, d_means)
