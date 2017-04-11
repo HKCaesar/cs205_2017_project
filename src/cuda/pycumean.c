@@ -128,7 +128,48 @@ __global__ void newMeans(double *data, int *clusters, double *means, int *cluste
 
 }
 
-__global__ void reassign(double *d_data, double *d_clusters, double *d_means, double *d_clustern) {
+  __global__ void reassign(double *data, double *clusters, double *means) {
     
-}
+    __shared__ int s_sqsums[%(K)s*%(D)s];
+    __shared__ int s_sums[%(K)s];
+    int tid = (%(D)s*threadIdx.x) + threadIdx.y;
+    int dataid = (%(D)s*blockIdx.x) + threadIdx.y;
+    double min;
+    int min_idx;
+    int converged = 1;
+    
+    // get KxD squared sums
+    s_sqsums[tid] = (data[dataid] - means[tid]) * (data[dataid] - means[tid]);
+    __syncthreads();
+    
+    // add KxD squared sums to get k sums using k threads
+    if(threadIdx.y==0)
+    {
+      for(int d=1; d < (%(D)s); ++d)
+      {
+        s_sums[threadIdx.x] += s_sqsums[(%(D)s*threadIdx.x) + d];
+      }
+    }
+    __syncthreads();
+    
+    // check for the minimum of the k sums using one lucky thread
+    if(tid==0)
+    {
+      min = s_sums[0];
+      min_idx = 0;
+      for(int k=1; k < (%(K)s); ++k)
+      {
+        if (s_sums[k]<min)
+        {
+          min = s_sums[k];
+          min_idx = k;
+        }
+      }
+      if (clusters[blockIdx.x]!=min_idx)
+      {
+        clusters[blockIdx.x]=min_idx;
+        converged = 0;
+      }
+    }
+  }
 
