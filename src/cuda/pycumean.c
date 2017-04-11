@@ -100,8 +100,8 @@
 
 __global__ void newMeans(double *data, int *clusters, double *means, int *clustern)
 {
-    int row = threadIdx.x
-    int col = threadIdx.y
+    int row = threadIdx.x;
+    int col = threadIdx.y;
     int tid = row + col * D;
     int l_clust;
     double l_sum = 0.0;
