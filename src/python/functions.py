@@ -1,30 +1,69 @@
+import pandas as pd
+import numpy as np
+from sklearn.cluster import KMeans
+
 import pycuda.driver as cuda
 import pycuda.autoinit
 from pycuda.compiler import SourceModule
-from sklearn.cluster import KMeans
-import string
-import pandas as pd
-import numpy as np
+
 import time
-import csv
-
+import string
 
 ######################################################
-### DEFINE SEQUENTIAL K-MEANS FUNCTiON ###
+### PREP DATA & INITIAL LABELS ####
 ######################################################
 
+def prep_data(data_fn, d_list, N, D, K):
 
-def sequential(N, K, D, data, initial_clusters):
+  # import data file and subset data for k-means
+  reviewdata = pd.read_csv(data_fn)
+  print(reviewdata.shape)
+  data = reviewdata[d_list[:D]][:N].values
+  data = np.ascontiguousarray(data, dtype=np.float64)
+
+  # assign random clusters & shuffle 
+  initial_labels = np.ascontiguousarray(np.zeros(N,dtype=np.intc, order='C'))
+  for n in range(N):
+      initial_labels[n] = n%K
+  for i in range(len(initial_labels)-2,-1,-1):
+      j= np.random.randint(0,i+1) 
+      temp = initial_labels[j]
+      initial_labels[j] = initial_labels[i]
+      initial_labels[i] = temp
+  
+  return data, initial_labels
+
+######################################################
+### STOCK K-MEANS ###
+######################################################
+
+def stock(data, K, limit):
+  
+    start = time.time()
+    stockmeans = KMeans(n_clusters=K,n_init=limit)
+    stockmeans.fit(data)
+    runtime = time.time()-start
+    
+    return stockmeans.cluster_centers_, stockmeans.labels_, stockmeans.inertia_, runtime
+
+######################################################
+### SEQUENTIAL K-MEANS ###
+######################################################
+
+def sequential(data, initial_labels, N, D, K, limit):
   
   A = np.zeros((K,D))
-  W = initial_clusters.copy()
+  W = initial_labels.copy()
   X = data
   m = np.zeros(K)
   count = 0
   converged = False
+  start = time.time()
   
   while not converged:
+      
       converged = True
+      
       #compute means
       for k in range(K):
           for d in range(D):
@@ -53,95 +92,73 @@ def sequential(N, K, D, data, initial_clusters):
           if min_ind != W[n]:
               W[n] = min_ind
               converged=False
+      
       count +=1
+      if count==1:
+        A1 = A.copy()
+        W1 = W.copy()  
+      if count==limit: break
+        
+  runtime = time.time()-start
   
-  distortion = '?'
-  return A, W, count, distortion
-
+  return A, W, count, runtime, A1, W1
 
 ######################################################
-### DEFINE "NAIVE" PARALLEL K-MEANS KERNEL FOR GPU ####
+### PARALLEL K-MEANS  ####
 ######################################################
 
-def pnaive_mod(N, K, D):
+# define h_vars on host
+def prep_host(data, initial_labels, K, D):
   
-    template = string.Template(open("../cuda/pycumean.c", "r").read())
-    code = template.substitute(N = N,
-                           K = K,
-                           D = D)
+  h_data = data
+  h_labels = initial_labels.copy()
+  h_means = np.ascontiguousarray(np.empty((K,D),dtype=np.float64, order='C'))
+  
+  return h_data, h_labels, h_means
+
+# allocate memory and copy data to d_vars on device
+def prep_device(h_data, h_labels, h_means):
+  
+  d_data = cuda.mem_alloc(h_data.nbytes)
+  d_labels = cuda.mem_alloc(h_labels.nbytes)
+  d_means = cuda.mem_alloc(h_means.nbytes)
+  cuda.memcpy_htod(d_data,h_data)
+  cuda.memcpy_htod(d_labels,h_labels)
+  
+  return d_data, d_labels, d_means
+
+# define kernels
+def parallel_mod(kernel_fn, N, K, D):
+    
+    template = string.Template(open(kernel_fn, "r").read())
+    code = template.substitute(N = N, K = K, D = D)
     mod = SourceModule(code)
     kernel1 = mod.get_function("newMeans")
     kernel2 = mod.get_function("reassign")
-  
+    
     return kernel1, kernel2
-
-######################################################
-### DEFINE "IMPROVED" PARALLEL K-MEANS KERNEL FOR GPU ####
-######################################################
-
-def pimproved_mod(N, K, D):
   
-  template = string.Template(open("../cuda/pycumean.c", "r").read())
-  code = template.substitute(N = N,
-                                 K = K,
-                                 D = D)
-  mod = SourceModule(code)
-  kernel1 = mod.get_function("newMeans")
-  kernel2 = mod.get_function("reassign")
+def parallel(data, initial_labels, kernel_fn, N, K, D, limit):
   
-  return kernel1, kernel2
-
-
-
-######################################################
-### DEFINTE FUNCTIONS TO MANAGE DATA ####
-######################################################
-
-# download data and assign initial clusters
-def prep_data(K, data_fn, d_list, limit):
-
-  # import data file and subset data for k-means
-  reviewdata = pd.read_csv(data_fn)
-  data = reviewdata[d_list][:limit].values
-  data = np.ascontiguousarray(data, dtype=np.float64)
-  N,D=data.shape
-
-  # assign random clusters & shuffle 
-  initial_clusters = np.ascontiguousarray(np.zeros(N,dtype=np.intc, order='C'))
-  for n in range(N):
-      initial_clusters[n] = n%K
-  for i in range(len(initial_clusters)-2,-1,-1):
-      j= np.random.randint(0,i+1) 
-      temp = initial_clusters[j]
-      initial_clusters[j] = initial_clusters[i]
-      initial_clusters[i] = temp
+    converged = False
+    count = 0
+    kernel1, kernel2 = parallel_mod(kernel_fn, N, K, D)
+    h_data, h_labels, h_means = prep_host(data, initial_labels, K, D)
+    
+    start = time.time()
+    d_data, d_labels, d_means = prep_device(h_data, h_labels, h_means)
   
-  return data, initial_clusters, N, D
-
-# define h_vars on host
-def prep_host(data, initial_clusters, K, D):
-  h_data = data
-  h_clusters = initial_clusters.copy()
-  h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
-  h_distortion = 0
-  return h_data, h_clusters, h_means, h_distortion
-
-# allocate memory and copy data to d_vars on device
-def prep_device(h_data, h_clusters, h_means, h_distortion):
-  d_data = cuda.mem_alloc(h_data.nbytes)
-  d_clusters = cuda.mem_alloc(h_clusters.nbytes)
-  d_means = cuda.mem_alloc(h_means.nbytes)
-  d_distortion = cuda.mem_alloc(np.array(h_distortion).astype(np.intc).nbytes)
-  cuda.memcpy_htod(d_data,h_data)
-  cuda.memcpy_htod(d_clusters,h_clusters)
-  return d_data, d_clusters, d_means, d_distortion
-
-# reset h_vars
-def reset_hvars(initial_clusters, h_means, h_distortion, K, D):
-  
-  h_clusters = initial_clusters.copy()
-  h_means = np.ascontiguousarray(np.zeros((K,D),dtype=np.float64, order='C'))
-  h_distortion = 0
-  return
-
-
+    while not converged:
+        converged = True
+        kernel1(d_data, d_labels, d_means, d_count, block=(K,D,1), grid=(1,1,1))
+        kernel2(d_data, d_labels, d_means, block=(K,D,1), grid=(N,1,1))
+        cuda.memcpy_dtoh(h_means, d_means)
+        cuda.memcpy_dtoh(h_labels, d_labels)
+        count +=1
+        if count==limit: break
+          
+        # need to add a check for convergence (compare new labels to old labels)
+    
+    runtime = time.time()-start
+    
+    return h_means, h_labels, count, runtime
