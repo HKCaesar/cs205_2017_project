@@ -98,78 +98,73 @@
 //   means[tid] = l_sum/s_clustern[threadIdx.x];
 //  }
 
-__global__ void newMeans(double *data, int *clusters, double *means, int *clustern)
+__global__ void newMeans(double *data, int *labels, double *means)
 {
-    int row = threadIdx.x;
-    int col = threadIdx.y;
-    int tid = row + col * D;
-    int l_clust;
+    __shared__ int s_clustern[K];
+    int k = threadIdx.x;
+    int d = threadIdx.y;
+    int tid = d + k * D;
     double l_sum = 0.0;
 
     // find the n per cluster with K lucky threads
     if (tid < K) {
-        int s_clust = 0;
+        int l_clustern = 0;
         for (int n = 0; n < N; ++n){
-            if(clusters[n] == tid) s_clust++;
+            if(labels[n] == tid) l_clustern++;
         }
-        clustern[tid] = s_clust;
+        s_clustern[tid] = l_clustern;
     }
     __syncthreads();
-
-    l_clust = clustern[row];
-
+    
+    // find KxD local sums
     for (int n = 0; n < N; ++n)
     {
-        if(clusters[n] == row){
-            l_sum += data[n * D +  col];
+        if(labels[n] == k){
+            l_sum += data[d + n * D];
         }
     }
-    means[tid] = l_sum/l_clust;
+    
+    // find KxD means
+    means[tid] = l_sum/s_clustern[k];
 
 }
 
-  __global__ void reassign(double *data, double *clusters, double *means) {
+  __global__ void reassign(double *data, double *labels, double *means) {
     
-    __shared__ int s_sqsums[%(K)s*%(D)s];
-    __shared__ int s_sums[%(K)s];
-    int tid = (%(D)s*threadIdx.x) + threadIdx.y;
-    int dataid = (%(D)s*blockIdx.x) + threadIdx.y;
+    __shared__ int s_squares[K*D];
+    __shared__ int s_sums[K];
+    int k = threadIdx.x;
+    int d = threadIdx.y;
+    int n = blockIdx.x;
+    int tid = d + k * D;
+    int dataid = d + n * D;
     double min;
     int min_idx;
-    int converged = 1;
     
-    // get KxD squared sums
-    s_sqsums[tid] = (data[dataid] - means[tid]) * (data[dataid] - means[tid]);
+    // get KxD squares
+    s_squares[tid] = (data[dataid] - means[tid]) * (data[dataid] - means[tid]);
     __syncthreads();
     
-    // add KxD squared sums to get k sums using k threads
-    if(threadIdx.y==0)
-    {
-      for(int d=1; d < (%(D)s); ++d)
-      {
-        s_sums[threadIdx.x] += s_sqsums[(%(D)s*threadIdx.x) + d];
+    // add KxD squares to get K sums using K lucky threads
+    if (tid < K) {
+      for(int d = 0; d < D; ++d) {
+        s_sums[k] += s_squares[d + k * D];
       }
     }
     __syncthreads();
     
-    // check for the minimum of the k sums using one lucky thread
-    if(tid==0)
-    {
+    // check for the minimum of the K sums using 1 lucky thread
+    if (tid == 0) {
       min = s_sums[0];
       min_idx = 0;
-      for(int k=1; k < (%(K)s); ++k)
-      {
-        if (s_sums[k]<min)
-        {
+      for(int k = 1; k < K; ++k) {
+        if (s_sums[k] < min) {
           min = s_sums[k];
           min_idx = k;
         }
       }
-      if (clusters[blockIdx.x]!=min_idx)
-      {
-        clusters[blockIdx.x]=min_idx;
-        converged = 0;
+      if (labels[n] ! = min_idx) {
+        labels[n] = min_idx;
       }
     }
   }
-
