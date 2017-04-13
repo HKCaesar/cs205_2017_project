@@ -129,7 +129,7 @@ def prep_device(h_data, h_labels, h_means, h_converged_array, h_converged):
   cuda.memcpy_htod(d_converged_array, h_converged_array)
   cuda.memcpy_htod(d_converged, h_converged)
   
-  return d_data, d_labels, d_means, d_converged
+  return d_data, d_labels, d_means, d_converged_array, d_converged
 
 # define kernels
 def parallel_mod(kernel_fn, N, K, D):
@@ -148,18 +148,17 @@ def parallel(data, initial_labels, kernel_fn, N, K, D, limit):
     count = 0
     kernel1, kernel2 = parallel_mod(kernel_fn, N, K, D)
     h_data, h_labels, h_means, h_converged_array = prep_host(data, initial_labels, K, D)
-    
+
     start = time.time()
     d_data, d_labels, d_means, d_converged_array, d_converged = prep_device( h_data, h_labels, h_means, h_converged_array, h_converged)
-  
+
     while not h_converged:
-        kernel1(d_data, d_labels, d_means, d_count, block=(K,D,1), grid=(1,1,1))
-        kernel2(d_data, d_labels, d_means, d_converged_array d_converged, block=(K,D,1), grid=(N,1,1))
+        kernel1(d_data, d_labels, d_means, block=(K,D,1), grid=(1,1,1))
+        kernel2(d_data, d_labels, d_means, d_converged_array, d_converged, block=(K,D,1), grid=(N,1,1))
         cuda.memcpy_dtoh(h_converged, d_converged)
         count +=1
         if count==limit: break
           
-        # need to add a check for convergence (compare new labels to old labels)
     cuda.memcpy_dtoh(h_means, d_means)
     cuda.memcpy_dtoh(h_labels, d_labels)
     runtime = time.time()-start
