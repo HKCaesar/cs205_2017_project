@@ -1,0 +1,4 @@
+algorithm,time,convergence,distortion,n,d,k
+sequential,72.11007404327393,9,?,1000,6,5
+naive parallel,8.931725025177002,?,?,1000,6,5
+improved parallel,6.063719987869263,?,?,1000,6,5

@@ -129,42 +129,72 @@ __global__ void newMeans(double *data, int *labels, double *means)
 
 }
 
-  __global__ void reassign(double *data, double *labels, double *means) {
-    
+__global__ void reassign(double *data, double *labels, double *means, int *conv_array, int * conv)
+{
     __shared__ int s_squares[K*D];
     __shared__ int s_sums[K];
     int k = threadIdx.x;
     int d = threadIdx.y;
     int n = blockIdx.x;
-    int tid = d + k * D;
+    int wInBlockid = d + k * D;
+    int tid = d + k * D + n * K*D;
     int dataid = d + n * D;
     double min;
     int min_idx;
+    __shared__ int s_conv[K*D];
+    
+    if(tid == 0) (*conv) = 1;
     
     // get KxD squares
-    s_squares[tid] = (data[dataid] - means[tid]) * (data[dataid] - means[tid]);
-    __syncthreads();
+        s_squares[wInBlockid] = (data[dataid] - means[wInBlockid]) * (data[dataid] - means[wInBlockid]);
+        __syncthreads();
     
     // add KxD squares to get K sums using K lucky threads
-    if (tid < K) {
-      for(int d = 0; d < D; ++d) {
-        s_sums[k] += s_squares[d + k * D];
-      }
-    }
+        if (k < K && d == 0) {
+          for(int dd = 0; dd < D; ++dd) {
+            s_sums[k] += s_squares[dd + k * D];
+          }
+        }
     __syncthreads();
     
-    // check for the minimum of the K sums using 1 lucky thread
-    if (tid == 0) {
-      min = s_sums[0];
-      min_idx = 0;
-      for(int k = 1; k < K; ++k) {
-        if (s_sums[k] < min) {
-          min = s_sums[k];
-          min_idx = k;
+    // check for the minimum of the K sums using 1 lucky thread per block
+        if (wInBlockid == 0) {
+          min = 1.0/0.0;
+          min_idx = -1;
+          for(int kk = 0; kk < K; ++kk) {
+            if (s_sums[kk] < min) {
+              min = s_sums[kk];
+              min_idx = kk;
+            }
+          }
+          if (labels[n] != min_idx) {
+            conv_array[n] = 0;
+            labels[n] = min_idx;
+          }
         }
-      }
-      if (labels[n] ! = min_idx) {
-        labels[n] = min_idx;
-      }
+    __syncthreads();
+
+    //check convergence
+    if(tid < N){
+        s_conv[wInBlockid] = conv[tid];
     }
-  }
+        __syncthreads();
+    
+    if(tid < N){
+        for(int kk = (K*D)/2; kk > 0; kk>>=1)
+        {
+            double temp = s_conv[wInBlockid + kk];
+            if(temp <  s_conv[wInBlockid]) s_conv[wInBlockid] = temp;
+            __syncthreads();
+        }
+        if(wInBlockid == 0) conv_array[n] = s_conv[0];
+    }
+    __syncthreads();
+    if(tid == 0){
+        for(int kk = 0; kk < N/(K*D); kk++){
+            (*conv) = ((*conv) > conv_array[n] ? 0 : 1);
+            if(!(*conv)) break;
+        }
+    }
+     __syncthreads();
+}
