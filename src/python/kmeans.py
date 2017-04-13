@@ -24,9 +24,9 @@ kernel_fn = "../cuda/pycumean.c"
 
 output_dir = "../../analysis/"
 
-K = 3
-N = 1000 # max N for review data is 118684
-D = 6 # max D for review data is 6 (we could increase this actually)
+K = 4
+N = 1024 # max N for review data is 118684
+D = 4 # max D for review data is 6 (we could increase this actually)
 limit = 10
 
 output = [['algorithm','time','convergence','distortion','n','d','k']]

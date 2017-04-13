@@ -110,22 +110,26 @@ def sequential(data, initial_labels, N, D, K, limit):
 # define h_vars on host
 def prep_host(data, initial_labels, K, D):
   
-  h_data = data
+  h_data = data.copy()
   h_labels = initial_labels.copy()
   h_means = np.ascontiguousarray(np.empty((K,D),dtype=np.float64, order='C'))
-  
-  return h_data, h_labels, h_means
+  h_converged_array = np.zeros((data.shape[0]),dtype=np.intc)
+  return h_data, h_labels, h_means, h_converged_array
 
 # allocate memory and copy data to d_vars on device
-def prep_device(h_data, h_labels, h_means):
+def prep_device(h_data, h_labels, h_means, h_converged_array, h_converged):
   
   d_data = cuda.mem_alloc(h_data.nbytes)
   d_labels = cuda.mem_alloc(h_labels.nbytes)
   d_means = cuda.mem_alloc(h_means.nbytes)
+  d_converged_array = cuda.mem_alloc(h_converged_array.nbytes)
+  d_converged = cuda.mem_alloc(h_converged.nbytes)
   cuda.memcpy_htod(d_data,h_data)
   cuda.memcpy_htod(d_labels,h_labels)
+  cuda.memcpy_htod(d_converged_array, h_converged_array)
+  cuda.memcpy_htod(d_converged, h_converged)
   
-  return d_data, d_labels, d_means
+  return d_data, d_labels, d_means, d_converged
 
 # define kernels
 def parallel_mod(kernel_fn, N, K, D):
@@ -139,26 +143,26 @@ def parallel_mod(kernel_fn, N, K, D):
     return kernel1, kernel2
   
 def parallel(data, initial_labels, kernel_fn, N, K, D, limit):
-  
-    converged = False
+    
+    h_converged = np.zeros((1),dtype=np.intc)
     count = 0
     kernel1, kernel2 = parallel_mod(kernel_fn, N, K, D)
-    h_data, h_labels, h_means = prep_host(data, initial_labels, K, D)
+    h_data, h_labels, h_means, h_converged_array = prep_host(data, initial_labels, K, D)
     
     start = time.time()
-    d_data, d_labels, d_means = prep_device(h_data, h_labels, h_means)
+    d_data, d_labels, d_means, d_converged_array, d_converged = prep_device( h_data, h_labels, h_means, h_converged_array, h_converged)
   
-    while not converged:
-        converged = True
+    while not h_converged:
         kernel1(d_data, d_labels, d_means, d_count, block=(K,D,1), grid=(1,1,1))
-        kernel2(d_data, d_labels, d_means, block=(K,D,1), grid=(N,1,1))
-        cuda.memcpy_dtoh(h_means, d_means)
-        cuda.memcpy_dtoh(h_labels, d_labels)
+        kernel2(d_data, d_labels, d_means, d_converged_array d_converged, block=(K,D,1), grid=(N,1,1))
+        cuda.memcpy_dtoh(h_converged, d_converged)
         count +=1
         if count==limit: break
           
         # need to add a check for convergence (compare new labels to old labels)
-    
+    cuda.memcpy_dtoh(h_means, d_means)
+    cuda.memcpy_dtoh(h_labels, d_labels)
     runtime = time.time()-start
     
     return h_means, h_labels, count, runtime
+
