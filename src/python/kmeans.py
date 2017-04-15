@@ -81,4 +81,4 @@ output.append(['hybrid',runtime, count, distortion, N, D, K, means])
 ### MAKE GRAPHS & WRITE OUTPUT TO CSV ####
 ######################################################
 
-process_output(output, output_dir, means, ref_means)
+process_output(output, output_dir, ref_means)
