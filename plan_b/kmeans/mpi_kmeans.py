@@ -24,7 +24,6 @@ def kmeans_sequential(data, n_clusters,max_iter=100):
 def mpi_kmeans(data, n_clusters,max_iter=100):
 
     all_data = data
-    all_labels = labels
 
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
@@ -40,6 +39,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
     centers = np.zeros((n_clusters,n_dimensions))
     labels = generate_initial_assignment(n_data,n_clusters)
+    all_labels = labels
     allocations,labels = partition(labels,size)
     labels = comm.scatter(labels, root=0)
 
