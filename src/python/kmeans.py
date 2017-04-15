@@ -47,6 +47,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
   means, labels, count, runtime, distortion, means1, labels1 = sequential(data, initial_labels, N, D, K, limit)
   output.append(['sequential',runtime, count, distortion, N, D, K, means])
+  ref_means=means
 
   ######################################################
   ### RUN STOCK K-MEANS ####
