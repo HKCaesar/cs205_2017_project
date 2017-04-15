@@ -100,7 +100,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
     labels = comm.gather( [rank, labels] ,root=0)
 
-    comm.Finalize()
+    MPI.Finalize()
 
     if rank==0:
         labels = np.array(list(chain(*labels)))
