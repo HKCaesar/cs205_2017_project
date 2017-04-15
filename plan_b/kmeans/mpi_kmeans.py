@@ -46,21 +46,22 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
         compute_means(labels,centers,data,sum_values=True)
 
-        print("1. rank: %d, mean: %r",rank, centers.shape )
-
         centers = comm.gather(centers, root=0)
 
         if rank==0:
             print(type(centers))
             centers = np.sum(centers,axis=0)/n_data
-            print("2. rank: %d, mean: %r",rank, centers.shape)
-            centers = comm.bcast(centers, root=0)
+
+        centers = comm.bcast(centers, root=0)
 
         print("3. rank: %d, mean: %r",rank, centers.shape)
+        print(centers)
 
         converged = reassign_labels(labels,centers,data)
 
         converged = comm.gather(converged,root=0)
+
+        sys.exit(0)
 
         if rank == 0:
             print("%d. "%k,distortion(labels, centers, data)  )
