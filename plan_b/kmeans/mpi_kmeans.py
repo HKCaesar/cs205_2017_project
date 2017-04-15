@@ -45,7 +45,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
     allocations,labels = partition(labels,size)
 
-    print(np.sum(allocations))
+    print( np.sum(map(len,labels))  )
 
     sys.exit(0)
 
