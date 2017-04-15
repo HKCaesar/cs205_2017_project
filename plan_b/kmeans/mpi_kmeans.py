@@ -40,6 +40,12 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
     labels = generate_initial_assignment(n_data,n_clusters)
     all_labels = labels
     allocations,labels = partition(labels,size)
+
+
+    compute_means(labels,centers,data)
+    print(distortion(labels,centers,distortion()))
+
+
     labels = labels[rank]
 
     indices = allotment_to_indices(allocations)
@@ -48,7 +54,6 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
     print(indices[rank][0],indices[rank][1])
 
-    sys.exit(0)
 
     for k in range(max_iter):
 
@@ -66,6 +71,8 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
             centers=temp/n_data
             print(k, distortion(all_labels,centers,all_data))
+
+
 
 
         centers = comm.bcast(centers, root=0)
