@@ -82,7 +82,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
                 print("first p means:")
                 print(centers)
 
-            print(k, distortion(all_labels,centers,all_data))
+            print(k, distortion(collected_labels,centers,all_data))
 
 
 
@@ -92,8 +92,6 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
 
         converged = comm.gather(converged,root=0)
-
-        print("2.", labels)
 
         converged = np.all(converged)
 
