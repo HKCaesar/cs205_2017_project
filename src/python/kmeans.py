@@ -23,7 +23,10 @@ d_list = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","k
 kernel_fn = "../cuda/pycumean.c"
 
 output_fn = "../../analysis/output.csv"
-with open(output_fn, 'a') as f: f.close()
+with open(output_fn, 'w') as f:
+    writer = csv.writer(f, delimiter = ',')
+    writer.writerows(['algorithm','time','convergence','distortion','n','d','k'])
+    f.close()
 
 limit = 10
 
@@ -33,7 +36,7 @@ Ds = [6]              # max D for review data is 6 (we could increase this actua
 
 for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
     
-  output = [['algorithm','time','convergence','distortion','n','d','k']]
+  output = []
 
   ######################################################
   ### PREP DATA & INITIAL LABELS ####
