@@ -14,8 +14,7 @@ Kareem Carr, Eric Dunipace, Charlotte Lloyd
 This repository was created in partial fulfillment of the requirements of CS 205 in Spring 2017.
 ```
 
-## Substantive Problem
-------
+# Substantive Problem
 
 The consumption of commercial sexual services is not uncommon: 15-18% of men living in the U.S. report having at least one paid sexual encounter since they were 18 years old (General Social Survey, 1991-2006), and roughly 1% have visited a sex worker in the past year (Monto 1999; Monto and McRee 2005). Over the past 15 years, technological innovation combined with tougher policies against street prostitution have catalyzed the growth of markets for Internet-based sexual service providers. Scholars have investigated the concomitant rise of the “girlfriend experience” (GFE), which includes cuddling, conversation, and even dinner dates in addition to the provision of more traditional sexual services. However, very little is known about the structure of this doubly clandestine market, which is both socially stigmatized and illegal.
 
@@ -23,8 +22,7 @@ We will use a unique data from the world’s largest sex work review website (ww
 
 <i>We wish to understand the underlying types of clients and providers, which we believe are drawn from an underlying distribution of types. In order to identify these types, we propose using K-means clustering.</i>
 
-## Methodology: K-means
-------
+# Methodology: K-means
 
 Invented in 1955, K-means is a simple clustering method that remains one of the most popular and widely used algorithms today (Jain 2010). The K-means problem produces a partitional clustering of the observed data with the smallest within-cluster variance, which can be interpreted as a residual sum of squares. The within-cluster variance is sensitive to the choice of the number of clusters K. Several solutions have been proposed to address this limitation. One of the most successful is the Gap statistic. Another approach suggested by Broderick et al is incorporating a penalty function. We will explore various approaches to determining K which will involve subsampling the data and iteratively incorporating distribution of estimates derived from subsamples.
 
@@ -36,8 +34,7 @@ https://github.com/dbelll/kmeans
 https://github.com/serban/kmeans
 https://bitbucket.org/malthejorgensen/kmeans-gpu-nbi
 
-## Parallel Architecture
-------
+# Parallel Architecture
 
 In this crowded field, our contribution is to create a flexible K-means implementation using mpi4py + pyCUDA that will be accessible and useful to data scientist, many of whom are most comfortable programming in Python rather than in traditional languages of parallel processing including Fortran, C, and C++. Since data scientists may be deeply unfamiliar with parallel hardware, we paid special attention to designing a flexible architecture suitable for any configuration involving at least one CUDA-ready GPU. 
 
@@ -56,13 +53,12 @@ However, due to the limitations of Odyssey's hardware configuration, we were not
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/arch-odyssey.png">
 
-## Substantive Findings
------
+# Substantive Findings
 
 The K-means clustering of consumption patterns revealed three major groups: .
 
-### Works Cited
-------
+## Works Cited
+
 <sub>Broderick, T., Kulis B., and Jordan M. (2013), MAD-Bayes: MAP-based Asymptotic Derivations from Bayes. https://arxiv.org/abs/1212.2126 </sub>
 
 <sub>Farivar, R., Rebolledo, D., Chan, E., & Campbell, R. H. (2008). A Parallel Implementation of K-Means Clustering on GPUs. In PDPTA (Vol. 13, pp. 212–312). Retrieved from https://pdfs.semanticscholar.org/0638/dc0565cb11191ab1e2b91cd19b630cfa8c34.pdf </sub>
