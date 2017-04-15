@@ -82,6 +82,8 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
                 print("first p means:")
                 print(centers)
 
+            print(len(collected_labels))
+
             print(k, distortion(collected_labels,centers,all_data))
 
 
