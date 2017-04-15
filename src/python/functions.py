@@ -174,7 +174,7 @@ def mpi4py(data, initial_labels, kernel_fn, N, K, D, limit):
   start = time.time()
   count = 0
   h_means = np.ascontiguousarray(np.empty((K,D),dtype=np.float64, order='C'))
-  h_labels = np.ascontiguousarray(np.empty(initial_label.shape,dtype=np.intc, order='C'))
+  h_labels = np.ascontiguousarray(np.empty(initial_labels.shape,dtype=np.intc, order='C'))
   runtime = time.time()-start
   
   return h_means, h_labels, count, runtime
@@ -188,7 +188,7 @@ def hybrid(data, initial_labels, kernel_fn, N, K, D, limit):
   start = time.time()
   count = 0
   h_means = np.ascontiguousarray(np.empty((K,D),dtype=np.float64, order='C'))
-  h_labels = np.ascontiguousarray(np.empty(initial_label.shape,dtype=np.intc, order='C'))
+  h_labels = np.ascontiguousarray(np.empty(initial_labels.shape,dtype=np.intc, order='C'))
   runtime = time.time()-start
   
   return h_means, h_labels, count, runtime
