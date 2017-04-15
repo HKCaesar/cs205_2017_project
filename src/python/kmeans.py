@@ -45,7 +45,7 @@ output.append(['sequential',runtime, count, '', N, D, K, means])
 
 print('\n-----sequential output count == 1') # will eventually delete this
 print(means1)
-print(label1[:10])
+print(labels1[:10])
 ref_means = means1
 
 ######################################################
