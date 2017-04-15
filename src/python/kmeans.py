@@ -37,23 +37,23 @@ output = [['algorithm','time','convergence','distortion','n','d','k']]
 data, initial_labels = prep_data(data_fn, d_list, N, D, K)
 
 ######################################################
-### RUN STOCK K-MEANS ####
-######################################################
-
-means, labels, distortion, runtime, distortion = stock(data, K, limit)
-output.append(['stock', runtime, '', distortion, N, D, K, means])
-
-######################################################
 ### RUN SEQUENTIAL K-MEANS ####
 ######################################################
 
-means, labels, count, runtime, distortion, A1, W1 = sequential(data, initial_labels, N, D, K, limit)
+means, labels, count, runtime, distortion, means1, labels1 = sequential(data, initial_labels, N, D, K, limit)
 output.append(['sequential',runtime, count, '', N, D, K, means])
 
 print('\n-----sequential output count == 1') # will eventually delete this
-print(A1)
-print(W1[:10])
-ref_means = A1
+print(means1)
+print(label1[:10])
+ref_means = means1
+
+######################################################
+### RUN STOCK K-MEANS ####
+######################################################
+
+means, labels, distortion, runtime, distortion = stock(data, K, count)
+output.append(['stock', runtime, '', distortion, N, D, K, means])
 
 ######################################################
 ### RUN pyCUDA K-MEANS ####
