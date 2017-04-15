@@ -46,8 +46,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
     allocations,labels = partition(labels,size)
     indices = allotment_to_indices(allocations)
 
-    indices = comm.scatter(zip(indices, labels) , root=0)
-
+    indices,labels = comm.scatter(zip(indices, labels) , root=0)
 
     data = data[indices[0]:indices[1]]
 
