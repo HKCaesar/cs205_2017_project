@@ -142,7 +142,7 @@ def parallel_mod(kernel_fn, N, K, D):
     
     return kernel1, kernel2
   
-def parallel(data, initial_labels, kernel_fn, N, K, D, limit):
+def pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit):
     
     h_converged = np.zeros((1),dtype=np.intc)
     count = 0
@@ -164,4 +164,3 @@ def parallel(data, initial_labels, kernel_fn, N, K, D, limit):
     runtime = time.time()-start
     
     return h_means, h_labels, count, runtime
-
