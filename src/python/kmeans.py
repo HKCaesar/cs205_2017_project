@@ -67,12 +67,12 @@ print(W1[:10])
 ref_means = A1
 
 ######################################################
-### RUN PARALLEL K-MEANS ####
+### RUN pyCUDA K-MEANS ####
 ######################################################
 
-means, labels, count, runtime = parallel(data, initial_labels, kernel_fn, N, K, D, limit)
+means, labels, count, runtime = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
 
-output.append(['parallel',runtime, count, '', N, D, K])
+output.append(['pyCUDA',runtime, count, '', N, D, K])
 print('\n-----Parallel output')
 print(means)
 print(labels[:10])
