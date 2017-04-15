@@ -205,7 +205,7 @@ def hybrid(data, initial_labels, kernel_fn, N, K, D, limit):
 ### MAKE GRAPHS ###
 ######################################################
 
-def process_output(output, output_dir, ref_means):
+def process_output(output, output_fn, ref_means):
   
   # print some stuff
   for o in output[1:]:
