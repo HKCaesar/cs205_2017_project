@@ -56,7 +56,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ### RUN STOCK K-MEANS ####
   ######################################################
 
-  means, labels, distortion, runtime, distortion, ai = stock(data, K, count)
+  means, labels, distortion, runtime, ai = stock(data, K, count)
   output.append(['stock', runtime, '', distortion, ai, N, D, K, means])
 
   ######################################################
