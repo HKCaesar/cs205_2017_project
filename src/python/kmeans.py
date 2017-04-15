@@ -79,6 +79,30 @@ print(labels[:10])
 print('Equals stock means: %s' % str(np.array_equal(ref_means,means)))
 
 ######################################################
+### RUN mpi4py K-MEANS ####
+######################################################
+
+means, labels, count, runtime = mpi4py(data, initial_labels, kernel_fn, N, K, D, limit)
+
+output.append(['mpi4py',runtime, count, '', N, D, K])
+print('\n-----Parallel output')
+print(means)
+print(labels[:10])
+print('Equals stock means: %s' % str(np.array_equal(ref_means,means)))
+
+######################################################
+### RUN hybrid K-MEANS ####
+######################################################
+
+means, labels, count, runtime = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
+
+output.append(['hybrid',runtime, count, '', N, D, K])
+print('\n-----Parallel output')
+print(means)
+print(labels[:10])
+print('Equals stock means: %s' % str(np.array_equal(ref_means,means)))
+
+######################################################
 ### WRITE DATA TO CSV ####
 ######################################################
 
