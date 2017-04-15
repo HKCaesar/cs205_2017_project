@@ -8,6 +8,7 @@ from pycuda.compiler import SourceModule
 
 import time
 import string
+import csv
 
 ######################################################
 ### PREP DATA & INITIAL LABELS ####
@@ -34,17 +35,27 @@ def prep_data(data_fn, d_list, N, D, K):
   return data, initial_labels
 
 ######################################################
+### CALCULATE DISTORTION ###
+######################################################
+
+def distortion(data, labels, means):
+    #temp=np.sum((means[labels:]-data)**2) <---- FIX!!!!
+    return 100
+
+######################################################
 ### STOCK K-MEANS ###
 ######################################################
 
-def stock(data, K, limit):
+def stock(data, K, count):
   
     start = time.time()
-    stockmeans = KMeans(n_clusters=K,n_init=limit)
+    stockmeans = KMeans(n_clusters=K,n_init=count)
     stockmeans.fit(data)
     runtime = time.time()-start
     
-    return stockmeans.cluster_centers_, stockmeans.labels_, stockmeans.inertia_, runtime
+    ai = 100 * count
+    
+    return stockmeans.cluster_centers_, stockmeans.labels_, stockmeans.inertia_, runtime,  ai
 
 ######################################################
 ### SEQUENTIAL K-MEANS ###
@@ -52,10 +63,9 @@ def stock(data, K, limit):
 
 def sequential(data, initial_labels, N, D, K, limit):
   
-  A = np.zeros((K,D))
-  W = initial_labels.copy()
-  X = data
-  m = np.zeros(K)
+  means = np.empty((K,D))
+  labels = initial_labels.copy()
+  clustern = np.empty(K)
   count = 0
   converged = False
   start = time.time()
@@ -67,15 +77,15 @@ def sequential(data, initial_labels, N, D, K, limit):
       #compute means
       for k in range(K):
           for d in range(D):
-              A[k,d] = 0
-          m[k]=0
+              means[k,d] = 0
+          clustern[k]=0
       for n in range(N):
           for d in range(D):
-              A[W[n],d]+=X[n,d]
-          m[ W[n] ] +=1
+              means[labels[n],d]+=data[n,d]
+          clustern[labels[n] ] +=1
       for k in range(K):
           for d in range(D):
-              A[k,d] = A[k,d]/m[k]
+              means[k,d] = means[k,d]/clustern[k]
 
       #assign to closest mean
       for n in range(N):
@@ -84,27 +94,28 @@ def sequential(data, initial_labels, N, D, K, limit):
           for k in range(K):
               temp =0
               for d in range(D):
-                  temp += (X[n,d]-A[k,d])**2
+                  temp += (data[n,d]-means[k,d])**2
 
               if temp < min_val:
                   min_val = temp
                   min_ind = k
-          if min_ind != W[n]:
-              W[n] = min_ind
+          if min_ind != labels[n]:
+              labels[n] = min_ind
               converged=False
       
       count +=1
       if count==1:
-        A1 = A.copy()
-        W1 = W.copy()  
+        means1 = means.copy()
+        labels1 = labels.copy()  
       if count==limit: break
         
   runtime = time.time()-start
-  
-  return A, W, count, runtime, A1, W1
+  ai = 200 * count
+    
+  return means, labels, count, runtime, distortion(data, labels, means), ai, means1, labels1
 
 ######################################################
-### PARALLEL K-MEANS  ####
+### pyCUDA K-MEANS  ####
 ######################################################
 
 # define h_vars on host
@@ -142,7 +153,7 @@ def parallel_mod(kernel_fn, N, K, D):
     
     return kernel1, kernel2
   
-def parallel(data, initial_labels, kernel_fn, N, K, D, limit):
+def pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit):
     
     h_converged = np.zeros((1),dtype=np.intc)
     count = 0
@@ -162,6 +173,56 @@ def parallel(data, initial_labels, kernel_fn, N, K, D, limit):
     cuda.memcpy_dtoh(h_means, d_means)
     cuda.memcpy_dtoh(h_labels, d_labels)
     runtime = time.time()-start
+    ai = 300 * count
     
-    return h_means, h_labels, count, runtime
+    return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means), ai
 
+######################################################
+### mpi4py K-MEANS  ####
+######################################################
+
+def mpi4py(data, initial_labels, kernel_fn, N, K, D, limit):
+  
+  start = time.time()
+  count = 0
+  h_means = np.ascontiguousarray(np.empty((K,D),dtype=np.float64, order='C'))
+  h_labels = np.ascontiguousarray(np.empty(initial_labels.shape,dtype=np.intc, order='C'))
+  runtime = time.time()-start
+  ai = 400 * count
+  
+  return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means), ai
+
+######################################################
+### hybrid K-MEANS  ####
+######################################################
+
+def hybrid(data, initial_labels, kernel_fn, N, K, D, limit):
+  
+  start = time.time()
+  count = 0
+  h_means = np.ascontiguousarray(np.empty((K,D),dtype=np.float64, order='C'))
+  h_labels = np.ascontiguousarray(np.empty(initial_labels.shape,dtype=np.intc, order='C'))
+  runtime = time.time()-start
+  ai = 500 * count
+  
+  return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means), ai
+
+######################################################
+### MAKE GRAPHS ###
+######################################################
+
+def process_output(output, output_fn, ref_means):
+  
+  # print some stuff
+  for o in output:
+    print('\n-----'+o[0])
+    if o[0][0]!='s': print('Equals stock means: %s' % str(np.array_equal(ref_means,o[-1])))
+    for p in o: print(p)
+  
+  # write to csv
+  with open(output_fn, 'a') as f:
+    writer = csv.writer(f, delimiter = ',')
+    writer.writerows([o[:8] for o in output])
+    f.close()
+  
+  return
