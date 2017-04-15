@@ -18,7 +18,7 @@ This repository was created in partial fulfillment of the requirements of CS 205
 
 ## Substantive Problem
 
-> We wish to understand the underlying types of clients of sex work, which we believe are drawn from an underlying distribution of types. In order to identify these types, we propose using K-means clustering.
+> <i>SUMMARY: We wish to understand the underlying types of clients of sex work, which we believe are drawn from an underlying distribution of types. In order to identify these types, we propose using K-means clustering.</i>
 
 BACKGROUND: The consumption of commercial sexual services is not uncommon: 15-18% of men living in the U.S. report having at least one paid sexual encounter since they were 18 years old (General Social Survey, 1991-2006), and roughly 1% have visited a sex worker in the past year (Monto 1999; Monto and McRee 2005). Over the past 15 years, technological innovation combined with tougher policies against street prostitution have catalyzed the growth of markets for Internet-based sexual service providers. Scholars have investigated the concomitant rise of the “girlfriend experience” (GFE), which includes cuddling, conversation, and even dinner dates in addition to the provision of more traditional sexual services. However, very little is known about the structure of this doubly clandestine market, which is both socially stigmatized and illegal.
 
@@ -26,9 +26,11 @@ DATA: We will use a unique data from the world’s largest sex work review websi
 
 ## Methodology: K-means
 
-Invented in 1955, K-means is a simple clustering method that remains one of the most popular and widely used algorithms today (Jain 2010). The K-means problem produces a partitional clustering of the observed data with the smallest within-cluster variance, which can be interpreted as a residual sum of squares. The within-cluster variance is sensitive to the choice of the number of clusters K. Several solutions have been proposed to address this limitation. One of the most successful is the Gap statistic. Another approach suggested by Broderick et al is incorporating a penalty function. We will explore various approaches to determining K which will involve subsampling the data and iteratively incorporating distribution of estimates derived from subsamples.
+> <i>SUMMARY: K-means is a popular method of clustering that iteratively calculates group means and reassigns observations to clusters until convergence is achieved.</i>
 
-Given the popularity of this clustering method, it is unsurprising that there has been corresponding interest in parallel implementations of K-means (Farivar et al. 2008; Hong-tao et al. 2009; Kanungo et al. 2002; Li et al. 2010; Shalom, Dash, and Tue 2008; Wu and Hong 2011; Zechner and Granitzer 2009; Zhao, Ma, and He 2009). [do we need to commment on this existing literature?]
+BACKGROUND: Invented in 1955, K-means is a simple clustering method that remains one of the most popular and widely used algorithms today (Jain 2010). The K-means problem produces a partitional clustering of the observed data with the smallest within-cluster variance, which can be interpreted as a residual sum of squares. The within-cluster variance is sensitive to the choice of the number of clusters K. Several solutions have been proposed to address this limitation. One of the most successful is the Gap statistic. Another approach suggested by Broderick et al is incorporating a penalty function. We will explore various approaches to determining K which will involve subsampling the data and iteratively incorporating distribution of estimates derived from subsamples.
+
+PARALLEL IMPLEMENTATIONS: Given the popularity of this clustering method, it is unsurprising that there has been corresponding interest in parallel implementations of K-means (Farivar et al. 2008; Hong-tao et al. 2009; Kanungo et al. 2002; Li et al. 2010; Shalom, Dash, and Tue 2008; Wu and Hong 2011; Zechner and Granitzer 2009; Zhao, Ma, and He 2009). [do we need to commment on this existing literature?]
 
 [should we mention existing pyCUDA implementations?]
 https://github.com/shackenberg/cukmeans.py
@@ -40,9 +42,9 @@ https://bitbucket.org/malthejorgensen/kmeans-gpu-nbi
 
 <img align="left" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/arch-cpus.png"  width="400">
 
-In this crowded field, our contribution is to create a flexible K-means implementation using mpi4py + pyCUDA that will be accessible and useful to data scientist, many of whom are most comfortable programming in Python rather than in traditional languages of parallel processing including Fortran, C, and C++. Since data scientists may be deeply unfamiliar with parallel hardware, we paid special attention to designing a flexible architecture suitable for any configuration involving at least one CUDA-ready GPU. 
+GOAL: In this crowded field, our contribution is to create a flexible K-means implementation using mpi4py + pyCUDA that will be accessible and useful to data scientist, many of whom are most comfortable programming in Python rather than in traditional languages of parallel processing including Fortran, C, and C++. Since data scientists may be deeply unfamiliar with parallel hardware, we paid special attention to designing a flexible architecture suitable for any configuration involving at least one CUDA-ready GPU. 
 
-In an ideal hardware configuration, we would expect a host CPU to control <i>c</i> CPUs that each in turn control <i>g</i> GPUs. 
+IDEAL HARDWARE: In an ideal hardware configuration, we would expect a host CPU to control <i>c</i> CPUs that each in turn control <i>g</i> GPUs. 
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/arch-ideal.png">
 
@@ -51,7 +53,7 @@ In an ideal hardware configuration, we would expect a host CPU to control <i>c</
 3. Third, each of the CPUs would re-assemble the results of the subsets into the final means, labels, and distortion score. 
 4. Fourth and finally, the host CPU would adjudicate between the distortion scores of each K-means implementation and choose the clusters associated with the lowest score (i.e. the best performing version). 
 
-However, due to the limitations of Odyssey's hardware configuration, we were not able to implement our ideal parallel architecture described above. Instead.... 
+ODYSSEY HARDWARE: However, due to the limitations of Odyssey's hardware configuration, we were not able to implement our ideal parallel architecture described above. Instead.... 
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/arch-odyssey.png">
 
