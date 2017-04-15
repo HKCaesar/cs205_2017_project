@@ -32,12 +32,17 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
     print('started timing')
 
     n_data, n_dimensions = data.shape
+
+    print("dim: ",n_data, n_dimensions)
+
     centers = np.zeros((n_clusters,n_dimensions))
     labels = generate_initial_assignment(n_data,n_clusters)
     allocations,labels = partition(labels,size)
     labels = comm.scatter(labels, root=0)
 
-    data = data[labels,:]
+    print("partitions:", labels)
+
+    data = data[labels, :]
 
     print("rank: %d, data: %r",rank, data)
 
