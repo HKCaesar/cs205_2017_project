@@ -22,7 +22,7 @@ The consumption of commercial sexual services is not uncommon: 15-18% of men liv
 
 We will use a unique data from the world’s largest sex work review website (www.theeroticreview.com) covering the period from April 1998 to July 2011 and including 584,513 reviews written by 118,683 reviewers regarding encounters with 113,703 sex workers. Crucially, extensive work has already been undertaken with a customized dictionary to code for the presence of the six common sexual acts: (1) kissing, (2) massage, (3) hand job,(4) fellatio, (5) cunninlingus, and (6) vaginal intercourse. When compared to human coding of sexual acts in the reviews, the dictionary classifies 92% of acts correctly and falsely codes 11% of acts. 
 
-<i>We wish to understand the underlying types of clients and providers, which we believe are drawn from an underlying distribution of types. In order to identify these types, we propose using K-means clustering.</i>
+> <i>We wish to understand the underlying types of clients and providers, which we believe are drawn from an underlying distribution of types. In order to identify these types, we propose using K-means clustering.</i>
 
 ## Methodology: K-means
 
