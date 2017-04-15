@@ -214,7 +214,7 @@ def process_output(output, output_fn, ref_means):
     for p in o: print(p)
       
   # graphs
-  print('made graphs')
+  print('\nmade graphs\n')
   
   # write to csv
   with open(output_fn, 'a') as f:
