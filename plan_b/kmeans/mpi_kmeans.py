@@ -52,7 +52,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
         if rank==0:
             print(type(centers))
-            centers = np.sum(centers)/n_data
+            centers = np.sum(centers,axis=0)/n_data
             print("2. rank: %d, mean: %r",rank, centers.shape)
 
         centers = comm.bcast(data, root=0)
