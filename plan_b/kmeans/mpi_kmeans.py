@@ -66,17 +66,9 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
                 temp+=center
 
             centers = temp
+            
 
-
-        collected_labels = comm.gather( [rank, labels],root=0)
-
-
-        if rank == 0:
-            for rank, label in labels:
-                print(rank)
-                print(label)
-
-        sys.exit(0)
+        collected_labels = omm.gather(labels, root=0)
 
         if rank == 0:
             collected_labels = np.array(list(chain(*collected_labels)))
