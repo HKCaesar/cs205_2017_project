@@ -59,6 +59,12 @@ However, due to the limitations of Odyssey's hardware configuration, we were not
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/arch-odyssey.png">
 
+## Performance
+
+> <i>summary</i>
+
+graphs etc.
+
 ## Substantive Findings
 
 > <i>summary</i>
