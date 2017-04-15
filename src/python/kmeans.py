@@ -44,7 +44,7 @@ data, initial_labels = prep_data(data_fn, d_list, N, D, K)
 means, labels, distortion, runtime = stock(data, K, limit)
 
 output.append(['stock',runtime, '', distortion, N, D, K])
-print('\n-----Stock output')
+print('\n-----stock output')
 print(means)
 print(labels[:10])
 print(distortion)
@@ -56,12 +56,12 @@ print(distortion)
 means, labels, count, runtime, A1, W1 = sequential(data, initial_labels, N, D, K, limit)
 
 output.append(['sequential',runtime, count, '', N, D, K])
-print('\n-----Sequential output')
+print('\n-----sequential output')
 print(means)
 print(labels[:10])
 ref_means = means
 
-print('\n-----Sequential output count == 1') # will eventually delete this
+print('\n-----sequential output count == 1') # will eventually delete this
 print(A1)
 print(W1[:10])
 ref_means = A1
@@ -73,7 +73,7 @@ ref_means = A1
 means, labels, count, runtime = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
 
 output.append(['pyCUDA',runtime, count, '', N, D, K])
-print('\n-----Parallel output')
+print('\n-----pyCUDA output')
 print(means)
 print(labels[:10])
 print('Equals stock means: %s' % str(np.array_equal(ref_means,means)))
@@ -85,7 +85,7 @@ print('Equals stock means: %s' % str(np.array_equal(ref_means,means)))
 means, labels, count, runtime = mpi4py(data, initial_labels, kernel_fn, N, K, D, limit)
 
 output.append(['mpi4py',runtime, count, '', N, D, K])
-print('\n-----Parallel output')
+print('\n-----mpi4py output')
 print(means)
 print(labels[:10])
 print('Equals stock means: %s' % str(np.array_equal(ref_means,means)))
@@ -97,7 +97,7 @@ print('Equals stock means: %s' % str(np.array_equal(ref_means,means)))
 means, labels, count, runtime = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
 
 output.append(['hybrid',runtime, count, '', N, D, K])
-print('\n-----Parallel output')
+print('\n-----hybrid output')
 print(means)
 print(labels[:10])
 print('Equals stock means: %s' % str(np.array_equal(ref_means,means)))
