@@ -60,7 +60,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
         compute_means(labels,centers,data,sum_values=True)
 
-        centers = comm.gather([centers,labels], root=0)
+        centers = comm.gather(centers, root=0)
 
         if rank==0:
             print( len(centers) )
