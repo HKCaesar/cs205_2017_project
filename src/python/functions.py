@@ -217,7 +217,7 @@ def process_output(output, output_dir, ref_means):
   print('made graphs')
   
   # write to csv
-  with open(output_dir + 'times.csv', 'w') as f:
+  with open(output_fn, 'a') as f:
     writer = csv.writer(f, delimiter = ',')
     writer.writerows([o[:7] for o in output])
     f.close()
