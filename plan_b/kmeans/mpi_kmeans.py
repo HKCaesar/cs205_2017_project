@@ -49,7 +49,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
         compute_means(labels,centers,data,sum_values=True)
 
-         print("1.")
+        print("1.")
 
         centers = comm.gather(centers, root=0)
 
