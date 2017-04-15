@@ -40,9 +40,13 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
     labels = generate_initial_assignment(n_data,n_clusters)
     all_labels = labels
     allocations,labels = partition(labels,size)
-    labels = comm.scatter(labels, root=0)
+    labels = labels[rank]
 
-    print("1.",rank, labels)
+    allocations = np.cumsum(allocations)
+
+    print(allocations)
+
+    sys.exit(0)
 
     data = data[labels]
 
