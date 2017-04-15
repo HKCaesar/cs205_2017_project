@@ -62,7 +62,13 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
             centers=temp/n_data
             print(k, distortion(all_labels,centers,all_data))
 
+
+        print(centers)
+
+        sys.exit(0)
+
         centers = comm.bcast(centers, root=0)
+
 
         converged = reassign_labels(labels,centers,data)
 
