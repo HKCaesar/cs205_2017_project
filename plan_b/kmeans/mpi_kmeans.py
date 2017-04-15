@@ -70,6 +70,8 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
             for center in centers:
                 temp+=center
 
+            centers = temp
+
 
         labels = comm.gather(labels,root=0)
 
