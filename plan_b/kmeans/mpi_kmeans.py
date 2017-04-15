@@ -1,5 +1,5 @@
 from mpi4py import MPI
-from kmeans.utilities import compute_means, reassign_labels, generate_initial_assignment, partition, distortion
+from kmeans.utilities import compute_means, reassign_labels, generate_initial_assignment, partition, distortion, allotment_to_indices
 import numpy as np
 import time
 from itertools import chain
@@ -42,13 +42,9 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
     allocations,labels = partition(labels,size)
     labels = labels[rank]
 
-    allocations = np.cumsum(allocations)
+    indices = allotment_to_indices(allocations)
 
-    print(allocations)
-
-    sys.exit(0)
-
-    data = data[labels]
+    data = data[indices[rank][0]:indices[rank][1]]
 
     for k in range(max_iter):
 
@@ -76,9 +72,6 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
         converged = reassign_labels(labels,centers,data)
 
         print("after", rank, labels)
-
-        sys.exit(0)
-
 
 
         #print(rank, labels)

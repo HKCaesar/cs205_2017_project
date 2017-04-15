@@ -6,6 +6,13 @@ from scipy.stats import gaussian_kde
 import matplotlib
 import pandas as pd
 
+def allotment_to_indices(allotments):
+    indices = np.cumsum(allotments)
+    indices=np.append(indices,[0])
+    indices=np.sort(indices)
+    indices=np.column_stack([indices[:-1],indices[1:]])
+    return(indices)
+
 def generate_random_subset(df, subset_size):
     n = len(df)
     indices = np.arange(n)
@@ -83,10 +90,9 @@ def partition(sequence, n_chunks):
     left_over=([1]*left_over)+([0]*(n_chunks-left_over))
     np.random.shuffle(left_over)
     allocations = left_over+allocations
-    indexes = np.cumsum(allocations)
-    indexes=np.append(indexes,[0])
-    indexes=np.sort(indexes)
-    indexes=np.column_stack([indexes[:-1],indexes[1:]])
+
+
+    indexes = allotment_to_indices(allocations)
 
     return allocations, [sequence[index[0]:index[1]]  for index in indexes]
 
