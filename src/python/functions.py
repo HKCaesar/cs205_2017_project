@@ -55,7 +55,7 @@ def stock(data, K, count):
     
     ai = 100 * count
     
-    return stockmeans.cluster_centers_, stockmeans.labels_, runtime, stockmeans.inertia_, ai
+    return stockmeans.cluster_centers_, stockmeans.labels_, stockmeans.inertia_, runtime,  ai
 
 ######################################################
 ### SEQUENTIAL K-MEANS ###
