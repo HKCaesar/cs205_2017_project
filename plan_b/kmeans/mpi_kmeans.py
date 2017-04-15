@@ -41,6 +41,8 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
     allocations,labels = partition(labels,size)
     labels = comm.scatter(labels, root=0)
 
+    print(rank, labels)
+
     data = data[labels]
 
     for k in range(max_iter):
@@ -57,7 +59,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
         converged = reassign_labels(labels,centers,data)
 
-        print(rank, labels)
+        #print(rank, labels)
 
         converged = comm.gather(converged,root=0)
 
