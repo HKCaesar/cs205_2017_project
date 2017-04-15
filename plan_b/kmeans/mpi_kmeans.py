@@ -24,9 +24,11 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
-    size = MPI.Get_size()
+    size = comm.Get_size()
 
     start = time.time()
+
+    print('started timing')
 
     n_data, n_dimensions = data.shape
     centers = np.zeros((n_clusters,n_dimensions))
@@ -34,6 +36,8 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
     labels = generate_initial_assignment(n_data,n_clusters)
     allocations,labels = partition(labels,size-1)
     labels = comm.scatter(labels, root=0)
+
+    print("rank: %d: %r"% (rank,labels))
 
     if rank !=0:
         data   = data[labels]
