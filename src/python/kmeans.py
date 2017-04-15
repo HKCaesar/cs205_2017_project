@@ -80,4 +80,4 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ### MAKE GRAPHS & WRITE OUTPUT TO CSV ####
   ######################################################
 
-  process_output(output, output_dir, ref_means)
+  process_output(output, output_fn, ref_means)
