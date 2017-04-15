@@ -8,9 +8,7 @@ M. Manjunathaiah (Manju)
 Kareem Carr, Eric Dunipace, Charlotte Lloyd
 ------
 
-<p align="center">
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/KmeansAnimation.gif" width="450">
-</p>
 
 ```
 This repository was created in partial fulfillment of the requirements of CS 205 in Spring 2017.
