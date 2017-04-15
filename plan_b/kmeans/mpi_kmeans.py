@@ -72,9 +72,10 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
 
         labels = comm.gather(labels,root=0)
-        labels = np.array(chain(*labels))
 
         if rank == 0:
+            labels = np.array(chain(*labels))
+
             for j in range(n_clusters) :
                 total = np.sum(labels==j)
                 centers[k,:] = centers[k,:]/total
