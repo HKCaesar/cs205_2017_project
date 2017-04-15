@@ -222,7 +222,7 @@ def process_output(output, output_fn, ref_means):
   # write to csv
   with open(output_fn, 'a') as f:
     writer = csv.writer(f, delimiter = ',')
-    writer.writerows([o[:7] for o in output])
+    writer.writerows([o[:8] for o in output])
     f.close()
   
   return
