@@ -2,6 +2,7 @@ from mpi4py import MPI
 from kmeans.utilities import compute_means, reassign_labels, generate_initial_assignment, partition, distortion
 import numpy as np
 import time
+import sys
 
 def kmeans_sequential(data, n_clusters,max_iter=100):
 
@@ -34,14 +35,18 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
     centers = np.zeros((n_clusters,n_dimensions))
 
     labels = generate_initial_assignment(n_data,n_clusters)
-    allocations,labels = partition(labels,size-1)
+    allocations,labels = partition(labels,size)
     labels = comm.scatter(labels, root=0)
 
     print("rank: %d: %r"% (rank,labels))
 
+    sys.exit(0)
+
     if rank !=0:
         data   = data[labels]
         n_data = allocations[rank]
+
+
 
     for k in range(max_iter):
         if rank !=0:
