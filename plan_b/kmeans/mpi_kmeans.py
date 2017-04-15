@@ -24,6 +24,7 @@ def kmeans_sequential(data, n_clusters,max_iter=100):
 def mpi_kmeans(data, n_clusters,max_iter=100):
 
     all_data = data
+    all_labels = labels
 
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
@@ -53,7 +54,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
         if rank==0:
             print(type(centers))
             centers = np.sum(centers,axis=0)/n_data
-            print(k, distortion(labels,centers,all_data))
+            print(k, distortion(all_labels,centers,all_data))
 
         centers = comm.bcast(centers, root=0)
 
