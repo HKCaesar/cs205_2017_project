@@ -35,8 +35,8 @@
       <file leaf-file-name="mpi_kmeans.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/kmeans/mpi_kmeans.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.75967956">
-              <caret line="87" column="18" selection-start-line="87" selection-start-column="18" selection-end-line="87" selection-end-column="18" />
+            <state vertical-scroll-proportion="0.47930574">
+              <caret line="73" column="35" selection-start-line="73" selection-start-column="35" selection-end-line="73" selection-end-column="35" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
               </folding>
@@ -539,8 +539,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/kmeans/mpi_kmeans.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.75967956">
-          <caret line="87" column="18" selection-start-line="87" selection-start-column="18" selection-end-line="87" selection-end-column="18" />
+        <state vertical-scroll-proportion="0.47930574">
+          <caret line="73" column="35" selection-start-line="73" selection-start-column="35" selection-end-line="73" selection-end-column="35" />
           <folding>
             <element signature="e#0#22#0" expanded="true" />
           </folding>
