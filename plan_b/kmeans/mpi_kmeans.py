@@ -23,6 +23,8 @@ def kmeans_sequential(data, n_clusters,max_iter=100):
 
 def mpi_kmeans(data, n_clusters,max_iter=100):
 
+    all_data = data
+
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
     size = comm.Get_size()
@@ -55,7 +57,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
         centers = comm.bcast(centers, root=0)
 
-        converged = reassign_labels(labels,centers,data)
+        converged = reassign_labels(labels,centers,all_data)
 
         converged = comm.gather(converged,root=0)
 
