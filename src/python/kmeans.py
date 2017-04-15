@@ -42,24 +42,14 @@ data, initial_labels = prep_data(data_fn, d_list, N, D, K)
 ######################################################
 
 means, labels, distortion, runtime, distortion = stock(data, K, limit)
-
-output.append(['stock',runtime, '', distortion, N, D, K])
-print('\n-----stock output')
-print(means)
-print(labels[:10])
-print(distortion)
+output.append(['stock', runtime, '', distortion, N, D, K, means])
 
 ######################################################
 ### RUN SEQUENTIAL K-MEANS ####
 ######################################################
 
 means, labels, count, runtime, distortion, A1, W1 = sequential(data, initial_labels, N, D, K, limit)
-
-output.append(['sequential',runtime, count, '', N, D, K])
-print('\n-----sequential output')
-print(means)
-print(labels[:10])
-ref_means = means
+output.append(['sequential',runtime, count, '', N, D, K, means])
 
 print('\n-----sequential output count == 1') # will eventually delete this
 print(A1)
@@ -71,42 +61,24 @@ ref_means = A1
 ######################################################
 
 means, labels, count, runtime, distortion = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
-
-output.append(['pyCUDA',runtime, count, '', N, D, K])
-print('\n-----pyCUDA output')
-print(means)
-print(labels[:10])
-print('Equals stock means: %s' % str(np.array_equal(ref_means,means)))
+output.append(['pyCUDA', runtime, count, distortion, N, D, K, means])
 
 ######################################################
 ### RUN mpi4py K-MEANS ####
 ######################################################
 
 means, labels, count, runtime, distortion = mpi4py(data, initial_labels, kernel_fn, N, K, D, limit)
-
-output.append(['mpi4py',runtime, count, '', N, D, K])
-print('\n-----mpi4py output')
-print(means)
-print(labels[:10])
-print('Equals stock means: %s' % str(np.array_equal(ref_means,means)))
+output.append(['mpi4py',runtime, count, distortion, N, D, K, means])
 
 ######################################################
 ### RUN hybrid K-MEANS ####
 ######################################################
 
-means, labels, count, runtime, distortion = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
-
-output.append(['hybrid',runtime, count, '', N, D, K])
-print('\n-----hybrid output')
-print(means)
-print(labels[:10])
-print('Equals stock means: %s' % str(np.array_equal(ref_means,means)))
+means, labels, count, runtime, distortion = hybrid(data, initial_labels, kernel_fn, N, K, D, limit)
+output.append(['hybrid',runtime, count, distortion, N, D, K, means])
 
 ######################################################
-### WRITE DATA TO CSV ####
+### MAKE GRAPHS & WRITE OUTPUT TO CSV ####
 ######################################################
 
-with open(output_dir + 'times.csv', 'w') as f:
-    writer = csv.writer(f, delimiter = ',')
-    writer.writerows(output)
-    f.close()
+process_output(output, output_dir, means, ref_means)
