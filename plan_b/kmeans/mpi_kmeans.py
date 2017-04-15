@@ -52,7 +52,12 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
         centers = comm.gather(centers, root=0)
 
         if rank==0:
-            centers = np.sum(centers,axis=0)/n_data
+            temp = np.zeros((n_clusters,n_dimensions))
+
+            for center in centers:
+                temp+=center
+
+            centers=centers/n_data
             #print(k, distortion(all_labels,centers,all_data))
 
         centers = comm.bcast(centers, root=0)
