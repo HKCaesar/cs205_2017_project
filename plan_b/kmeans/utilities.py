@@ -88,7 +88,7 @@ def partition(sequence, n_chunks):
     indexes=np.sort(indexes)
     indexes=np.column_stack([indexes[:-1],indexes[1:]])
 
-    return [sequence[index[0]:index[1]]  for index in indexes],allocations
+    return allocations, [sequence[index[0]:index[1]]  for index in indexes]
 
 
 def distortion(labels,centers,data):
