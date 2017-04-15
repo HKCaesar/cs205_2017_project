@@ -38,7 +38,7 @@ def prep_data(data_fn, d_list, N, D, K):
 ######################################################
 
 def distortion(data, labels, means):
-    return np.sum((means[labels,:]-data)**2)
+    return np.sum((means[labels:]-data)**2)
 
 ######################################################
 ### STOCK K-MEANS ###
