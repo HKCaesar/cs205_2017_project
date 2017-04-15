@@ -90,19 +90,11 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
             print(k, distortion(all_labels,centers,all_data))
 
 
-        sys.exit(0)
 
         centers = comm.bcast(centers, root=0)
 
-
-        print("before", rank, labels)
-
         converged = reassign_labels(labels,centers,data)
 
-        print("after", rank, labels)
-
-
-        #print(rank, labels)
 
         converged = comm.gather(converged,root=0)
 
@@ -116,7 +108,9 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
     labels = comm.gather( [rank, labels] ,root=0)
 
     if rank==0:
-        print(labels)
+        for rank, label in labels:
+            print(rank)
+            print(label)
 
     #labels = list(chain(*labels))
 
