@@ -36,7 +36,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
     centers = np.zeros((n_clusters,n_dimensions))
     labels = generate_initial_assignment(n_data,n_clusters)
-    all_labels = labels
+
 
     if rank==0:
         compute_means(labels,centers,data)
@@ -44,14 +44,12 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
         print(centers)
 
     allocations,labels = partition(labels,size)
-
-    plabels = labels
-
-    labels = labels[rank]
-
     indices = allotment_to_indices(allocations)
 
-    data = data[indices[rank][0]:indices[rank][1]]
+    indices = comm.scatter(zip(indices, labels) , root=0)
+
+
+    data = data[indices[0]:indices[1]]
 
 
     for k in range(max_iter):
