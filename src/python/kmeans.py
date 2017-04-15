@@ -41,7 +41,7 @@ data, initial_labels = prep_data(data_fn, d_list, N, D, K)
 ######################################################
 
 means, labels, count, runtime, distortion, means1, labels1 = sequential(data, initial_labels, N, D, K, limit)
-output.append(['sequential',runtime, count, '', N, D, K, means])
+output.append(['sequential',runtime, count, distortion, N, D, K, means])
 
 print('\n-----sequential output count == 1') # will eventually delete this
 print(means1)
