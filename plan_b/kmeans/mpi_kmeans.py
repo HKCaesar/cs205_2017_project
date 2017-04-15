@@ -66,10 +66,12 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
         centers = comm.bcast(centers, root=0)
 
-        print(centers)
 
+        print("before", rank, labels)
 
         converged = reassign_labels(labels,centers,data)
+
+        print("after", rank, labels)
 
         sys.exit(0)
 
