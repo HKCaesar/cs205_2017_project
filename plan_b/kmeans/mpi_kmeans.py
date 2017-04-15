@@ -60,7 +60,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
         compute_means(labels,centers,data,sum_values=True)
 
-        centers = comm.gather(centers, root=0)
+        centers = comm.gather([centers,labels], root=0)
 
         if rank==0:
             print( len(centers) )
@@ -70,14 +70,19 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
             for center in centers:
                 temp+=center
 
-            centers=temp/n_data
 
+        labels = comm.gather( [rank, labels] ,root=0)
+        labels = np.array(chain(*labels))
+
+        if rank == 0:
+            for j in range(n_clusters) :
+                total = np.sum(labels==j)
+                centers[k,:] = centers[k,:]/total
+            
             print("cluster mean:")
             print(centers)
 
             print(k, distortion(all_labels,centers,all_data))
-
-
 
 
         centers = comm.bcast(centers, root=0)
