@@ -32,8 +32,6 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
     start = time.time()
 
-    print('started timing')
-
     n_data, n_dimensions = data.shape
 
     centers = np.zeros((n_clusters,n_dimensions))
@@ -53,8 +51,6 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
     data = data[indices[rank][0]:indices[rank][1]]
 
-    print(indices[rank][0],indices[rank][1])
-
 
     for k in range(max_iter):
 
@@ -63,7 +59,6 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
         centers = comm.gather(centers, root=0)
 
         if rank==0:
-            print( len(centers) )
 
             temp = np.zeros((n_clusters,n_dimensions))
 
@@ -73,15 +68,13 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
             centers = temp
 
 
-        labels = comm.gather(labels,root=0)
+        collected_labels = comm.gather(labels,root=0)
 
         if rank == 0:
-            labels = np.array(list(chain(*labels)))
-
-            print(labels)
+            collected_labels = np.array(list(chain(*collected_labels)))
 
             for j in range(n_clusters) :
-                total = np.sum(labels==j)
+                total = np.sum(collected_labels==j)
                 centers[j,:] = centers[j,:]/total
 
             print("cluster mean:")
