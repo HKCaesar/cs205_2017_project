@@ -43,11 +43,11 @@ https://bitbucket.org/malthejorgensen/kmeans-gpu-nbi
 
 In this crowded field, our contribution is to create a flexible K-means implementation using mpi4py + pyCUDA that will be accessible and useful to data scientist, many of whom are most comfortable programming in Python rather than in traditional languages of parallel processing including Fortran, C, and C++. Since data scientists may be deeply unfamiliar with parallel hardware, we paid special attention to designing a flexible architecture suitable for any configuration involving at least one CUDA-ready GPU. 
 
-<img align="left" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/arch-cpus.png">
+<img align="left" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/arch-cpus.png"  width="300">
 
 In an ideal hardware configuration, we would expect a host CPU to control <i>c</i> CPUs that each in turn control <i>g</i> GPUs. 
 
-<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/arch-ideal.png" width="200">
+<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/arch-ideal.png">
 
 1. First, the host CPU (rank 0 in the MPI framework) would delegate a user-specified number of randomly-generated inital labels amongst <i>c</i> CPUs in the COMM_WORLD. This addresses one of the main challenges of K-means, namely that the method returns clusters based on local minima so it must be repeated a number of times with different inital clusters to ensure convergence on the global minima. 
 2. Second, each CPU would break the data into <i>g</i> subsets for the GPUs to switfly execute the most arithmatically intense aspect of K-means--the process of calculating means and reassigning labels until convergence is achieved. 
@@ -65,7 +65,7 @@ The K-means clustering of consumption patterns revealed three major groups: .
 
 ### Works Cited
 ------
-Broderick, T., Kulis B., and Jordan M. (2013), MAD-Bayes: MAP-based Asymptotic Derivations from Bayes. (https://arxiv.org/abs/1212.2126)
+<sub>Broderick, T., Kulis B., and Jordan M. (2013), MAD-Bayes: MAP-based Asymptotic Derivations from Bayes. (https://arxiv.org/abs/1212.2126)
 
 Farivar, R., Rebolledo, D., Chan, E., & Campbell, R. H. (2008). A Parallel Implementation of K-Means Clustering on GPUs. In PDPTA (Vol. 13, pp. 212–312). Retrieved from https://pdfs.semanticscholar.org/0638/dc0565cb11191ab1e2b91cd19b630cfa8c34.pdf
 
@@ -91,4 +91,4 @@ Wu, J., & Hong, B. (2011). An Efficient k-Means Algorithm on CUDA. In 2011 IEEE 
 
 Zechner, M., & Granitzer, M. (2009). Accelerating K-Means on the Graphics Processor via CUDA. In 2009 First International Conference on Intensive Applications and Services (pp. 7–15). https://doi.org/10.1109/INTENSIVE.2009.19
 
-Zhao, W., Ma, H., & He, Q. (2009). Parallel K-Means Clustering Based on MapReduce. In SpringerLink (pp. 674–679). Springer, Berlin, Heidelberg. https://doi.org/10.1007/978-3-642-10665-1_71
+Zhao, W., Ma, H., & He, Q. (2009). Parallel K-Means Clustering Based on MapReduce. In SpringerLink (pp. 674–679). Springer, Berlin, Heidelberg. https://doi.org/10.1007/978-3-642-10665-1_71 </sub>
