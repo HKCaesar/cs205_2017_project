@@ -46,7 +46,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
     data = data[indices[rank][0]:indices[rank][1]]
 
-    print(data.index)
+    print(indices[rank][0],indices[rank][1])
 
     sys.exit(0)
 
