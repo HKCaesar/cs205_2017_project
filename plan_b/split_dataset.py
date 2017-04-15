@@ -2,8 +2,7 @@ import argparse
 import pandas as pd
 import numpy as np
 import os
-from utilities import generate_random_subset
-
+from kmeans.utilities import generate_random_subset
 
 description = \
 """
@@ -62,7 +61,7 @@ for percent in np.linspace(0,1,args.n_splits+1)[1:]:
 
     if args.columns is not None:
         columns = list(map(lambda s: s.strip(),args.columns.split(',')))
-        random_subset_df=random_subset_filename[ columns ]
+        indices,random_subset_df=random_subset_filename[ columns ]
 
     print("\t%s (%.0f" %(random_subset_filename, percent*100)  + "%)" )
 
