@@ -208,7 +208,7 @@ def hybrid(data, initial_labels, kernel_fn, N, K, D, limit):
 def process_output(output, output_dir, ref_means):
   
   # print some stuff
-  for o in output:
+  for o in output[1:]:
     print('\n-----'+o[0])
     if o[0][0]!='s': print('Equals stock means: %s' % str(np.array_equal(ref_means,o[-1])))
     for p in o: print(p)
