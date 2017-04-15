@@ -39,11 +39,12 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
     centers = np.zeros((n_clusters,n_dimensions))
     labels = generate_initial_assignment(n_data,n_clusters)
     all_labels = labels
-    allocations,labels = partition(labels,size)
-
 
     compute_means(labels,centers,data)
-    print(distortion(labels,centers,distortion()))
+    print("first mean:", distortion(labels,centers,distortion()))
+
+    allocations,labels = partition(labels,size)
+
 
 
     labels = labels[rank]
