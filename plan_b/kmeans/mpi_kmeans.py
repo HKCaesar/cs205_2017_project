@@ -53,11 +53,11 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
         if rank==0:
             print(type(centers))
             centers = np.sum(centers,axis=0)/n_data
-            print(k, distortion(labels,centers,data))
+            print(k, distortion(labels,centers,all_data))
 
         centers = comm.bcast(centers, root=0)
 
-        converged = reassign_labels(labels,centers,all_data)
+        converged = reassign_labels(labels,centers,data)
 
         converged = comm.gather(converged,root=0)
 
