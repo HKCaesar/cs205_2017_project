@@ -45,6 +45,8 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
     allocations,labels = partition(labels,size)
 
+    plabels = labels
+
     labels = labels[rank]
 
     indices = allotment_to_indices(allocations)
@@ -71,7 +73,10 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
         collected_labels = comm.gather(labels, root=0)
 
         if rank == 0:
-            np(len(collected_labels))
+            print(map(len,collected_labels))
+            print(map(len,plabels))
+
+        sys.exit(0)
 
         if rank == 0:
             collected_labels = np.array(list(chain(*collected_labels)))
@@ -84,8 +89,6 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
             if k==0:
                 print("first p means:")
                 print(centers)
-
-            print(len(collected_labels))
 
             print(k, distortion(collected_labels,centers,all_data))
 
