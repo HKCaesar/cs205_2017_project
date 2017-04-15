@@ -55,7 +55,7 @@ def stock(data, K, count):
     
     ai = 100 * count
     
-    return stockmeans.cluster_centers_, stockmeans.labels_, '', runtime, stockmeans.inertia_, ai
+    return stockmeans.cluster_centers_, stockmeans.labels_, runtime, stockmeans.inertia_, ai
 
 ######################################################
 ### SEQUENTIAL K-MEANS ###
@@ -112,7 +112,7 @@ def sequential(data, initial_labels, N, D, K, limit):
   runtime = time.time()-start
   ai = 200 * count
     
-  return means, labels, count, runtime, distortion(data, labels, means), means1, labels1
+  return means, labels, count, runtime, distortion(data, labels, means), ai, means1, labels1
 
 ######################################################
 ### pyCUDA K-MEANS  ####
@@ -175,7 +175,7 @@ def pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit):
     runtime = time.time()-start
     ai = 300 * count
     
-    return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means)
+    return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means), ai
 
 ######################################################
 ### mpi4py K-MEANS  ####
@@ -190,7 +190,7 @@ def mpi4py(data, initial_labels, kernel_fn, N, K, D, limit):
   runtime = time.time()-start
   ai = 400 * count
   
-  return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means)
+  return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means), ai
 
 ######################################################
 ### hybrid K-MEANS  ####
@@ -205,7 +205,7 @@ def hybrid(data, initial_labels, kernel_fn, N, K, D, limit):
   runtime = time.time()-start
   ai = 500 * count
   
-  return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means)
+  return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means), ai
 
 ######################################################
 ### MAKE GRAPHS ###
