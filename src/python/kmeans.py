@@ -1,4 +1,5 @@
 from functions import *
+import itertools
 
 ######################################################
 ### INFO ####
@@ -21,63 +22,62 @@ d_list = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","k
 
 kernel_fn = "../cuda/pycumean.c"
 
-output_dir = "../../analysis/"
+output_fn = "../../analysis/output.csv"
+with open(output_fn, 'a') as f: f.close()
 
-K = 4
-N = 10000 # max N for review data is 118684
-D = 6 # max D for review data is 6 (we could increase this actually)
 limit = 10
 
-output = [['algorithm','time','convergence','distortion','n','d','k']]
+Ks = [3,4]
+Ns = [1000,10000]     # max N for review data is 118684
+Ds = [6]              # max D for review data is 6 (we could increase this actually)
 
-######################################################
-### PREP DATA & INITIAL LABELS ####
-######################################################
+for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
+    
+  output = [['algorithm','time','convergence','distortion','n','d','k']]
 
-data, initial_labels = prep_data(data_fn, d_list, N, D, K)
+  ######################################################
+  ### PREP DATA & INITIAL LABELS ####
+  ######################################################
 
-######################################################
-### RUN SEQUENTIAL K-MEANS ####
-######################################################
+  data, initial_labels = prep_data(data_fn, d_list, N, D, K)
 
-means, labels, count, runtime, distortion, means1, labels1 = sequential(data, initial_labels, N, D, K, limit)
-output.append(['sequential',runtime, count, distortion, N, D, K, means])
+  ######################################################
+  ### RUN SEQUENTIAL K-MEANS ####
+  ######################################################
 
-print('\n-----sequential output count == 1') # will eventually delete this
-print(means1)
-print(labels1[:10])
-ref_means = means1
+  means, labels, count, runtime, distortion, means1, labels1 = sequential(data, initial_labels, N, D, K, limit)
+  output.append(['sequential',runtime, count, distortion, N, D, K, means])
 
-######################################################
-### RUN STOCK K-MEANS ####
-######################################################
+  ######################################################
+  ### RUN STOCK K-MEANS ####
+  ######################################################
 
-means, labels, distortion, runtime, distortion = stock(data, K, count)
-output.append(['stock', runtime, '', distortion, N, D, K, means])
+  means, labels, distortion, runtime, distortion = stock(data, K, count)
+  output.append(['stock', runtime, '', distortion, N, D, K, means])
 
-######################################################
-### RUN pyCUDA K-MEANS ####
-######################################################
+  ######################################################
+  ### RUN pyCUDA K-MEANS ####
+  ######################################################
 
-means, labels, count, runtime, distortion = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
-output.append(['pyCUDA', runtime, count, distortion, N, D, K, means])
+  means, labels, count, runtime, distortion = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
+  output.append(['pyCUDA', runtime, count, distortion, N, D, K, means])
 
-######################################################
-### RUN mpi4py K-MEANS ####
-######################################################
+  ######################################################
+  ### RUN mpi4py K-MEANS ####
+  ######################################################
 
-means, labels, count, runtime, distortion = mpi4py(data, initial_labels, kernel_fn, N, K, D, limit)
-output.append(['mpi4py',runtime, count, distortion, N, D, K, means])
+  means, labels, count, runtime, distortion = mpi4py(data, initial_labels, kernel_fn, N, K, D, limit)
+  output.append(['mpi4py',runtime, count, distortion, N, D, K, means])
 
-######################################################
-### RUN hybrid K-MEANS ####
-######################################################
+  ######################################################
+  ### RUN hybrid K-MEANS ####
+  ######################################################
 
-means, labels, count, runtime, distortion = hybrid(data, initial_labels, kernel_fn, N, K, D, limit)
-output.append(['hybrid',runtime, count, distortion, N, D, K, means])
+  means, labels, count, runtime, distortion = hybrid(data, initial_labels, kernel_fn, N, K, D, limit)
+  output.append(['hybrid',runtime, count, distortion, N, D, K, means])
 
-######################################################
-### MAKE GRAPHS & WRITE OUTPUT TO CSV ####
-######################################################
+  ######################################################
+  ### MAKE GRAPHS & WRITE OUTPUT TO CSV ####
+  ######################################################
 
-process_output(output, output_dir, ref_means)
+  process_output(output, output_dir, ref_means)
