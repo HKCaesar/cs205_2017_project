@@ -51,6 +51,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
         if rank==0:
             print(type(centers))
             centers = np.sum(centers,axis=0)/n_data
+            print(k, distortion(labels,centers,data))
 
         centers = comm.bcast(centers, root=0)
 
@@ -58,22 +59,12 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
         converged = comm.gather(converged,root=0)
 
-        if rank == 0:
-            print(converged)
+        converged = np.all(converged)
 
-        sys.exit(0)
-
-        if rank == 0:
-            print("%d. "%k,distortion(labels, centers, data)  )
-
-            if np.all(converged): break
+        if converged: break
 
 
-
-
-
-    timing = time.time()-start
-
-    print(timing)
-
-    return [centers,labels,timing]
+    if rank==0:
+        timing = time.time()-start
+        print(timing)
+        return [centers,labels,timing]
