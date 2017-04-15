@@ -34,6 +34,13 @@ def prep_data(data_fn, d_list, N, D, K):
   return data, initial_labels
 
 ######################################################
+### CALCULATE DISTORTION ###
+######################################################
+
+def distortion(data, labels, means):
+    return np.sum((means[labels,:]-data)**2)
+
+######################################################
 ### STOCK K-MEANS ###
 ######################################################
 
@@ -44,7 +51,7 @@ def stock(data, K, limit):
     stockmeans.fit(data)
     runtime = time.time()-start
     
-    return stockmeans.cluster_centers_, stockmeans.labels_, stockmeans.inertia_, runtime
+    return stockmeans.cluster_centers_, stockmeans.labels_, '', runtime, stockmeans.inertia_
 
 ######################################################
 ### SEQUENTIAL K-MEANS ###
@@ -100,8 +107,8 @@ def sequential(data, initial_labels, N, D, K, limit):
       if count==limit: break
         
   runtime = time.time()-start
-  
-  return A, W, count, runtime, A1, W1
+    
+  return A, W, count, runtime, distortion(data, W, A), A1, W1
 
 ######################################################
 ### pyCUDA K-MEANS  ####
@@ -163,7 +170,7 @@ def pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit):
     cuda.memcpy_dtoh(h_labels, d_labels)
     runtime = time.time()-start
     
-    return h_means, h_labels, count, runtime
+    return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means)
 
 ######################################################
 ### mpi4py K-MEANS  ####
@@ -177,7 +184,7 @@ def mpi4py(data, initial_labels, kernel_fn, N, K, D, limit):
   h_labels = np.ascontiguousarray(np.empty(initial_labels.shape,dtype=np.intc, order='C'))
   runtime = time.time()-start
   
-  return h_means, h_labels, count, runtime
+  return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means)
 
 ######################################################
 ### hybrid K-MEANS  ####
@@ -191,4 +198,4 @@ def hybrid(data, initial_labels, kernel_fn, N, K, D, limit):
   h_labels = np.ascontiguousarray(np.empty(initial_labels.shape,dtype=np.intc, order='C'))
   runtime = time.time()-start
   
-  return h_means, h_labels, count, runtime
+  return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means)
