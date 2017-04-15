@@ -34,6 +34,16 @@ def prep_data(data_fn, d_list, N, D, K):
   return data, initial_labels
 
 ######################################################
+### PRINT STUFF ###
+######################################################
+
+def printstuff(output, means, ref_means):
+      print('\n-----'+output[0])
+      for o in output[-1]:
+        for p in o: print(p)
+      print('Equals stock means: %s' % str(np.array_equal(ref_means,means)))
+
+######################################################
 ### CALCULATE DISTORTION ###
 ######################################################
 
