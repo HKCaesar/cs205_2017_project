@@ -65,30 +65,30 @@ The K-means clustering of consumption patterns revealed three major groups: .
 
 ### Works Cited
 ------
-<sub>Broderick, T., Kulis B., and Jordan M. (2013), MAD-Bayes: MAP-based Asymptotic Derivations from Bayes. (https://arxiv.org/abs/1212.2126)
+<sub>Broderick, T., Kulis B., and Jordan M. (2013), MAD-Bayes: MAP-based Asymptotic Derivations from Bayes. https://arxiv.org/abs/1212.2126 </sub>
 
-Farivar, R., Rebolledo, D., Chan, E., & Campbell, R. H. (2008). A Parallel Implementation of K-Means Clustering on GPUs. In PDPTA (Vol. 13, pp. 212–312). Retrieved from https://pdfs.semanticscholar.org/0638/dc0565cb11191ab1e2b91cd19b630cfa8c34.pdf
+<sub>Farivar, R., Rebolledo, D., Chan, E., & Campbell, R. H. (2008). A Parallel Implementation of K-Means Clustering on GPUs. In PDPTA (Vol. 13, pp. 212–312). Retrieved from https://pdfs.semanticscholar.org/0638/dc0565cb11191ab1e2b91cd19b630cfa8c34.pdf </sub>
 
-Hong-tao, B., Li-li, H., Dan-tong, O., Zhan-shan, L., & He, L. (2009). K-Means on Commodity GPUs with CUDA. In 2009 WRI World Congress on Computer Science and Information Engineering (Vol. 3, pp. 651–655). https://doi.org/10.1109/CSIE.2009.491
+<sub>Hong-tao, B., Li-li, H., Dan-tong, O., Zhan-shan, L., & He, L. (2009). K-Means on Commodity GPUs with CUDA. In 2009 WRI World Congress on Computer Science and Information Engineering (Vol. 3, pp. 651–655). https://doi.org/10.1109/CSIE.2009.491 </sub>
 
-Jain, A. K. (2010). Data clustering: 50 years beyond K-means. Pattern Recognition Letters, 31(8), 651–666. https://doi.org/10.1016/j.patrec.2009.09.011
+<sub>Jain, A. K. (2010). Data clustering: 50 years beyond K-means. Pattern Recognition Letters, 31(8), 651–666. https://doi.org/10.1016/j.patrec.2009.09.011 </sub>
 
-Kanungo, T., Mount, D. M., Netanyahu, N. S., Piatko, C. D., Silverman, R., & Wu, A. Y. (2002). An efficient k-means clustering algorithm: analysis and implementation. IEEE Transactions on Pattern Analysis and Machine Intelligence, 24(7), 881–892. https://doi.org/10.1109/TPAMI.2002.1017616
+<sub>Kanungo, T., Mount, D. M., Netanyahu, N. S., Piatko, C. D., Silverman, R., & Wu, A. Y. (2002). An efficient k-means clustering algorithm: analysis and implementation. IEEE Transactions on Pattern Analysis and Machine Intelligence, 24(7), 881–892. https://doi.org/10.1109/TPAMI.2002.1017616 </sub>
 
-Li, Y., Zhao, K., Chu, X., & Liu, J. (2010). Speeding up K-Means Algorithm by GPUs. In 2010 10th IEEE International Conference on Computer and Information Technology (pp. 115–122). https://doi.org/10.1109/CIT.2010.60
+<sub>Li, Y., Zhao, K., Chu, X., & Liu, J. (2010). Speeding up K-Means Algorithm by GPUs. In 2010 10th IEEE International Conference on Computer and Information Technology (pp. 115–122). https://doi.org/10.1109/CIT.2010.60 </sub>
 
-MacQueen, J. Some methods for classification and analysis of multivariate observations. Proceedings of the Fifth Berkeley Symposium on Mathematical Statistics and Probability, Volume 1: Statistics, 281--297, University of California Press, Berkeley, Calif., 1967. http://projecteuclid.org/euclid.bsmsp/1200512992.
+<sub>MacQueen, J. Some methods for classification and analysis of multivariate observations. Proceedings of the Fifth Berkeley Symposium on Mathematical Statistics and Probability, Volume 1: Statistics, 281--297, University of California Press, Berkeley, Calif., 1967. http://projecteuclid.org/euclid.bsmsp/1200512992 </sub>
 
-Monto, Martin A. 1999. Clients of Street Prostitutes in Portland, Oregon, San Francisco and Santa Clara, California, and Las Vegas, Nevada, 1996-1999: Version 1. Retrieved May 9, 2014 (http://www.icpsr.umich.edu/NACJD/studies/02859/version/1).
+<sub>Monto, Martin A. 1999. Clients of Street Prostitutes in Portland, Oregon, San Francisco and Santa Clara, California, and Las Vegas, Nevada, 1996-1999: Version 1. Retrieved May 9, 2014 http://www.icpsr.umich.edu/NACJD/studies/02859/version/1</sub>
 
-Monto, Martin A. and Nick McRee. 2005. “A Comparison of the Male Customers of Female Street Prostitutes With National Samples of Men.” International Journal of Offender Therapy and Comparative Criminology 49(5):505–29.  (https://www.ncbi.nlm.nih.gov/pubmed/16260480)
+<sub>Monto, Martin A. and Nick McRee. 2005. “A Comparison of the Male Customers of Female Street Prostitutes With National Samples of Men.” International Journal of Offender Therapy and Comparative Criminology 49(5):505–29. https://www.ncbi.nlm.nih.gov/pubmed/16260480</sub>
 
-Shalom, S. A. A., Dash, M., & Tue, M. (2008). Efficient K-Means Clustering Using Accelerated Graphics Processors. In SpringerLink (pp. 166–175). Springer, Berlin, Heidelberg. https://doi.org/10.1007/978-3-540-85836-2_16
+<sub>Shalom, S. A. A., Dash, M., & Tue, M. (2008). Efficient K-Means Clustering Using Accelerated Graphics Processors. In SpringerLink (pp. 166–175). Springer, Berlin, Heidelberg. https://doi.org/10.1007/978-3-540-85836-2_16 </sub>
 
-Tibshirani, R., Walther, G. and Hastie, T. (2001), Estimating the number of clusters in a data set via the gap statistic. Journal of the Royal Statistical Society: Series B (Statistical Methodology), 63: 411–423. (http://onlinelibrary.wiley.com/doi/10.1111/1467-9868.00293/abstract)
+<sub>Tibshirani, R., Walther, G. and Hastie, T. (2001), Estimating the number of clusters in a data set via the gap statistic. Journal of the Royal Statistical Society: Series B (Statistical Methodology), 63: 411–423. (http://onlinelibrary.wiley.com/doi/10.1111/1467-9868.00293/abstract) </sub>
 
-Wu, J., & Hong, B. (2011). An Efficient k-Means Algorithm on CUDA. In 2011 IEEE International Symposium on Parallel and Distributed Processing Workshops and Phd Forum (pp. 1740–1749). https://doi.org/10.1109/IPDPS.2011.331
+<sub>Wu, J., & Hong, B. (2011). An Efficient k-Means Algorithm on CUDA. In 2011 IEEE International Symposium on Parallel and Distributed Processing Workshops and Phd Forum (pp. 1740–1749). https://doi.org/10.1109/IPDPS.2011.331 </sub>
 
-Zechner, M., & Granitzer, M. (2009). Accelerating K-Means on the Graphics Processor via CUDA. In 2009 First International Conference on Intensive Applications and Services (pp. 7–15). https://doi.org/10.1109/INTENSIVE.2009.19
+<sub>Zechner, M., & Granitzer, M. (2009). Accelerating K-Means on the Graphics Processor via CUDA. In 2009 First International Conference on Intensive Applications and Services (pp. 7–15). https://doi.org/10.1109/INTENSIVE.2009.19 </sub>
 
-Zhao, W., Ma, H., & He, Q. (2009). Parallel K-Means Clustering Based on MapReduce. In SpringerLink (pp. 674–679). Springer, Berlin, Heidelberg. https://doi.org/10.1007/978-3-642-10665-1_71 </sub>
+<sub>Zhao, W., Ma, H., & He, Q. (2009). Parallel K-Means Clustering Based on MapReduce. In SpringerLink (pp. 674–679). Springer, Berlin, Heidelberg. https://doi.org/10.1007/978-3-642-10665-1_71 </sub>
