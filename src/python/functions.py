@@ -8,6 +8,7 @@ from pycuda.compiler import SourceModule
 
 import time
 import string
+import csv
 
 ######################################################
 ### PREP DATA & INITIAL LABELS ####
