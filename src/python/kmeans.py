@@ -25,7 +25,7 @@ kernel_fn = "../cuda/pycumean.c"
 output_fn = "../../analysis/output.csv"
 with open(output_fn, 'w') as f:
     writer = csv.writer(f, delimiter = ',')
-    writer.writerow(['algorithm','time','convergence','distortion','n','d','k'])
+    writer.writerow(['algorithm','time','convergence','distortion', 'arithmetic intensity', 'n','d','k'])
     f.close()
 
 limit = 10
@@ -48,37 +48,37 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ### RUN SEQUENTIAL K-MEANS ####
   ######################################################
 
-  means, labels, count, runtime, distortion, means1, labels1 = sequential(data, initial_labels, N, D, K, limit)
-  output.append(['sequential',runtime, count, distortion, N, D, K, means])
+  means, labels, count, runtime, distortion, ai, means1, labels1 = sequential(data, initial_labels, N, D, K, limit)
+  output.append(['sequential',runtime, count, distortion, ai, N, D, K, means])
   ref_means=means
 
   ######################################################
   ### RUN STOCK K-MEANS ####
   ######################################################
 
-  means, labels, distortion, runtime, distortion = stock(data, K, count)
-  output.append(['stock', runtime, '', distortion, N, D, K, means])
+  means, labels, distortion, runtime, distortion, ai = stock(data, K, count)
+  output.append(['stock', runtime, '', distortion, ai, N, D, K, means])
 
   ######################################################
   ### RUN pyCUDA K-MEANS ####
   ######################################################
 
-  means, labels, count, runtime, distortion = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
-  output.append(['pyCUDA', runtime, count, distortion, N, D, K, means])
+  means, labels, count, runtime, distortion, ai = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
+  output.append(['pyCUDA', runtime, count, distortion, ai, N, D, K, means])
 
   ######################################################
   ### RUN mpi4py K-MEANS ####
   ######################################################
 
-  means, labels, count, runtime, distortion = mpi4py(data, initial_labels, kernel_fn, N, K, D, limit)
-  output.append(['mpi4py',runtime, count, distortion, N, D, K, means])
+  means, labels, count, runtime, distortion, ai = mpi4py(data, initial_labels, kernel_fn, N, K, D, limit)
+  output.append(['mpi4py',runtime, count, distortion, ai, N, D, K, means])
 
   ######################################################
   ### RUN hybrid K-MEANS ####
   ######################################################
 
-  means, labels, count, runtime, distortion = hybrid(data, initial_labels, kernel_fn, N, K, D, limit)
-  output.append(['hybrid',runtime, count, distortion, N, D, K, means])
+  means, labels, count, runtime, distortion, ai = hybrid(data, initial_labels, kernel_fn, N, K, D, limit)
+  output.append(['hybrid',runtime, count, distortion, ai, N, D, K, means])
 
   ######################################################
   ### MAKE GRAPHS & WRITE OUTPUT TO CSV ####
