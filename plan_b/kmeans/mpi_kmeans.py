@@ -46,6 +46,10 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
     data = data[indices[rank][0]:indices[rank][1]]
 
+    print(data.index)
+
+    sys.exit(0)
+
     for k in range(max_iter):
 
         compute_means(labels,centers,data,sum_values=True)
