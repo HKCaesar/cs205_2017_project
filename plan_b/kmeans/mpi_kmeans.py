@@ -3,6 +3,7 @@ from kmeans.utilities import compute_means, reassign_labels, generate_initial_as
 import numpy as np
 import time
 from itertools import chain
+import sys
 
 def kmeans_sequential(data, n_clusters,max_iter=100):
 
@@ -63,14 +64,14 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
             print(k, distortion(all_labels,centers,all_data))
 
 
-        print(centers)
-
-        sys.exit(0)
-
         centers = comm.bcast(centers, root=0)
+
+        print(centers)
 
 
         converged = reassign_labels(labels,centers,data)
+
+        sys.exit(0)
 
 
 
