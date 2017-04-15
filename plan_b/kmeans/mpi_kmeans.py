@@ -57,16 +57,16 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
             for center in centers:
                 temp+=center
 
-            centers=centers/n_data
-            #print(k, distortion(all_labels,centers,all_data))
+            centers=temp/n_data
+            print(k, distortion(all_labels,centers,all_data))
 
         centers = comm.bcast(centers, root=0)
 
-        print("1.5", centers)
+        #print("1.5", centers)
 
         converged = reassign_labels(labels,centers,data)
 
-        print("2.",rank, labels)
+        #print("2.",rank, labels)
 
         #print(rank, labels)
 
@@ -83,6 +83,8 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
         print(labels)
 
     #labels = list(chain(*labels))
+
+    #comm.Finalize()
 
     if rank==0:
         timing = time.time()-start
