@@ -58,16 +58,12 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
         print("3. rank: %d, mean: %r",rank, centers.shape)
 
-
-        sys.exit(0)
-
-        if rank != 0:
-            converged = reassign_labels(labels,centers,data)
+        converged = reassign_labels(labels,centers,data)
 
         converged = comm.gather(converged,root=0)
 
         if rank == 0:
-            print( distortion(labels, centers, data)  )
+            print("%d. "%k,distortion(labels, centers, data)  )
 
             if np.all(converged): break
 
