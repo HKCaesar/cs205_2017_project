@@ -41,11 +41,9 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
     all_labels = labels
 
     compute_means(labels,centers,data)
-    print("first mean:", distortion(labels,centers,distortion()))
+    print("first mean:", distortion(labels,centers,data))
 
     allocations,labels = partition(labels,size)
-
-
 
     labels = labels[rank]
 
