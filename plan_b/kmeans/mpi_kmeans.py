@@ -2,7 +2,7 @@ from mpi4py import MPI
 from kmeans.utilities import compute_means, reassign_labels, generate_initial_assignment, partition, distortion
 import numpy as np
 import time
-import sys
+from itertools import chain
 
 def kmeans_sequential(data, n_clusters,max_iter=100):
 
@@ -35,8 +35,6 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
     n_data, n_dimensions = data.shape
 
-    print("dim: ",n_data, n_dimensions)
-
     centers = np.zeros((n_clusters,n_dimensions))
     labels = generate_initial_assignment(n_data,n_clusters)
     all_labels = labels
@@ -67,7 +65,11 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
         if converged: break
 
 
+    labels = comm.gather(labels,root=0)
+    labels = list(chain(*labels))
+
     if rank==0:
+        
         timing = time.time()-start
         print(timing)
         return [centers,labels,timing]
