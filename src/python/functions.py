@@ -205,11 +205,11 @@ def hybrid(data, initial_labels, kernel_fn, N, K, D, limit):
 ### MAKE GRAPHS ###
 ######################################################
 
-def process_output(output, means, ref_means):
+def process_output(output, output_dir, ref_means):
   
   # print some stuff
   print('\n-----'+output[-1][0])
-  if output[-1][0][0]!='s': print('Equals stock means: %s' % str(np.array_equal(ref_means,means)))
+  if output[-1][0][0]!='s': print('Equals stock means: %s' % str(np.array_equal(ref_means,output[-1][-1])))
   for o in output[-1][1:]: 
     for p in o: print(p)
       
