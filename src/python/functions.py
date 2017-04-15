@@ -210,7 +210,7 @@ def process_output(output, output_dir, ref_means):
   # print some stuff
   for o in output:
     print('\n-----'+o[0])
-    if o[0][0]!='s': print('Equals stock means: %s' % str(np.array_equal(ref_means,o[-1])))
+    if o[0][0]!='s': print('Equals stock means: %s' % str(np.array_equal(ref_means,o[:7])))
     for p in o: print(p)
       
   # graphs
