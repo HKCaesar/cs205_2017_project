@@ -41,7 +41,7 @@ data, initial_labels = prep_data(data_fn, d_list, N, D, K)
 ### RUN STOCK K-MEANS ####
 ######################################################
 
-means, labels, distortion, runtime = stock(data, K, limit)
+means, labels, distortion, runtime, distortion = stock(data, K, limit)
 
 output.append(['stock',runtime, '', distortion, N, D, K])
 print('\n-----stock output')
@@ -53,7 +53,7 @@ print(distortion)
 ### RUN SEQUENTIAL K-MEANS ####
 ######################################################
 
-means, labels, count, runtime, A1, W1 = sequential(data, initial_labels, N, D, K, limit)
+means, labels, count, runtime, distortion, A1, W1 = sequential(data, initial_labels, N, D, K, limit)
 
 output.append(['sequential',runtime, count, '', N, D, K])
 print('\n-----sequential output')
@@ -70,7 +70,7 @@ ref_means = A1
 ### RUN pyCUDA K-MEANS ####
 ######################################################
 
-means, labels, count, runtime = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
+means, labels, count, runtime, distortion = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
 
 output.append(['pyCUDA',runtime, count, '', N, D, K])
 print('\n-----pyCUDA output')
@@ -82,7 +82,7 @@ print('Equals stock means: %s' % str(np.array_equal(ref_means,means)))
 ### RUN mpi4py K-MEANS ####
 ######################################################
 
-means, labels, count, runtime = mpi4py(data, initial_labels, kernel_fn, N, K, D, limit)
+means, labels, count, runtime, distortion = mpi4py(data, initial_labels, kernel_fn, N, K, D, limit)
 
 output.append(['mpi4py',runtime, count, '', N, D, K])
 print('\n-----mpi4py output')
@@ -94,7 +94,7 @@ print('Equals stock means: %s' % str(np.array_equal(ref_means,means)))
 ### RUN hybrid K-MEANS ####
 ######################################################
 
-means, labels, count, runtime = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
+means, labels, count, runtime, distortion = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
 
 output.append(['hybrid',runtime, count, '', N, D, K])
 print('\n-----hybrid output')
