@@ -218,9 +218,6 @@ def process_output(output, output_fn, ref_means):
     print('\n-----'+o[0])
     if o[0][0]!='s': print('Equals stock means: %s' % str(np.array_equal(ref_means,o[-1])))
     for p in o: print(p)
-      
-  # graphs
-  print('\nmade graphs\n')
   
   # write to csv
   with open(output_fn, 'a') as f:
