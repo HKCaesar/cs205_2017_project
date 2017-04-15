@@ -64,7 +64,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
         if converged: break
 
 
-    labels = comm.gather( (rank, labels) ,root=0)
+    labels = comm.gather( [rank, labels] ,root=0)
 
     if rank==0:
         print(labels)
