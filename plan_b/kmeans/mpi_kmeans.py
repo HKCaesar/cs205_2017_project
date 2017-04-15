@@ -78,12 +78,14 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
             for j in range(n_clusters) :
                 total = np.sum(labels==j)
                 centers[k,:] = centers[k,:]/total
-            
+
             print("cluster mean:")
             print(centers)
 
             print(k, distortion(all_labels,centers,all_data))
 
+
+        sys.exit(0)
 
         centers = comm.bcast(centers, root=0)
 
