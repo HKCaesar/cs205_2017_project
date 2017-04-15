@@ -45,10 +45,6 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
     allocations,labels = partition(labels,size)
 
-    print( np.sum(map(len,labels))  )
-
-    sys.exit(0)
-
     labels = labels[rank]
 
     indices = allotment_to_indices(allocations)
