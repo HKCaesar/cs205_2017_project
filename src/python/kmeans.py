@@ -28,8 +28,6 @@ with open(output_fn, 'w') as f:
     writer.writerow(['algorithm','time','convergence','distortion', 'arithmetic intensity', 'n','d','k'])
     f.close()
 
-limit = 10
-
 Ks = [3,4]
 Ns = [1000,10000]     # max N for review data is 118684
 Ds = [6]              # max D for review data is 6 (we could increase this actually)
