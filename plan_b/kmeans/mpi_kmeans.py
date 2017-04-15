@@ -38,26 +38,25 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
     allocations,labels = partition(labels,size)
     labels = comm.scatter(labels, root=0)
 
-    print("rank: %d: %r"% (rank,labels))
-
-    sys.exit(0)
-
-    if rank !=0:
-        data   = data[labels]
-        n_data = allocations[rank]
-
-
+    data   = data[labels]
 
     for k in range(max_iter):
-        if rank !=0:
-            compute_means(labels,centers,sum_values=True)
+
+        compute_means(labels,centers,data,sum_values=True)
 
         centers = comm.gather(centers, root=0)
 
-        if rank==0:
-            centers = np.mean(centers)
+        print("rank: %d, mean: %r",rank, centers)
+
+        centers = np.mean(centers)
+
+        print("rank: %d, mean: %r",rank, centers)
 
         centers = comm.bcast(data, root=0)
+
+        print("rank: %d, mean: %r",rank, centers)
+
+        sys.exit(0)
 
         if rank != 0:
             converged = reassign_labels(labels,centers,data)
