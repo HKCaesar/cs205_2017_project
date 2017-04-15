@@ -205,9 +205,21 @@ def hybrid(data, initial_labels, kernel_fn, N, K, D, limit):
 ### MAKE GRAPHS ###
 ######################################################
 
-def makegraphs(output, means, ref_means):
+def process_output(output, means, ref_means):
+  
+  # print some stuff
   print('\n-----'+output[-1][0]:)
   if output[-1][0][0]!='s': print('Equals stock means: %s' % str(np.array_equal(ref_means,means)))
-  for o in output[-1]: 
+  for o in output[-1][1:]: 
     for p in o: print(p)
+      
+  # graphs
+  print('made graphs')
+  
+  # write to csv
+  with open(output_dir + 'times.csv', 'w') as f:
+    writer = csv.writer(f, delimiter = ',')
+    writer.writerows([o[:-1] for o in output])
+    f.close()
+  
   return
