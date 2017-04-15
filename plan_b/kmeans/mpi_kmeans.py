@@ -40,11 +40,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
     allocations,labels = partition(labels,size)
     labels = comm.scatter(labels, root=0)
 
-    print("partitions:", labels)
-
-    data = data[labels, :]
-
-    print("rank: %d, data: %r",rank, data)
+    data = data[labels]
 
     for k in range(max_iter):
 

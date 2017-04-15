@@ -32,11 +32,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mpi_kmeans.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="mpi_kmeans.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/kmeans/mpi_kmeans.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-8.296296">
-              <caret line="39" column="29" selection-start-line="39" selection-start-column="29" selection-end-line="39" selection-end-column="29" />
+            <state vertical-scroll-proportion="0.31909212">
+              <caret line="42" column="23" selection-start-line="42" selection-start-column="23" selection-end-line="42" selection-end-column="23" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
               </folding>
@@ -44,10 +44,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="utilities.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="utilities.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/kmeans/utilities.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5837629">
+            <state vertical-scroll-proportion="0.0">
               <caret line="90" column="24" selection-start-line="90" selection-start-column="24" selection-end-line="90" selection-end-column="24" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -98,8 +98,8 @@
         <option value="$PROJECT_DIR$/kmeans/meta_heuristic.py" />
         <option value="$PROJECT_DIR$/kmeans/kmeans_sequential.py" />
         <option value="$PROJECT_DIR$/test.py" />
-        <option value="$PROJECT_DIR$/kmeans/mpi_kmeans.py" />
         <option value="$PROJECT_DIR$/kmeans/utilities.py" />
+        <option value="$PROJECT_DIR$/kmeans/mpi_kmeans.py" />
       </list>
     </option>
   </component>
@@ -527,22 +527,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/kmeans/mpi_kmeans.py">
+    <entry file="file://$PROJECT_DIR$/kmeans/utilities.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.296296">
-          <caret line="39" column="29" selection-start-line="39" selection-start-column="29" selection-end-line="39" selection-end-column="29" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="90" column="24" selection-start-line="90" selection-start-column="24" selection-end-line="90" selection-end-column="24" />
           <folding>
-            <element signature="e#0#22#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/kmeans/utilities.py">
+    <entry file="file://$PROJECT_DIR$/kmeans/mpi_kmeans.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5837629">
-          <caret line="90" column="24" selection-start-line="90" selection-start-column="24" selection-end-line="90" selection-end-column="24" />
+        <state vertical-scroll-proportion="0.31909212">
+          <caret line="42" column="23" selection-start-line="42" selection-start-column="23" selection-end-line="42" selection-end-column="23" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#0#22#0" expanded="true" />
           </folding>
         </state>
       </provider>
