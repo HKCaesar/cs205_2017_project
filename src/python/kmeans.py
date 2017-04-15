@@ -25,7 +25,7 @@ kernel_fn = "../cuda/pycumean.c"
 output_fn = "../../analysis/output.csv"
 with open(output_fn, 'w') as f:
     writer = csv.writer(f, delimiter = ',')
-    writer.writerows(['algorithm','time','convergence','distortion','n','d','k'])
+    writer.writerow(['algorithm','time','convergence','distortion','n','d','k'])
     f.close()
 
 limit = 10
