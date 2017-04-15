@@ -78,7 +78,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
             for j in range(n_clusters) :
                 total = np.sum(labels==j)
-                centers[k,:] = centers[k,:]/total
+                centers[j,:] = centers[j,:]/total
 
             print("cluster mean:")
             print(centers)
