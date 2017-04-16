@@ -190,14 +190,14 @@ def hybrid(data, initial_labels, kernel_fn, N, K, D, limit):
 ### STOCK K-MEANS ###
 ######################################################
 
-def stock(data, K, ref_count):
+def stock(data, K, count):
   
     start = time.time()
-    stockmeans = KMeans(n_clusters=K,n_init=ref_count)
+    stockmeans = KMeans(n_clusters=K,n_init=count)
     stockmeans.fit(data)
     runtime = time.time()-start
     ai = 100 * count    
-    return stockmeans.cluster_centers_, stockmeans.labels_, ref_count, runtime, stockmeans.inertia_, ai
+    return stockmeans.cluster_centers_, stockmeans.labels_, count, runtime, stockmeans.inertia_, ai
 
 ######################################################
 ### MAKE GRAPHS ###
