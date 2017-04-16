@@ -299,9 +299,6 @@ def reassign_labels(labels,centers,data):
     return np.array_equal(labels,old_labels)
 
 
-def distortion(labels,centers,data):
-    return np.sum((centers[labels,:]-data)**2)
-
 def mpi_kmeans(data, n_clusters,max_iter=100):
 
     all_data = data
