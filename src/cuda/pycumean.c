@@ -56,7 +56,7 @@ __global__ void reassign(double *data, double *labels, double *means, int *conv_
     int tid = d + k * D + n * K*D;
     int dataid = d + n * D;
     double min;
-    int min_idx;
+    double min_idx;
     __shared__ int s_conv[N];
     
     if(tid == 0) (*conv) = 1;
