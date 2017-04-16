@@ -63,8 +63,6 @@ __global__ void reassign(double *data, int *labels, double *means, int *conv_arr
     
     // get KxD squares
         s_squares[wInBlockid] = (data[dataid] - means[wInBlockid]) * (data[dataid] - means[wInBlockid]);
-        //printf("dataid: %d wInBlockid: %d ", dataid, wInBlockid);
-        //printf("data: %f means: %f s_squares: %f ",data[dataid], means[wInBlockid],  s_squares[wInBlockid]);
         __syncthreads();
     
     // add KxD squares to get K sums using K lucky threads
@@ -72,7 +70,6 @@ __global__ void reassign(double *data, int *labels, double *means, int *conv_arr
           for(int dd = 0; dd < D; ++dd) {
             s_sums[k] += s_squares[dd + k * D];
           }
-          //printf("s_sums: %f", s_sums[k]);
         }
     __syncthreads();
     
@@ -85,18 +82,11 @@ __global__ void reassign(double *data, int *labels, double *means, int *conv_arr
               min = s_sums[kk];
               min_idx = kk;
             }
-          //printf("%d. min_idx: %d min: %f \n",kk, min_idx, min);
-          }
-            
-          //printf("min_idx: %d \n", min_idx);
-            
+          }          
           if (labels[n] != min_idx) {
             conv_array[n] = 0;
             labels[n] = min_idx;
           }
-          //printf("labels[n]: %f ", labels[n]);
-          //printf("n: %d min_idx: %d wInBlockid: %d ", n, min_idx, wInBlockid);
-          printf("means: %f ", means);
         }
     __syncthreads();
 
