@@ -84,7 +84,9 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
         converged = reassign_labels(labels,centers,data)
 
-        converged = comm.gather(converged,root=0)
+        converged = comm.allgather(converged)
+
+
 
         converged = np.all(converged)
 
