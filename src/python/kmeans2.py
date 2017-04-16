@@ -408,7 +408,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ### PREP DATA & INITIAL LABELS ####
   ######################################################
 
-  data, initial_labels = prep_data(data_fn, d_list, N, D, K)
+  data, initial_labels = prep_data(reviewdata, d_list, N, D, K)
 
   ######################################################
   ### RUN SEQUENTIAL K-MEANS ####
