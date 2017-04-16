@@ -95,10 +95,9 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
             break
 
 
-    labels = comm.gather(labels,root=0,)
+    labels = comm.gather(labels,root=0)
 
     if rank==0:
-
         labels = np.array(list(chain(*labels)))
         timing = time.time()-start
         return [centers,labels,timing]
