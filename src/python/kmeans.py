@@ -48,7 +48,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ### RUN SEQUENTIAL K-MEANS ####
   ######################################################
 
-  means, labels, count, runtime, distortion, ai, means1, labels1 = sequential(data, initial_labels, N, D, K, limit)
+  means, labels, count, runtime, distortion, ai = sequential(data, initial_labels, N, D, K, limit)
   output.append(['sequential',runtime, count, distortion, ai, N, D, K, means])
   ref_means=means
 
