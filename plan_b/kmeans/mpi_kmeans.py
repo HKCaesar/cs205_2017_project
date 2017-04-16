@@ -46,8 +46,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
     allocations,labels = partition(labels,size)
     indices = allotment_to_indices(allocations)
 
-    tag_count=0
-    indices,labels = comm.scatter(zip(indices, labels) , root=0,tag= tag_count)
+    indices,labels = comm.scatter(zip(indices, labels) , root=0,tag)
 
     data = data[indices[0]:indices[1]]
 
@@ -57,7 +56,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
         compute_means(labels,centers,data,sum_values=True)
 
         tag_count+=1
-        centers = comm.gather(centers, root=0,tag=tag_count)
+        centers = comm.gather(centers, root=0)
 
         if rank==0:
 
@@ -69,7 +68,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
             centers = temp
 
         tag_count+=1
-        collected_labels = comm.gather(labels, root=0,tag=tag_count)
+        collected_labels = comm.gather(labels, root=0)
 
 
         if rank == 0:
@@ -92,24 +91,20 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
             print(k, distortion(collected_labels,centers,all_data))
 
-
-        tag_count+=1
-        centers = comm.bcast(centers, root=0,tag=tag_count)
+        centers = comm.bcast(centers, root=0)
 
         converged = reassign_labels(labels,centers,data)
 
-
-        tag_count+=1
-        converged = comm.gather(converged,root=0,tag=tag_count)
+        converged = comm.gather(converged,root=0)
 
         converged = np.all(converged)
 
+        comm.Barrier()
         if converged: break
 
     print(rank, labels)
 
-    tag_count+=1
-    labels = comm.gather(labels,root=0,tag=tag_count)
+    labels = comm.gather(labels,root=0,)
 
     print(labels)
 
