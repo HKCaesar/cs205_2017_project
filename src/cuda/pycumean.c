@@ -87,11 +87,15 @@ __global__ void reassign(double *data, double *labels, double *means, int *conv_
             }
           //printf("min_idx: %d", min_idx);
           }
+            
+          printf("min_idx: %d", min_idx);
+            
           if (labels[n] != min_idx) {
             conv_array[n] = 0;
             labels[n] = min_idx;
           }
-          printf("labels[n]: %f ", labels[n]);
+          //printf("labels[n]: %f ", labels[n]);
+          printf("n: %d ", n);
         }
     __syncthreads();
 
