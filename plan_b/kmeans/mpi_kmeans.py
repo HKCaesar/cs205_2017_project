@@ -90,9 +90,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
         converged = np.all(converged)
 
-        if converged:
-            print(k, rank, converged)
-            break
+        if converged: break
 
 
     labels = comm.gather(labels,root=0)
@@ -102,4 +100,4 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
         timing = time.time()-start
         return [centers,labels,timing]
     else:
-        MPI.Finalize()
+        sys.exit(0)
