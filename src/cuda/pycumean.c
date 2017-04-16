@@ -47,8 +47,8 @@ __global__ void newMeans(double *data, int *labels, double *means)
 
 __global__ void reassign(double *data, double *labels, double *means, int *conv_array, int * conv)
 {
-    __shared__ int s_squares[K*D];
-    __shared__ int s_sums[K];
+    __shared__ double s_squares[K*D];
+    __shared__ double s_sums[K];
     int k = threadIdx.x;
     int d = threadIdx.y;
     int n = blockIdx.x;
@@ -64,7 +64,7 @@ __global__ void reassign(double *data, double *labels, double *means, int *conv_
     // get KxD squares
         s_squares[wInBlockid] = (data[dataid] - means[wInBlockid]) * (data[dataid] - means[wInBlockid]);
         
-        printf("winid: %d value: %d ",wInBlockid, s_squares[wInBlockid]);
+        printf("winid: %d value: %f ",wInBlockid, s_squares[wInBlockid]);
     
         __syncthreads();
     
