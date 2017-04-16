@@ -72,24 +72,20 @@ __global__ void reassign(double *data, double *labels, double *means, int *conv_
           for(int dd = 0; dd < D; ++dd) {
             s_sums[k] += s_squares[dd + k * D];
           }
-          printf("s_sums: %f", s_sums[k]);
+          //printf("s_sums: %f", s_sums[k]);
         }
     __syncthreads();
     
-    /*
-    for(int ii=0;ii<k;ii++){
-        printf("%d ",s_sums[ii]);
-    }*/
-    
     // check for the minimum of the K sums using 1 lucky thread per block
         if (wInBlockid == 0) {
-          min = 1.0/0.0;
-          min_idx = -1;
-          for(int kk = 0; kk < K; ++kk) {
+          min = s_sums[0];
+          min_idx = 0;
+          for(int kk = 1; kk < K; ++kk) {
             if (s_sums[kk] < min) {
               min = s_sums[kk];
               min_idx = kk;
             }
+          printf("min_idx: %d", min_idx);
           }
           if (labels[n] != min_idx) {
             conv_array[n] = 0;
