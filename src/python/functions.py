@@ -155,7 +155,7 @@ def pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit):
     h_data, h_labels, h_means, h_converged_array = prep_host(data, initial_labels, K, D)
 
     start = time.time()
-    d_data, d_labels, d_means, d_converged_array, d_converged = prep_device( h_data, h_labels, h_means, h_converged_array, h_converged)
+    d_data, d_labels, d_means, d_converged_array = prep_device( h_data, h_labels, h_means, h_converged_array)
 
     while not h_converged:
         kernel1(d_data, d_labels, d_means, block=(K,D,1), grid=(1,1,1))
