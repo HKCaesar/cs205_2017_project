@@ -1,5 +1,5 @@
 from mpi4py import MPI
-from kmeans.utilities import compute_means, reassign_labels, generate_initial_assignment, partition, distortion, allotment_to_indices
+from utilities import compute_means, reassign_labels, generate_initial_assignment, partition, distortion, allotment_to_indices
 import numpy as np
 import time
 from itertools import chain
