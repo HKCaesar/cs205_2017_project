@@ -3,6 +3,7 @@ from sklearn.decomposition import PCA
 import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.stats import gaussian_kde
+import matplotlib
 import pandas as pd
 
 def allotment_to_indices(allotments):
