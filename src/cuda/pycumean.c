@@ -45,7 +45,7 @@ __global__ void newMeans(double *data, int *labels, double *means)
 
 }
 
-__global__ void reassign(double *data, double *labels, double *means, int *conv_array, int * conv)
+__global__ void reassign(double *data, int *labels, double *means, int *conv_array, int * conv)
 {
     __shared__ double s_squares[K*D];
     __shared__ double s_sums[K];
@@ -56,7 +56,7 @@ __global__ void reassign(double *data, double *labels, double *means, int *conv_
     int tid = d + k * D + n * K*D;
     int dataid = d + n * D;
     double min;
-    double min_idx;
+    int min_idx;
     __shared__ int s_conv[N];
     
     if(tid == 0) (*conv) = 1;
