@@ -203,7 +203,7 @@ def stock(data, K, count):
 ### MAKE GRAPHS ###
 ######################################################
 
-def process_output(output, output_fn, ref_means):
+def process_output(output, output_fn, ref_means, ref_count):
   
   # print some stuff
   for o in output:
