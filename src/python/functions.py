@@ -157,13 +157,12 @@ def pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit):
     start = time.time()
     d_data, d_labels, d_means, d_converged_array = prep_device( h_data, h_labels, h_means, h_converged_array)
 
-    while not h_converged:
+    while count<limit:
         kernel1(d_data, d_labels, d_means, block=(K,D,1), grid=(1,1,1))
         kernel2(d_data, d_labels, d_means, d_converged_array, block=(K,D,1), grid=(N,1,1))
         cuda.memcpy_dtoh(h_converged_array, d_converged_array)
         count +=1
         if np.sum(h_converged_array)==0: break
-        if count==limit: break
           
     cuda.memcpy_dtoh(h_means, d_means)
     cuda.memcpy_dtoh(h_labels, d_labels)
