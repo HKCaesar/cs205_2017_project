@@ -91,6 +91,7 @@ __global__ void reassign(double *data, double *labels, double *means, int *conv_
             conv_array[n] = 0;
             labels[n] = min_idx;
           }
+          printf("labels[n]: %f ", labels[n]);
         }
     __syncthreads();
 
