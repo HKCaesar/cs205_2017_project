@@ -46,7 +46,8 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
     allocations,labels = partition(labels,size)
     indices = allotment_to_indices(allocations)
 
-    indices,labels = comm.scatter(zip(indices, labels) , root=0)
+    tag_count=0
+    indices,labels = comm.scatter(zip(indices, labels) , root=0,tag= tag_count)
 
     data = data[indices[0]:indices[1]]
 
@@ -55,7 +56,8 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
         compute_means(labels,centers,data,sum_values=True)
 
-        centers = comm.gather(centers, root=0)
+        tag_count+=1
+        centers = comm.gather(centers, root=0,tag=tag_count)
 
         if rank==0:
 
@@ -66,8 +68,8 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
             centers = temp
 
-
-        collected_labels = comm.gather(labels, root=0)
+        tag_count+=1
+        collected_labels = comm.gather(labels, root=0,tag=tag_count)
 
 
         if rank == 0:
@@ -91,13 +93,14 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
             print(k, distortion(collected_labels,centers,all_data))
 
 
-
-        centers = comm.bcast(centers, root=0)
+        tag_count+=1
+        centers = comm.bcast(centers, root=0,tag=tag_count)
 
         converged = reassign_labels(labels,centers,data)
 
 
-        converged = comm.gather(converged,root=0)
+        tag_count+=1
+        converged = comm.gather(converged,root=0,tag=tag_count)
 
         converged = np.all(converged)
 
@@ -105,9 +108,12 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
     print(rank, labels)
 
-    labels = comm.gather(labels,root=0)
+    tag_count+=1
+    labels = comm.gather(labels,root=0,tag=tag_count)
 
     print(labels)
+
+    sys.exit(0)
 
     if rank==0:
 
