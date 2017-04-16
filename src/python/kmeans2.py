@@ -2,9 +2,6 @@ import itertools
 from mpi4py import MPI
 from itertools import chain
 import sys
-from sklearn.decomposition import PCA
-import seaborn as sns
-import matplotlib.pyplot as plt
 from scipy.stats import gaussian_kde
 
 
@@ -255,59 +252,6 @@ def generate_random_subset(df, subset_size):
 
     return indices, df[indices]
 
-def kmeans_plot(labels, centers, data, print_distortion=None, print_best=None):
-    K,D = centers.shape
-
-    cut_off = 20000
-    if len(data) > cut_off:
-        indices, data = generate_random_subset(data, cut_off)
-        labels = labels[indices]
-
-    pca = PCA(n_components=2, svd_solver='full')
-    pca.fit(data)
-
-    pcs   = pca.transform(data)
-    cntrs = pca.transform(centers)
-
-    blues = sns.color_palette("Blues", 2*K)
-    greys = sns.color_palette("Greys", 16)
-    reds = sns.color_palette("Reds", 8)
-
-    x,y=pcs[:,0],pcs[:,1]
-
-    # Calculate the point density
-    xy = np.vstack([x,y])
-    z = gaussian_kde(xy)(xy)
-
-    fig = plt.figure(figsize=(8,8),dpi=100)
-    ax = fig.add_subplot(111)
-
-    for k in range(K):
-        ax.scatter(x[labels==k], y[labels==k], s=30, edgecolor='white',c= blues[k+3] )
-
-    a=ax.scatter(cntrs[:,0],cntrs[:,1],facecolor=greys[13],edgecolor='white',s=120,alpha=0.95)
-    ax.set_xlabel('PC1')
-    ax.set_ylabel('PC2')
-
-    if print_distortion!=None:
-        distortion_text = "%.2f" % print_distortion
-        distortion_text = distortion_text.rjust(7)
-
-        ax.text(0.85, 0.96,"Distortion: %s" % distortion_text,
-                horizontalalignment='center',
-                verticalalignment='center',
-                transform = ax.transAxes,family='monospace')
-
-        if print_best!=None:
-
-                ax.text(0.85, 0.93,"Best:       "+("%.2f"%print_best).rjust(7),
-                horizontalalignment='center',
-                verticalalignment='center',
-                transform = ax.transAxes,family='monospace',color=reds[7])
-
-    return fig
-
-
 def partition(sequence, n_chunks):
     N = len(sequence)
     chunk_size = int(N/n_chunks)
@@ -322,9 +266,6 @@ def partition(sequence, n_chunks):
 
     return allocations, [sequence[index[0]:index[1]]  for index in indexes]
 
-
-def distortion(labels,centers,data):
-    return np.sum((centers[labels,:]-data)**2)
 
 
 def generate_initial_assignment(N,K):
@@ -356,6 +297,10 @@ def reassign_labels(labels,centers,data):
     labels[:] = np.apply_along_axis(minimize,1,data)
 
     return np.array_equal(labels,old_labels)
+
+
+def distortion(labels,centers,data):
+    return np.sum((centers[labels,:]-data)**2)
 
 def mpi_kmeans(data, n_clusters,max_iter=100):
 
@@ -407,8 +352,6 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
                 total = np.sum(collected_labels==j)
                 centers[j,:] = centers[j,:]/total
 
-
-            #print(k, distortion(collected_labels,centers,all_data))
 
         centers = comm.bcast(centers, root=0)
 
