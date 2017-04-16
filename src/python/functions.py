@@ -52,10 +52,8 @@ def stock(data, K, count):
     stockmeans = KMeans(n_clusters=K,n_init=count)
     stockmeans.fit(data)
     runtime = time.time()-start
-    
-    ai = 100 * count
-    
-    return stockmeans.cluster_centers_, stockmeans.labels_, stockmeans.inertia_, runtime,  ai
+    ai = 100 * count    
+    return stockmeans.cluster_centers_, stockmeans.labels_, count, runtime, stockmeans.inertia_, ai
 
 ######################################################
 ### SEQUENTIAL K-MEANS ###
