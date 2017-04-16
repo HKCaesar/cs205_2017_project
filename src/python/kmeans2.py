@@ -4,7 +4,6 @@ from itertools import chain
 import sys
 from scipy.stats import gaussian_kde
 
-
 import pandas as pd
 import numpy as np
 from sklearn.cluster import KMeans
@@ -40,14 +39,6 @@ def prep_data(data_fn, d_list, N, D, K):
       initial_labels[i] = temp
 
   return data, initial_labels
-
-######################################################
-### CALCULATE DISTORTION ###
-######################################################
-
-def distortion(data, labels, means):
-    #temp=np.sum((means[labels:]-data)**2) <---- FIX!!!!
-    return 100
 
 ######################################################
 ### SEQUENTIAL K-MEANS ###
@@ -100,8 +91,9 @@ def sequential(data, initial_labels, N, D, K, limit):
 
   runtime = time.time()-start
   ai = 200 * count
+  distortion = 50
 
-  return means, labels, count, runtime, distortion(data, labels, means), ai
+  return means, labels, count, runtime, distortion, ai
 
 ######################################################
 ### pyCUDA K-MEANS  ####
@@ -160,8 +152,9 @@ def pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit):
     cuda.memcpy_dtoh(h_labels, d_labels)
     runtime = time.time()-start
     ai = 300 * count
+    distortion = 50
 
-    return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means), ai
+    return h_means, h_labels, count, runtime, distortion, ai
 
 ######################################################
 ### mpi4py K-MEANS  ####
@@ -175,8 +168,9 @@ def mpi4py(data, initial_labels, kernel_fn, N, K, D, limit):
   h_labels = np.ascontiguousarray(np.empty(initial_labels.shape,dtype=np.intc, order='C'))
   runtime = time.time()-start
   ai = 400 * count
+  distortion = 50
 
-  return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means), ai
+  return h_means, h_labels, count, runtime, distortion, ai
 
 ######################################################
 ### hybrid K-MEANS  ####
@@ -190,8 +184,9 @@ def hybrid(data, initial_labels, kernel_fn, N, K, D, limit):
   h_labels = np.ascontiguousarray(np.empty(initial_labels.shape,dtype=np.intc, order='C'))
   runtime = time.time()-start
   ai = 500 * count
+  distortion = 50
 
-  return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means), ai
+  return h_means, h_labels, count, runtime, distortion, ai
 
 ######################################################
 ### STOCK K-MEANS ###
