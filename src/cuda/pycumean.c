@@ -95,7 +95,7 @@ __global__ void reassign(double *data, double *labels, double *means, int *conv_
             labels[n] = min_idx;
           }
           //printf("labels[n]: %f ", labels[n]);
-          printf("n: %d min_idx: %d", n, min_idx);
+          printf("n: %d min_idx: %d wInBlockid: %d ", n, min_idx, wInBlockid);
         }
     __syncthreads();
 
