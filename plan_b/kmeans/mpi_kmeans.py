@@ -99,8 +99,10 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
 
         converged = np.all(converged)
 
-        comm.Barrier()
-        if converged: break
+        if converged:
+            print(k, rank, converged)
+            break
+
 
     print(rank, labels)
 
