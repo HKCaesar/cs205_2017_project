@@ -62,7 +62,7 @@ __global__ void reassign(double *data, int *labels, double *means, int *converge
         __syncthreads();
     
     // add KxD squares to get K sums using K lucky threads
-        if (k < K && d == 0) {
+        if (tid < K) {
           for(int dd = 0; dd < D; ++dd) {
             s_sums[k] += s_squares[dd + k * D];
           }
