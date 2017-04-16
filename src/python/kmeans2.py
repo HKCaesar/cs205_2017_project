@@ -294,7 +294,7 @@ def reassign_labels(labels,centers,data):
     return np.array_equal(labels,old_labels)
 
 
-def mpi_kmeans(data, n_clusters,max_iter=100):
+def mpi_kmeans(data, n_clusters, max_iter):
 
     all_data = data
 
@@ -431,8 +431,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ### RUN mpi4py K-MEANS ####
   ######################################################
 
-
-  means, labels, runtime = mpi4py(data=data, n_clusters=K, max_iter=limit)
+  means, labels, runtime = mpi_kmeans(data, K, limit)
   distortion = 0
   ai = 0
   count = 0
