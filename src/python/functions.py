@@ -164,8 +164,8 @@ def pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit):
         kernel1(d_data, d_labels, d_means, block=(K,D,1), grid=(1,1,1))
         kernel2(d_data, d_labels, d_means, d_converged_array, d_converged, block=(K,D,1), grid=(N,1,1))
         cuda.memcpy_dtoh(h_converged_array, d_converged_array)
-        print(h_converged_array)
         count +=1
+        if np.sum(h_converged_array)==0: break
         if count==limit: break
           
     cuda.memcpy_dtoh(h_means, d_means)
