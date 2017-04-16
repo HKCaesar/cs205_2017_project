@@ -57,7 +57,7 @@ __global__ void reassign(double *data, double *labels, double *means, int *conv_
     int dataid = d + n * D;
     double min;
     int min_idx;
-    __shared__ int s_conv[K*D];
+    __shared__ int s_conv[N];
     
     if(tid == 0) (*conv) = 1;
     
@@ -85,7 +85,7 @@ __global__ void reassign(double *data, double *labels, double *means, int *conv_
               min = s_sums[kk];
               min_idx = kk;
             }
-          printf("min_idx: %d", min_idx);
+          //printf("min_idx: %d", min_idx);
           }
           if (labels[n] != min_idx) {
             conv_array[n] = 0;
