@@ -33,10 +33,10 @@ __global__ void newMeans(double *data, int *labels, double *means)
     __syncthreads();
     
     // find KxD local sums
-    for (int n = 0; n < N; ++n)
+    for (int nn = 0; nn < N; ++nn)
     {
-        if(labels[n] == k){
-            l_sum += data[d + n * D];
+        if(labels[nn] == k){
+            l_sum += data[d + nn * D];
         }
     }
     
