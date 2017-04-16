@@ -85,8 +85,7 @@ __global__ void reassign(double *data, double *labels, double *means, int *conv_
               min = s_sums[kk];
               min_idx = kk;
             }
-          printf("min_idx: %d \n", min_idx);
-          printf("min: %f \n\n", min);
+          printf("%d. min_idx: %d min: %f \n",kk, min_idx, min);
           }
             
           printf("min_idx: %d \n", min_idx);
