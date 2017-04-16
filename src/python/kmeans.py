@@ -1,6 +1,6 @@
 from functions import *
 import itertools
-from aux.kmeans.mpi_kmeans import mpi_kmeans
+from mpi_kmeans import mpi_kmeans
 
 ######################################################
 ### INFO ####
