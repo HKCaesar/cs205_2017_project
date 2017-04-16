@@ -20,11 +20,9 @@ import csv
 ### PREP DATA & INITIAL LABELS ####
 ######################################################
 
-def prep_data(data_fn, d_list, N, D, K):
+def prep_data(reviewdata, d_list, N, D, K):
 
   # import data file and subset data for k-means
-  reviewdata = pd.read_csv(data_fn)
-  print(reviewdata.shape)
   data = reviewdata[d_list[:D]][:N].values
   data = np.ascontiguousarray(data, dtype=np.float64)
 
@@ -386,6 +384,7 @@ def mpi_kmeans(data, n_clusters, max_iter):
 
 data_fn = "../../data/reviewer-data.csv"
 d_list = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
+reviewdata = pd.read_csv(data_fn)
 
 kernel_fn = "../cuda/pycumean.c"
 
