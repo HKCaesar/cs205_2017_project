@@ -59,7 +59,6 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
   means, labels, count, runtime, distortion, ai = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
   output.append(['pyCUDA', runtime, count, distortion, ai, N, D, K, means])
-  print(labels)
 
   ######################################################
   ### RUN mpi4py K-MEANS ####
