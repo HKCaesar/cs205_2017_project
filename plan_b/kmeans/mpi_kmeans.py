@@ -95,13 +95,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
             break
 
 
-    print(rank, labels)
-
     labels = comm.gather(labels,root=0,)
-
-    print(labels)
-
-    sys.exit(0)
 
     if rank==0:
 
