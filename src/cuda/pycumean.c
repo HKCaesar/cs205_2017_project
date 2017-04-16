@@ -23,7 +23,7 @@ __global__ void newMeans(double *data, int *labels, double *means)
     double l_sum = 0.0;
 
     // find the n per cluster with K lucky threads
-    if (tid < K) {
+    if (k < K && d == 0) {
         int l_clustern = 0;
         for (int n = 0; n < N; ++n){
             if(labels[n] == tid) l_clustern++;
