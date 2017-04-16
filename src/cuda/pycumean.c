@@ -63,6 +63,9 @@ __global__ void reassign(double *data, double *labels, double *means, int *conv_
     
     // get KxD squares
         s_squares[wInBlockid] = (data[dataid] - means[wInBlockid]) * (data[dataid] - means[wInBlockid]);
+        
+        printf("winid: %d value: %d ",wInBlockid, s_squares[wInBlockid])
+    
         __syncthreads();
     
     // add KxD squares to get K sums using K lucky threads
@@ -73,9 +76,10 @@ __global__ void reassign(double *data, double *labels, double *means, int *conv_
         }
     __syncthreads();
     
+    /*
     for(int ii=0;ii<k;ii++){
         printf("%d ",s_sums[ii]);
-    }
+    }*/
     
     // check for the minimum of the K sums using 1 lucky thread per block
         if (wInBlockid == 0) {
