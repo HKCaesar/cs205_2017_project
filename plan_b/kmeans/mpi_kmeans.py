@@ -73,7 +73,7 @@ def mpi_kmeans(data, n_clusters,max_iter=100):
                 centers[j,:] = centers[j,:]/total
 
 
-            print(k, distortion(collected_labels,centers,all_data))
+            #print(k, distortion(collected_labels,centers,all_data))
 
         centers = comm.bcast(centers, root=0)
 
