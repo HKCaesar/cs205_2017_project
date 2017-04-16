@@ -1,5 +1,6 @@
 from functions import *
 import itertools
+from aux.kmeans.mpi_kmeans import mpi_kmeans
 
 ######################################################
 ### INFO ####
@@ -64,7 +65,11 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ### RUN mpi4py K-MEANS ####
   ######################################################
 
-  means, labels, count, runtime, distortion, ai = mpi4py(data, initial_labels, kernel_fn, N, K, D, limit)
+
+  means, labels, runtime = mpi4py(data=data, n_clusters=K, max_iter=limit)
+  distortion = 0
+  ai = 0
+  count = 0
   output.append(['mpi4py',runtime, count, distortion, ai, N, D, K, means])
 
   ######################################################
