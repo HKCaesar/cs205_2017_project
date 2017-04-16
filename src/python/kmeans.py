@@ -31,7 +31,7 @@ with open(output_fn, 'w') as f:
 limit = 10
     
 Ks = [3]
-Ns = [1000]     # max N for review data is 118684
+Ns = [10]     # max N for review data is 118684
 Ds = [6]              # max D for review data is 6 (we could increase this actually)
 
 for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
