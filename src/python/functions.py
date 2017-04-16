@@ -213,7 +213,7 @@ def process_output(output, output_fn, ref_means):
   # print some stuff
   for o in output:
     print('\n-----'+o[0])
-    if o[0][0]!='s': print('Equals stock means: %s' % str(np.array_equal(ref_means,o[-1])))
+    if o[0][0]!='s': print('Equals sequential means: %s' % str(np.array_equal(ref_means,o[-1])))
     for p in o: print(p)
   
   # write to csv
