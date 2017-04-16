@@ -8,6 +8,8 @@
 
 //include "pycumean.h"
 
+#include <stdio.h>
+
 #define  N $N
 #define  K $K
 #define  D $D
