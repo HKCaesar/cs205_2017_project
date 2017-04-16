@@ -51,13 +51,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   means, labels, count, runtime, distortion, ai = sequential(data, initial_labels, N, D, K, limit)
   output.append(['sequential',runtime, count, distortion, ai, N, D, K, means])
   ref_means=means
-
-  ######################################################
-  ### RUN STOCK K-MEANS ####
-  ######################################################
-
-  means, labels, distortion, runtime, ai = stock(data, K, count)
-  output.append(['stock', runtime, '', distortion, ai, N, D, K, means])
+  ref_count=count
 
   ######################################################
   ### RUN pyCUDA K-MEANS ####
@@ -80,9 +74,16 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
   means, labels, count, runtime, distortion, ai = hybrid(data, initial_labels, kernel_fn, N, K, D, limit)
   output.append(['hybrid',runtime, count, distortion, ai, N, D, K, means])
+    
+  ######################################################
+  ### RUN STOCK K-MEANS ####
+  ######################################################
+
+  means, labels, distortion, runtime, ai = stock(data, K, count)
+  output.append(['stock', runtime, '', distortion, ai, N, D, K, means])
 
   ######################################################
   ### MAKE GRAPHS & WRITE OUTPUT TO CSV ####
   ######################################################
 
-  process_output(output, output_fn, ref_means)
+  process_output(output, output_fn, ref_means, ref_count)
