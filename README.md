@@ -61,9 +61,11 @@ However, due to the limitations of Odyssey's hardware configuration, we were not
 
 ## Performance
 
-> <i>summary</i>
+> <i>We have yet to complete a hybrid mpi4py + pyCUDA implemenation due to hardware difficulties on Odyssey. Currently, our </i>
 
-graphs etc.
+<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/time-bar-1000-6-5.png">
+<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/time-bar-10000-6-5.png">
+<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/time-bar-50000-6-5.png">
 
 ## Substantive Findings
 
