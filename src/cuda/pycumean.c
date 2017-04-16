@@ -64,7 +64,7 @@ __global__ void reassign(double *data, double *labels, double *means, int *conv_
     // get KxD squares
         s_squares[wInBlockid] = (data[dataid] - means[wInBlockid]) * (data[dataid] - means[wInBlockid]);
         
-        printf("winid: %d value: %d ",wInBlockid, s_squares[wInBlockid])
+        printf("winid: %d value: %d ",wInBlockid, s_squares[wInBlockid]);
     
         __syncthreads();
     
