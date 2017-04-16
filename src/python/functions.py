@@ -103,16 +103,13 @@ def sequential(data, initial_labels, N, D, K, limit):
               labels[n] = min_ind
               converged=False
       
-      count +=1
-      if count==1:
-        means1 = means.copy()
-        labels1 = labels.copy()  
+      count +=1 
       if count==limit: break
         
   runtime = time.time()-start
   ai = 200 * count
     
-  return means, labels, count, runtime, distortion(data, labels, means), ai, means1, labels1
+  return means, labels, count, runtime, distortion(data, labels, means), ai
 
 ######################################################
 ### pyCUDA K-MEANS  ####
