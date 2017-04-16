@@ -30,8 +30,8 @@ with open(output_fn, 'w') as f:
 
 limit = 10
     
-Ks = [3,4]
-Ns = [1000,10000]     # max N for review data is 118684
+Ks = [3]
+Ns = [100]     # max N for review data is 118684
 Ds = [6]              # max D for review data is 6 (we could increase this actually)
 
 for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
@@ -48,16 +48,10 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ### RUN SEQUENTIAL K-MEANS ####
   ######################################################
 
-  means, labels, count, runtime, distortion, ai, means1, labels1 = sequential(data, initial_labels, N, D, K, limit)
+  means, labels, count, runtime, distortion, ai = sequential(data, initial_labels, N, D, K, limit)
   output.append(['sequential',runtime, count, distortion, ai, N, D, K, means])
   ref_means=means
-
-  ######################################################
-  ### RUN STOCK K-MEANS ####
-  ######################################################
-
-  means, labels, distortion, runtime, ai = stock(data, K, count)
-  output.append(['stock', runtime, '', distortion, ai, N, D, K, means])
+  ref_count=count
 
   ######################################################
   ### RUN pyCUDA K-MEANS ####
@@ -79,9 +73,16 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
   means, labels, count, runtime, distortion, ai = hybrid(data, initial_labels, kernel_fn, N, K, D, limit)
   output.append(['hybrid',runtime, count, distortion, ai, N, D, K, means])
+    
+  ######################################################
+  ### RUN STOCK K-MEANS ####
+  ######################################################
+
+  means, labels, count, runtime, distortion, ai = stock(data, K, ref_count)
+  output.append(['stock', runtime, count, distortion, ai, N, D, K, means])
 
   ######################################################
   ### MAKE GRAPHS & WRITE OUTPUT TO CSV ####
   ######################################################
 
-  process_output(output, output_fn, ref_means)
+  process_output(output, output_fn, ref_means, ref_count)

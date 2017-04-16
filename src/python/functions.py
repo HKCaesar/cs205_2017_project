@@ -43,21 +43,6 @@ def distortion(data, labels, means):
     return 100
 
 ######################################################
-### STOCK K-MEANS ###
-######################################################
-
-def stock(data, K, count):
-  
-    start = time.time()
-    stockmeans = KMeans(n_clusters=K,n_init=count)
-    stockmeans.fit(data)
-    runtime = time.time()-start
-    
-    ai = 100 * count
-    
-    return stockmeans.cluster_centers_, stockmeans.labels_, stockmeans.inertia_, runtime,  ai
-
-######################################################
 ### SEQUENTIAL K-MEANS ###
 ######################################################
 
@@ -103,16 +88,13 @@ def sequential(data, initial_labels, N, D, K, limit):
               labels[n] = min_ind
               converged=False
       
-      count +=1
-      if count==1:
-        means1 = means.copy()
-        labels1 = labels.copy()  
+      count +=1 
       if count==limit: break
         
   runtime = time.time()-start
   ai = 200 * count
     
-  return means, labels, count, runtime, distortion(data, labels, means), ai, means1, labels1
+  return means, labels, count, runtime, distortion(data, labels, means), ai
 
 ######################################################
 ### pyCUDA K-MEANS  ####
@@ -128,19 +110,17 @@ def prep_host(data, initial_labels, K, D):
   return h_data, h_labels, h_means, h_converged_array
 
 # allocate memory and copy data to d_vars on device
-def prep_device(h_data, h_labels, h_means, h_converged_array, h_converged):
+def prep_device(h_data, h_labels, h_means, h_converged_array):
   
   d_data = cuda.mem_alloc(h_data.nbytes)
   d_labels = cuda.mem_alloc(h_labels.nbytes)
   d_means = cuda.mem_alloc(h_means.nbytes)
   d_converged_array = cuda.mem_alloc(h_converged_array.nbytes)
-  d_converged = cuda.mem_alloc(h_converged.nbytes)
   cuda.memcpy_htod(d_data,h_data)
   cuda.memcpy_htod(d_labels,h_labels)
   cuda.memcpy_htod(d_converged_array, h_converged_array)
-  cuda.memcpy_htod(d_converged, h_converged)
   
-  return d_data, d_labels, d_means, d_converged_array, d_converged
+  return d_data, d_labels, d_means, d_converged_array
 
 # define kernels
 def parallel_mod(kernel_fn, N, K, D):
@@ -155,20 +135,19 @@ def parallel_mod(kernel_fn, N, K, D):
   
 def pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit):
     
-    h_converged = np.zeros((1),dtype=np.intc)
     count = 0
     kernel1, kernel2 = parallel_mod(kernel_fn, N, K, D)
     h_data, h_labels, h_means, h_converged_array = prep_host(data, initial_labels, K, D)
 
     start = time.time()
-    d_data, d_labels, d_means, d_converged_array, d_converged = prep_device( h_data, h_labels, h_means, h_converged_array, h_converged)
+    d_data, d_labels, d_means, d_converged_array = prep_device( h_data, h_labels, h_means, h_converged_array)
 
-    while not h_converged:
+    while count<limit:
         kernel1(d_data, d_labels, d_means, block=(K,D,1), grid=(1,1,1))
-        kernel2(d_data, d_labels, d_means, d_converged_array, d_converged, block=(K,D,1), grid=(N,1,1))
-        cuda.memcpy_dtoh(h_converged, d_converged)
+        kernel2(d_data, d_labels, d_means, d_converged_array, block=(K,D,1), grid=(N,1,1))
+        cuda.memcpy_dtoh(h_converged_array, d_converged_array)
         count +=1
-        if count==limit: break
+        if np.sum(h_converged_array)==0: break
           
     cuda.memcpy_dtoh(h_means, d_means)
     cuda.memcpy_dtoh(h_labels, d_labels)
@@ -208,15 +187,30 @@ def hybrid(data, initial_labels, kernel_fn, N, K, D, limit):
   return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means), ai
 
 ######################################################
+### STOCK K-MEANS ###
+######################################################
+
+def stock(data, K, count):
+  
+    start = time.time()
+    stockmeans = KMeans(n_clusters=K,n_init=count)
+    stockmeans.fit(data)
+    runtime = time.time()-start
+    ai = 100 * count    
+    return stockmeans.cluster_centers_, stockmeans.labels_, count, runtime, stockmeans.inertia_, ai
+
+######################################################
 ### MAKE GRAPHS ###
 ######################################################
 
-def process_output(output, output_fn, ref_means):
+def process_output(output, output_fn, ref_means, ref_count):
   
   # print some stuff
   for o in output:
     print('\n-----'+o[0])
-    if o[0][0]!='s': print('Equals stock means: %s' % str(np.array_equal(ref_means,o[-1])))
+    if o[0][0]!='s': 
+      print('Equals reference (sequential) means: %s' % str(np.array_equal(ref_means,o[-1])))
+      print('Equals reference (sequential) count: %s' % str(np.array_equal(ref_count,o[2])))
     for p in o: print(p)
   
   # write to csv
