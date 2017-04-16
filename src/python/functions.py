@@ -43,19 +43,6 @@ def distortion(data, labels, means):
     return 100
 
 ######################################################
-### STOCK K-MEANS ###
-######################################################
-
-def stock(data, K, count):
-  
-    start = time.time()
-    stockmeans = KMeans(n_clusters=K,n_init=count)
-    stockmeans.fit(data)
-    runtime = time.time()-start
-    ai = 100 * count    
-    return stockmeans.cluster_centers_, stockmeans.labels_, count, runtime, stockmeans.inertia_, ai
-
-######################################################
 ### SEQUENTIAL K-MEANS ###
 ######################################################
 
@@ -200,6 +187,19 @@ def hybrid(data, initial_labels, kernel_fn, N, K, D, limit):
   return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means), ai
 
 ######################################################
+### STOCK K-MEANS ###
+######################################################
+
+def stock(data, K, ref_count):
+  
+    start = time.time()
+    stockmeans = KMeans(n_clusters=K,n_init=ref_count)
+    stockmeans.fit(data)
+    runtime = time.time()-start
+    ai = 100 * count    
+    return stockmeans.cluster_centers_, stockmeans.labels_, ref_count, runtime, stockmeans.inertia_, ai
+
+######################################################
 ### MAKE GRAPHS ###
 ######################################################
 
@@ -208,7 +208,9 @@ def process_output(output, output_fn, ref_means):
   # print some stuff
   for o in output:
     print('\n-----'+o[0])
-    if o[0][0]!='s': print('Equals sequential means: %s' % str(np.array_equal(ref_means,o[-1])))
+    if o[0][0]!='s': 
+      print('Equals reference (sequential) means: %s' % str(np.array_equal(ref_means,o[-1])))
+      print('Equals reference (sequential) count: %s' % str(np.array_equal(ref_count,o[2])))
     for p in o: print(p)
   
   # write to csv
