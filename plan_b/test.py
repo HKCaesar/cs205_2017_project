@@ -17,6 +17,6 @@ centers,labels,timing=mpi_kmeans(data=data, n_clusters=2)
 print("")
 print("mpi distortion: %f time: %f s" % (distortion(labels,centers,data),timing))
 
-#centers,labels,timing= kmeans_stock(data=data,n_clusters=2)
-#print("stock distortion: %f time: %f s" % (distortion(labels,centers,data),timing))
+centers,labels,timing= kmeans_stock(data=data,n_clusters=2)
+print("stock distortion: %f time: %f s" % (distortion(labels,centers,data),timing))
 
