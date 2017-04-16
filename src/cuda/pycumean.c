@@ -85,17 +85,18 @@ __global__ void reassign(double *data, int *labels, double *means, int *conv_arr
               min = s_sums[kk];
               min_idx = kk;
             }
-          printf("%d. min_idx: %d min: %f \n",kk, min_idx, min);
+          //printf("%d. min_idx: %d min: %f \n",kk, min_idx, min);
           }
             
-          printf("min_idx: %d \n", min_idx);
+          //printf("min_idx: %d \n", min_idx);
             
           if (labels[n] != min_idx) {
             conv_array[n] = 0;
             labels[n] = min_idx;
           }
           //printf("labels[n]: %f ", labels[n]);
-          printf("n: %d min_idx: %d wInBlockid: %d ", n, min_idx, wInBlockid);
+          //printf("n: %d min_idx: %d wInBlockid: %d ", n, min_idx, wInBlockid);
+          printf("means: %f ", means);
         }
     __syncthreads();
 
