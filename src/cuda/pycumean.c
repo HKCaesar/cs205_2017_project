@@ -45,7 +45,7 @@ __global__ void newMeans(double *data, int *labels, double *means)
 
 }
 
-__global__ void reassign(double *data, int *labels, double *means, int *conv_array, int * conv)
+__global__ void reassign(double *data, int *labels, double *means, int *converged)
 {
     __shared__ double s_squares[K*D];
     __shared__ double s_sums[K];
@@ -71,7 +71,7 @@ __global__ void reassign(double *data, int *labels, double *means, int *conv_arr
     
     // check for the minimum of the K sums using 1 lucky thread per block
         if (tid == 0) {
-          conv_array[n] = 0;
+          converged[n] = 0;
           min = s_sums[0];
           min_idx = 0;
           for(int kk = 1; kk < K; ++kk) {
@@ -81,7 +81,7 @@ __global__ void reassign(double *data, int *labels, double *means, int *conv_arr
             }
           }          
           if (labels[n] != min_idx) {
-            conv_array[n] = 1;
+            converged[n] = 1;
             labels[n] = min_idx;
           }
         }
