@@ -12,92 +12,6 @@
 #define  K $K
 #define  D $D
 
-//double sumSq (double *x, double *c, int N,  int D,  int n,  int k)
-//{ //calculates the squared distance
-//    
-//    double ss = 0;
-//    
-//    for(int d = 0; d < D; ++d)
-//    {
-//        ss += (x[d + D * n] - c[d + k * D]) * (x[d + D * n] - c[d + k * D]);
-//    }
-//    return ss;
-//}
-//
-//void selectCluster (double *x, double *c,  int *assign,  int N,  int K,  int D,  int * conv)
-//{//selects the cluster and calculates the distance (we may want to separate these actions)
-//    double min;
-//    int min_idx;
-//    int convCheck = 1;
-//    double dist;
-//
-//    
-//    for (int n = 0; n < N; ++n)
-//    {
-//        min = 1.0/0.0;
-//        min_idx = -1;
-//        
-//        for (int k = 0; k < K; ++k)
-//        {
-//            dist = sumSq (x, c, N, D, n, k);
-//            if (min > dist)
-//            {
-//                min = dist;
-//                min_idx = k;
-//            }
-//        }
-//        if(convCheck)
-//        {
-//            (*conv) = (min_idx == assign[n] ? 1 : 0);
-//            if(!conv) convCheck = 0;
-//        }
-//        
-//        assign[n] = min_idx;
-//        
-//    }
-//}
-
-
-//__global__  void kMeans (double *d_data, double *d_means,  int *d_clusters,  const int N,  const int K,  const int D)
-//{ //runs the k means algorithm
-//    __shared__  int conv = 0;
-//    __shared__  int clustersn[K];
-//    
-//    
-//    while(!conv)
-//    {
-//        newMeans(N, D, K, d_data, d_clusters, d_means, clustern);
-//        reassign(d_data, d_clusters, d_means,d_clustern,);
-//        
-//    }
-//}
-
-//__global__ void newmeans(double *data, int *clusters, double *means) {
-//  __shared__ int s_clustern[%(K)s];
-//  int tid = (%(D)s*threadIdx.x) + threadIdx.y;
-//  double l_sum = 0;
-//    
-//  // find the n per cluster with just one lucky thread
-//  if (tid==0)
-//  {
-//    for(int k=0; k < (%(K)s); ++k) s_clustern[k] = 0;
-//    for(int n=0; n < (%(N)s); ++n) s_clustern[clusters[n]]++;
-//   }
-//   __syncthreads();
-//   
-//   // sum stuff  
-//   for(int n=0; n < (%(N)s); ++n)
-//   {
-//     if(clusters[n]==threadIdx.x)
-//     {
-//       l_sum += data[(%(D)s*n)+threadIdx.y];
-//     }
-//   }
-//  
-//   // divide local sum by the number in that cluster
-//   means[tid] = l_sum/s_clustern[threadIdx.x];
-//  }
-
 __global__ void newMeans(double *data, int *labels, double *means)
 {
     __shared__ int s_clustern[K];
@@ -156,6 +70,10 @@ __global__ void reassign(double *data, double *labels, double *means, int *conv_
           }
         }
     __syncthreads();
+    
+    for(int ii=0;ii<k;ii++){
+        printf(s_sums[ii]); printf(" ");
+    }
     
     // check for the minimum of the K sums using 1 lucky thread per block
         if (wInBlockid == 0) {
