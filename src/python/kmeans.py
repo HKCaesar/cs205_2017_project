@@ -79,8 +79,8 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ### RUN STOCK K-MEANS ####
   ######################################################
 
-  means, labels, distortion, runtime, ai = stock(data, K, count)
-  output.append(['stock', runtime, '', distortion, ai, N, D, K, means])
+  means, labels, count, runtime, distortion, ai = stock(data, K, ref_count)
+  output.append(['stock', runtime, count, distortion, ai, N, D, K, means])
 
   ######################################################
   ### MAKE GRAPHS & WRITE OUTPUT TO CSV ####
