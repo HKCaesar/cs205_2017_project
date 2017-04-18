@@ -50,10 +50,9 @@ In an ideal hardware configuration, we would expect a host CPU to control <i>c</
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/arch-ideal.png">
 
-1. First, the host CPU (rank 0 in the MPI framework) would delegate a user-specified number of randomly-generated inital labels amongst <i>c</i> CPUs in the COMM_WORLD. This addresses one of the main challenges of K-means, namely that the method returns clusters based on local minima so it must be repeated a number of times with different inital clusters to ensure convergence on the global minima. 
-2. Second, each CPU would break the data into <i>g</i> subsets for the GPUs to switfly execute the most arithmatically intense aspect of K-means--the process of calculating means and reassigning labels until convergence is achieved. 
-3. Third, each of the CPUs would re-assemble the results of the subsets into the final means, labels, and distortion score. 
-4. Fourth and finally, the host CPU would adjudicate between the distortion scores of each K-means implementation and choose the clusters associated with the lowest score (i.e. the best performing version). 
+1. First, the host CPU (rank 0 in the MPI framework) would partition the data into <i>c</i> subsets.  
+2. Second, each CPU would communicate with its <i>g</i> GPUs to handle the arithmetically intense aspect of the K-means calculations, i.e. the computation of distance and reassigning of labels. 
+3. Third, the host CPU (rank 0 in the MPI framework) would re-assemble the results of the subsets into the final means, labels, and distortion score. 
 
 However, due to the limitations of Odyssey's hardware configuration, we were not able to implement our ideal parallel architecture described above. Instead.... 
 
