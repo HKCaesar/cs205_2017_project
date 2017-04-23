@@ -27,6 +27,7 @@ def compute_centers(labels, centers, data):
     print(centers)
     for k in range(K):
         centers[k,:] = np.sum(data[labels==k],axis=0)
+    print(centers)
     return centers
 
 def reassign_labels(labels,centers,data):
@@ -45,18 +46,15 @@ def mpikmeans(data, initial_labels, K, D, limit):
     start = time.time()
     centers = np.empty((K, D))
 
+    # break up labels and data into roughly equal groups for each CPU in MPI.COMM_WORlD
     allocations,labels = partition(initial_labels.copy(),size)
     indices = allotment_to_indices(allocations)
     indices,labels = comm.scatter(zip(indices, labels), root=0)
-    print(labels)
-    print(indices)
-
     data = data[indices[0]:indices[1]]
 
     for k in range(limit):
 
         compute_centers(labels,centers,data)
-        print(centers)
         all_centers = comm.gather(centers, root=0)
         print(all_centers)
 
