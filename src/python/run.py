@@ -1,7 +1,11 @@
 from functions import *
+from sequentialK import *
+from mpiK import *
+from cudaK import *
+from hybridK import *
+
 import itertools
 from mpi_kmeans import mpi_kmeans
-import pandas as pd
 
 ######################################################
 ### INFO ####
