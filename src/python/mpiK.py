@@ -37,8 +37,6 @@ def reassign_labels(labels,centers,data):
 
 def mpikmeans(data, initial_labels, K, D, limit, size, rank):
 
-
-
     start = time.time()
     centers = np.empty((K, D))
     count = 0
