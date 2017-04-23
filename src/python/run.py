@@ -91,7 +91,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
   centers, labels, count, runtime, distortion, ai = stockkmeans(data, K, ref_count)
   output.append(['stock', runtime, count, distortion, ai, N, D, K, centers])
-  print_output(output, ref_centers, ref_count)
+  print_output(output[-1], ref_centers, ref_count)
 
   ######################################################
   ### WRITE OUTPUT TO CSV ####
