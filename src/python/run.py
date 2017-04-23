@@ -90,7 +90,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
     if rank == 0:
         output.append(['hybrid',runtime, count, distortion, ai, N, D, K, centers])
         print_output(output[-1], ref_centers, ref_count)
-     comm.Barrier()
+    comm.Barrier()
 
   ######################################################
   ### WRITE OUTPUT TO CSV ONCE PER LOOP ####
