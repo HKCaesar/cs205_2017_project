@@ -29,7 +29,7 @@ kernel_fn = "../cuda/pycumean.c"
 output_fn = "../../analysis/output.csv"
 
 erase=True
-if erase=True: blank_output_file(output_fn)
+if erase==True: blank_output_file(output_fn)
 
 limit = 10
     
