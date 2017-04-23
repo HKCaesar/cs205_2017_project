@@ -41,6 +41,7 @@ def mpikmeans(data, initial_labels, K, D, limit, comm):
     rank = comm.Get_rank()
     start = time.time()
     count = 0
+    runtime = 0
     centers = np.empty((K, D))
 
     # break up labels and data into roughly equal groups for each CPU in MPI.COMM_WORlD
@@ -78,7 +79,6 @@ def mpikmeans(data, initial_labels, K, D, limit, comm):
     if rank==0:
         labels = np.array(list(chain(*labels)))
         runtime = time.time() - start
-    #else: runtime=None
     labels = comm.bcast(labels, root=0)
     count = comm.bcast(count, root=0)
     runtime = comm.bcast(runtime, root=0)
