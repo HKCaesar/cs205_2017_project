@@ -46,8 +46,9 @@ def mpikmeans(data, initial_labels, N, K, D, limit, comm):
     print(allocations)
     indices = allotment_to_indices(allocations)
     print(indices)
-    #indices,labels = comm.scatter(zip(indices, labels), root=0)
-    data_chunk = data[indices[0]:indices[1]]
+    index = comm.scatter(indicies, root=0)
+    data_chunk = data[index[0]:index[1]]
+    labels_chunk = labels[index[0]:index[1]]
 
     for k in range(limit):
 
