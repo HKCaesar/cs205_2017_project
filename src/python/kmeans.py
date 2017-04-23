@@ -1,6 +1,7 @@
 from functions import *
 import itertools
 from mpi_kmeans import mpi_kmeans
+import pandas as pd
 
 ######################################################
 ### INFO ####
