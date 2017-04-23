@@ -44,63 +44,51 @@ size = comm.Get_size()
 
 for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
-  if rank == 0:
-
-    ######################################################
+    ###################################
     ### PREP DATA & INITIAL LABELS ####
-    ######################################################
+    output = []
+    data, initial_labels = prep_data(data_fn, d_list, N, D, K)
 
-      output = []
-      data, initial_labels = prep_data(data_fn, d_list, N, D, K)
+    ############################################################################################################
+    if rank == 0:
 
-    ######################################################
-    ### RUN SEQUENTIAL K-MEANS ####
-    ######################################################
+        ###############################
+        ### RUN SEQUENTIAL K-MEANS ####
+        centers, labels, count, runtime, distortion, ai = seqkmeans(data, initial_labels, N, D, K, limit)
+        output.append(['sequential',runtime, count, distortion, ai, N, D, K, centers])
+        ref_centers=centers
+        ref_count=count
+        print_output(output[-1], ref_centers, ref_count)
 
-      centers, labels, count, runtime, distortion, ai = seqkmeans(data, initial_labels, N, D, K, limit)
-      output.append(['sequential',runtime, count, distortion, ai, N, D, K, centers])
-      ref_centers=centers
-      ref_count=count
-      print_output(output[-1], ref_centers, ref_count)
+        ##########################
+        ### RUN STOCK K-MEANS ####
+        centers, labels, count, runtime, distortion, ai = stockkmeans(data, K, ref_count)
+        output.append(['stock', runtime, count, distortion, ai, N, D, K, centers])
+        print_output(output[-1], ref_centers, ref_count)
 
-    ######################################################
-    ### RUN pyCUDA K-MEANS ####
-    ######################################################
+        ###########################
+        ### RUN pyCUDA K-MEANS ####
+        centers, labels, count, runtime, distortion, ai = cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit)
+        output.append(['pyCUDA', runtime, count, distortion, ai, N, D, K, centers])
+        print_output(output[-1], ref_centers, ref_count)
 
-      centers, labels, count, runtime, distortion, ai = cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit)
-      output.append(['pyCUDA', runtime, count, distortion, ai, N, D, K, centers])
-      print_output(output[-1], ref_centers, ref_count)
+    ###########################
+    ### RUN mpi4py K-MEANS ####
+    centers, labels, count, runtime, distortion, ai = mpikmeans(data, initial_labels, K, D, limit, rank, size)
+    if rank == 0:
+        output.append(['mpi4py',runtime, count, distortion, ai, N, D, K, centers])
+        print_output(output[-1], ref_centers, ref_count)
 
-  ######################################################
-  ### RUN mpi4py K-MEANS ####
-  ######################################################
-
-  #centers, labels, count, runtime, distortion, ai = mpikmeans(data, initial_labels, K, D, limit, rank, size)
-  #output.append(['mpi4py',runtime, count, distortion, ai, N, D, K, centers])
-  #print_output(output[-1], ref_centers, ref_count)
-
-  ######################################################
-  ### RUN hybrid K-MEANS ####
-  ######################################################
-
-  #centers, labels, count, runtime, distortion, ai = hybrid(data, initial_labels, kernel_fn, N, K, D, limit)
-  #output.append(['hybrid',runtime, count, distortion, ai, N, D, K, centers])
-  #print_output(output[-1], ref_centers, ref_count)
-
-  ######################################################
-  ### RUN STOCK K-MEANS ####
-  ######################################################
-
-  if rank == 0:
-    centers, labels, count, runtime, distortion, ai = stockkmeans(data, K, ref_count)
-    output.append(['stock', runtime, count, distortion, ai, N, D, K, centers])
-    print_output(output[-1], ref_centers, ref_count)
+    ###########################
+    ### RUN hybrid K-MEANS ####
+    #centers, labels, count, runtime, distortion, ai = hybrid(data, initial_labels, kernel_fn, N, K, D, limit)
+    if rank == 0:
+        #output.append(['hybrid',runtime, count, distortion, ai, N, D, K, centers])
+        #print_output(output[-1], ref_centers, ref_count)
 
   ######################################################
-  ### WRITE OUTPUT TO CSV ####
-  ######################################################
-
-  if rank ==0:
-    write_output(output, output_fn)
-  else:
-    sys.exit(0)
+  ### WRITE OUTPUT TO CSV & CLOSE MPI ENVIRONMENT ####
+    if rank ==0:
+        write_output(output, output_fn)
+    else:
+        sys.exit(0)
