@@ -33,7 +33,7 @@ def reassign_labels(labels,centers,data):
     labels[:] = np.apply_along_axis(minimize,1,data)
     return np.array_equal(labels,old_labels)
 
-def hybridkmeans(data, initial_labels, kernel_fn, K, D, limit, comm):
+def mpikmeans(data, initial_labels, K, D, limit, comm):
 
     size = comm.Get_size()
     rank = comm.Get_rank()
@@ -82,4 +82,3 @@ def hybridkmeans(data, initial_labels, kernel_fn, K, D, limit, comm):
     runtime = comm.bcast(runtime, root=0)
 
     return centers, labels, count, runtime, distortion, ai
-
