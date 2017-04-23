@@ -35,11 +35,12 @@ def reassign_labels(labels,centers,data):
     labels[:] = np.apply_along_axis(minimize,1,data)
     return np.array_equal(labels,old_labels)
 
-def mpikmeans(data, initial_labels, K, D, limit, size, rank):
+def mpikmeans(data, initial_labels, K, D, limit, size, rank, comm):
 
-    start = time.time()
+    if rank == 0:
+        start = time.time()
+        count = 0
     centers = np.empty((K, D))
-    count = 0
 
     # break up labels and data into roughly equal groups for each CPU in MPI.COMM_WORlD
     allocations,labels = partition(initial_labels.copy(),size)
@@ -75,7 +76,10 @@ def mpikmeans(data, initial_labels, K, D, limit, size, rank):
     if rank==0:
         labels = np.array(list(chain(*labels)))
         runtime = time.time()-start
-        ai = 600 * count
-        distortion = 100
-        return centers, labels, count, runtime, distortion, ai
+    labels = comm.bcast(labels, root=0)
+    distortion = comm.bcast(100, root=0)
+    ai = comm.bcast(600*count, root=0)
+    runtime = comm.bcast(runtime, root=0)
+
+    return centers, labels, count, runtime, distortion, ai
 
