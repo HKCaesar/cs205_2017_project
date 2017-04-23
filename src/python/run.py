@@ -74,28 +74,29 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
         output.append(['pyCUDA', runtime, count, distortion, ai, N, D, K, centers])
         print_output(output[-1], ref_centers, ref_count)
 
+    comm.Barrier()
+
     ###########################
     ### RUN mpi4py K-MEANS ####
-    print(data[:10])
-    print(initial_labels[:10])
     centers, labels, count, runtime, distortion, ai = mpikmeans(data, initial_labels, K, D, limit, comm)
     if rank == 0:
         output.append(['mpi4py',runtime, count, distortion, ai, N, D, K, centers])
         print_output(output[-1], ref_centers, ref_count)
+    comm.Barrier()
 
     ###########################
     ### RUN hybrid K-MEANS ####
-    print(data[:10])
-    print(initial_labels[:10])
     centers, labels, count, runtime, distortion, ai = hybridkmeans(data, initial_labels, kernel_fn, K, D, limit, comm)
     if rank == 0:
         output.append(['hybrid',runtime, count, distortion, ai, N, D, K, centers])
         print_output(output[-1], ref_centers, ref_count)
+     comm.Barrier()
 
   ######################################################
   ### WRITE OUTPUT TO CSV ONCE PER LOOP ####
     if rank ==0:
         write_output(output, output_fn)
+    comm.Barrier()
 
 if rank != 0:
     sys.exit(0)
