@@ -8,10 +8,11 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, comm):
 
     size = comm.Get_size()
     rank = comm.Get_rank()
-    start = time.time()
     count = 0
     runtime = 0
     centers = np.empty((K, D))
+    kernel1, kernel2 = parallel_mod(kernel_fn, N, K, D)
+    start = time.time()
 
     # break up labels and data into roughly equal groups for each CPU in MPI.COMM_WORlD
     allocations = partition(N, size)
@@ -21,7 +22,7 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, comm):
     labels_chunk = initial_labels[index[0]:index[1]]
 
     # prep CUDA stuff
-    kernel1, kernel2 = parallel_mod(kernel_fn, N, K, D)
+
     h_data, h_labels, h_centers, h_converged_array = prep_host(data_chunk, labels_chunk, K, D)
     d_data, d_labels, d_centers, d_converged_array = prep_device(h_data, h_labels, h_centers, h_converged_array)
 
