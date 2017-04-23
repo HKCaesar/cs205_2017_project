@@ -12,5 +12,6 @@ def hybrid(data, initial_labels, kernel_fn, N, K, D, limit):
     h_labels = np.ascontiguousarray(np.empty(initial_labels.shape, dtype=np.intc, order='C'))
     runtime = time.time() - start
     ai = 500 * count
+    distortion = 100
 
-    return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means), ai
+    return h_means, h_labels, count, runtime, distortion, ai
