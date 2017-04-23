@@ -6,7 +6,7 @@ import time
 ### SEQUENTIAL K-MEANS ###
 ######################################################
 
-def sequential(data, initial_labels, N, D, K, limit):
+def seqkmeans(data, initial_labels, N, D, K, limit):
     centers = np.empty((K, D))
     labels = initial_labels.copy()
     clustern = np.empty(K)
@@ -61,7 +61,7 @@ def sequential(data, initial_labels, N, D, K, limit):
 ### STOCK K-MEANS ###
 ######################################################
 
-def stock(data, K, count):
+def stockkmeans(data, K, count):
     start = time.time()
     stockmeans = KMeans(n_clusters=K, n_init=count)
     stockmeans.fit(data)

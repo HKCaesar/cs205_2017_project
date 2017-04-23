@@ -59,7 +59,7 @@ def reassign_labels(labels,centers,data):
 
     return np.array_equal(labels,old_labels)
 
-def mpi4pykcenters(data, initial_labels, N, K, D, limit):
+def mpikmeans(data, initial_labels, N, K, D, limit):
 
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()

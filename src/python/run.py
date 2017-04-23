@@ -51,7 +51,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ### RUN SEQUENTIAL K-MEANS ####
   ######################################################
 
-  centers, labels, count, runtime, distortion, ai = sequential(data, initial_labels, N, D, K, limit)
+  centers, labels, count, runtime, distortion, ai = seqkmeans(data, initial_labels, N, D, K, limit)
   output.append(['sequential',runtime, count, distortion, ai, N, D, K, centers])
   ref_centers=centers
   ref_count=count
@@ -61,7 +61,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ### RUN pyCUDA K-MEANS ####
   ######################################################
 
-  centers, labels, count, runtime, distortion, ai = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
+  centers, labels, count, runtime, distortion, ai = cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit)
   output.append(['pyCUDA', runtime, count, distortion, ai, N, D, K, centers])
   print_output(output[-1], ref_centers, ref_count)
 
@@ -70,7 +70,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ######################################################
 
 
-  centers, labels, runtime = mpi4pykmeans(data=data, n_clusters=K, max_iter=limit)
+  centers, labels, runtime = mpikmeans(data=data, n_clusters=K, max_iter=limit)
   distortion = 0
   ai = 0
   count = 0
@@ -89,7 +89,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ### RUN STOCK K-MEANS ####
   ######################################################
 
-  centers, labels, count, runtime, distortion, ai = stock(data, K, ref_count)
+  centers, labels, count, runtime, distortion, ai = stockkmeans(data, K, ref_count)
   output.append(['stock', runtime, count, distortion, ai, N, D, K, centers])
   print_output(output, ref_centers, ref_count)
 

@@ -41,7 +41,7 @@ def parallel_mod(kernel_fn, N, K, D):
     return kernel1, kernel2
 
 # run pyCUDA
-def pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit):
+def cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit):
     count = 0
     kernel1, kernel2 = parallel_mod(kernel_fn, N, K, D)
     h_data, h_labels, h_centers, h_converged_array = prep_host(data, initial_labels, K, D)
