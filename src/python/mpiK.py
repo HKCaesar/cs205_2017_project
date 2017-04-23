@@ -48,7 +48,9 @@ def mpikmeans(data, initial_labels, N, K, D, limit, comm):
     print(indices)
     index = comm.scatter(indices, root=0)
     data_chunk = data[index[0]:index[1]]
-    labels_chunk = labels[index[0]:index[1]]
+    labels_chunk = initial_labels[index[0]:index[1]]
+    print(data_chunk.shape)
+    print(labels_chunk.shape)
 
     for k in range(limit):
 

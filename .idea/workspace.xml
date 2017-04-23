@@ -39,8 +39,8 @@
       <file leaf-file-name="mpiK.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/python/mpiK.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="545">
-              <caret line="47" column="18" lean-forward="true" selection-start-line="47" selection-start-column="18" selection-end-line="47" selection-end-column="18" />
+            <state relative-caret-position="635">
+              <caret line="53" column="0" lean-forward="true" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -397,13 +397,6 @@
       <option name="presentableId" value="Default" />
       <updated>1492313972965</updated>
     </task>
-    <task id="LOCAL-00030" summary="testing">
-      <created>1492975521029</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1492975521029</updated>
-    </task>
     <task id="LOCAL-00031" summary="testing">
       <created>1492975600635</created>
       <option name="number" value="00031" />
@@ -740,7 +733,14 @@
       <option name="project" value="LOCAL" />
       <updated>1492987898784</updated>
     </task>
-    <option name="localTasksCounter" value="79" />
+    <task id="LOCAL-00079" summary="testing">
+      <created>1492987962454</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1492987962454</updated>
+    </task>
+    <option name="localTasksCounter" value="80" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -943,8 +943,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/python/mpiK.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="545">
-          <caret line="47" column="18" lean-forward="true" selection-start-line="47" selection-start-column="18" selection-end-line="47" selection-end-column="18" />
+        <state relative-caret-position="635">
+          <caret line="53" column="0" lean-forward="true" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
