@@ -20,17 +20,17 @@ def partition(sequence, n_chunks):
     indexes = allotment_to_indices(allocations)
     return allocations, [sequence[index[0]:index[1]]  for index in indexes]
 
-def compute_centers(labels, centers, data):
+def compute_centers(labels, centers, data_chunk):
     K,D=centers.shape
     for k in range(K):
-        centers[k,:] = np.sum(data[labels==k],axis=0)
+        centers[k,:] = np.sum(data_chunk[labels==k],axis=0)
     return centers
 
-def reassign_labels(labels,centers,data):
+def reassign_labels(labels,centers,data_chunk):
     old_labels = labels.copy()
     def minimize(x):
         return np.argmin(np.sum((centers-x)**2,axis=1)) #finds closest cluster
-    labels[:] = np.apply_along_axis(minimize,1,data)
+    labels[:] = np.apply_along_axis(minimize,1,data_chunk)
     return np.array_equal(labels,old_labels)
 
 def mpikmeans(data, initial_labels, K, D, limit, comm):
@@ -46,11 +46,11 @@ def mpikmeans(data, initial_labels, K, D, limit, comm):
     allocations,labels = partition(initial_labels.copy(),size)
     indices = allotment_to_indices(allocations)
     indices,labels = comm.scatter(zip(indices, labels), root=0)
-    data = data[indices[0]:indices[1]]
+    data_chunk = data[indices[0]:indices[1]]
 
     for k in range(limit):
 
-        compute_centers(labels,centers,data)
+        compute_centers(labels,centers,data_chunk)
         centers = comm.gather(centers, root=0)
         collected_labels = comm.gather(labels, root=0)
 
@@ -66,7 +66,7 @@ def mpikmeans(data, initial_labels, K, D, limit, comm):
             centers = temp_centers
 
         centers = comm.bcast(centers, root=0)
-        converged = reassign_labels(labels,centers,data)
+        converged = reassign_labels(labels,centers,data_chunk)
 
         converged = comm.allgather(converged)
         converged = np.all(converged)
