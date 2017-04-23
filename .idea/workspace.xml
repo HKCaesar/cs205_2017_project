@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f0b4ce69-215b-4038-9d71-02df3f7b04c8" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/python/hybridK.py" afterPath="$PROJECT_DIR$/src/python/hybridK.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/python/cudaK.py" afterPath="$PROJECT_DIR$/src/python/cudaK.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/python/run.py" afterPath="$PROJECT_DIR$/src/python/run.py" />
     </list>
     <ignored path="cs205_2017_project.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -24,10 +25,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="hybridK.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="hybridK.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/python/hybridK.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="630">
+            <state relative-caret-position="531">
               <caret line="42" column="37" lean-forward="true" selection-start-line="42" selection-start-column="37" selection-end-line="42" selection-end-column="37" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -39,9 +40,21 @@
       <file leaf-file-name="cudaK.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/python/cudaK.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="720">
-              <caret line="65" column="32" lean-forward="false" selection-start-line="65" selection-start-column="32" selection-end-line="65" selection-end-column="62" />
+            <state relative-caret-position="486">
+              <caret line="51" column="25" lean-forward="false" selection-start-line="51" selection-start-column="25" selection-end-line="51" selection-end-column="25" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="run.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/python/run.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="51" column="30" lean-forward="false" selection-start-line="51" selection-start-column="30" selection-end-line="51" selection-end-column="30" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -93,10 +106,10 @@
         <option value="$PROJECT_DIR$/src/python/functions.py" />
         <option value="$PROJECT_DIR$/src/python/pycuda.c" />
         <option value="$PROJECT_DIR$/src/python/sequentialK.py" />
-        <option value="$PROJECT_DIR$/src/python/cudaK.py" />
         <option value="$PROJECT_DIR$/src/python/mpiK.py" />
-        <option value="$PROJECT_DIR$/src/python/run.py" />
         <option value="$PROJECT_DIR$/src/python/hybridK.py" />
+        <option value="$PROJECT_DIR$/src/python/cudaK.py" />
+        <option value="$PROJECT_DIR$/src/python/run.py" />
       </list>
     </option>
   </component>
@@ -370,13 +383,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1492313972965</updated>
-    </task>
-    <task id="LOCAL-00012" summary="testing">
-      <created>1492969678377</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1492969678377</updated>
     </task>
     <task id="LOCAL-00013" summary="testing">
       <created>1492969885451</created>
@@ -714,7 +720,14 @@
       <option name="project" value="LOCAL" />
       <updated>1492983289665</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL-00061" summary="testing">
+      <created>1492983380678</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1492983380678</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -897,30 +910,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/python/run.py">
+    <entry file="file://$PROJECT_DIR$/src/python/hybridK.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1245">
-          <caret line="83" column="0" lean-forward="false" selection-start-line="83" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
+        <state relative-caret-position="531">
+          <caret line="42" column="37" lean-forward="true" selection-start-line="42" selection-start-column="37" selection-end-line="42" selection-end-column="37" />
           <folding>
-            <element signature="e#0#23#0" expanded="true" />
+            <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/python/cudaK.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="65" column="32" lean-forward="false" selection-start-line="65" selection-start-column="32" selection-end-line="65" selection-end-column="62" />
+        <state relative-caret-position="486">
+          <caret line="51" column="25" lean-forward="false" selection-start-line="51" selection-start-column="25" selection-end-line="51" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/python/hybridK.py">
+    <entry file="file://$PROJECT_DIR$/src/python/run.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="42" column="37" lean-forward="true" selection-start-line="42" selection-start-column="37" selection-end-line="42" selection-end-column="37" />
+        <state relative-caret-position="120">
+          <caret line="51" column="30" lean-forward="false" selection-start-line="51" selection-start-column="30" selection-end-line="51" selection-end-column="30" />
           <folding>
-            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
