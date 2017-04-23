@@ -55,25 +55,23 @@ def mpikmeans(data, initial_labels, K, D, limit):
 
         compute_centers(labels,centers,data)
         centers = comm.gather(centers, root=0)
-        print(centers)
-        if rank==0:
-            temp = np.empty((K, D))
-            for center in centers:
-                temp+=center
-            centers = temp
-            print(centers)
-
         collected_labels = comm.gather(labels, root=0)
-        if rank == 0:
+
+        if rank==0:
+            temp_centers = np.empty((K, D))
+            for center in centers:
+                temp_centers+=center
             collected_labels = np.array(list(chain(*collected_labels)))
             for j in range(K):
                 total = np.sum(collected_labels==j)
-                centers[j,:] = centers[j,:]/total
+                temp_centers[j,:] = temp_centers[j,:]/total
 
-        centers = comm.bcast(centers, root=0)
+        centers = comm.bcast(temp_centers, root=0)
         converged = reassign_labels(labels,centers,data)
         converged = comm.allgather(converged)
+        print(converged)
         converged = np.all(converged)
+        print(converged)
 
         if converged: break
 
