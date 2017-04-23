@@ -82,8 +82,8 @@ def mpikmeans(data, initial_labels, K, D, limit, comm):
     labels = comm.bcast(labels, root=0)
     count = comm.bcast(count, root=0)
     runtime = comm.bcast(runtime, root=0)
-    distortion = comm.bcast(100, root=0)
-    ai = comm.bcast(600*count, root=0)
+    distortion = 100
+    ai = 600*count
 
     return centers, labels, count, runtime, distortion, ai
 
