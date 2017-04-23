@@ -59,7 +59,7 @@ def reassign_labels(labels,centers,data):
 
     return np.array_equal(labels,old_labels)
 
-def mpikmeans(data, initial_labels, N, K, D, limit):
+def mpikmeans(data, initial_labels, K, D, limit):
 
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
@@ -68,7 +68,6 @@ def mpikmeans(data, initial_labels, N, K, D, limit):
     start = time.time()
     centers = np.empty((K, D))
     labels = initial_labels.copy()
-    clustern = np.empty(K)
 
     allocations,labels = partition(labels,size)
     indices = allotment_to_indices(allocations)

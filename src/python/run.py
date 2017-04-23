@@ -70,7 +70,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ######################################################
 
 
-  centers, labels, runtime = mpikmeans(data=data, n_clusters=K, max_iter=limit)
+  centers, labels, runtime = mpikmeans(data, initial_labels, K, D, limit)
   distortion = 0
   ai = 0
   count = 0
