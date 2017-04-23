@@ -26,12 +26,10 @@ data_fn = "../../data/reviewer-data.csv"
 d_list = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
 
 kernel_fn = "../cuda/pycumean.c"
-
 output_fn = "../../analysis/output.csv"
-with open(output_fn, 'w') as f:
-    writer = csv.writer(f, delimiter = ',')
-    writer.writerow(['algorithm','time','convergence','distortion', 'arithmetic intensity', 'n','d','k'])
-    f.close()
+
+erase=True
+if erase=True: blank_output_file(output_fn)
 
 limit = 10
     
@@ -82,7 +80,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
   means, labels, count, runtime, distortion, ai = hybrid(data, initial_labels, kernel_fn, N, K, D, limit)
   output.append(['hybrid',runtime, count, distortion, ai, N, D, K, means])
-    
+
   ######################################################
   ### RUN STOCK K-MEANS ####
   ######################################################
@@ -94,4 +92,5 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ### MAKE GRAPHS & WRITE OUTPUT TO CSV ####
   ######################################################
 
-  process_output(output, output_fn, ref_means, ref_count)
+  print_output(output, output_fn, ref_means, ref_count)
+  write_output(output, output_fn)

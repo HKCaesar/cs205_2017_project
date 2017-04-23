@@ -4,6 +4,7 @@ import string
 
 import pycuda.driver as cuda
 from pycuda.compiler import SourceModule
+import pycuda.autoinit
 
 ######################################################
 ### pyCUDA K-MEANS  ####
