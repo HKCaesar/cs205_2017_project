@@ -24,7 +24,6 @@ def partition(sequence, n_chunks):
 
 def compute_centers(labels, centers, data):
     K,D=centers.shape
-    print(centers)
     for k in range(K):
         centers[k,:] = np.sum(data[labels==k],axis=0)
     return centers
@@ -71,7 +70,6 @@ def mpikmeans(data, initial_labels, K, D, limit):
 
         centers = comm.bcast(centers, root=0)
         converged = reassign_labels(labels,centers,data)
-
 
         converged = comm.allgather(converged)
         converged = np.all(converged)
