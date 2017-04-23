@@ -18,7 +18,7 @@ def partition(sequence, n_chunks):
     np.random.shuffle(left_over)
     allocations = left_over+allocations
     indexes = allotment_to_indices(allocations)
-    return allocations, [sequence[index[0]:index[1]]  for index in indexes]
+    return allocations, [sequence[index[0]:index[1]] for index in indexes]
 
 def compute_centers(labels, centers, data_chunk):
     K,D=centers.shape
@@ -47,6 +47,10 @@ def mpikmeans(data, initial_labels, K, D, limit, comm):
     indices = allotment_to_indices(allocations)
     indices,labels = comm.scatter(zip(indices, labels), root=0)
     data_chunk = data[indices[0]:indices[1]]
+    print(indices)
+    print(labels)
+    print(len(labels))
+    print(len(data_chunk))
 
     for k in range(limit):
 
