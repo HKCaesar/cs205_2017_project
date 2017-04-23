@@ -82,5 +82,3 @@ def mpikmeans(data, initial_labels, K, D, limit):
         ai = 600 * count
         distortion = 100
         return centers, labels, count, runtime, distortion, ai
-    else:
-        sys.exit(0)
