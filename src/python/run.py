@@ -5,7 +5,6 @@ from cudaK import *
 from hybridK import *
 
 import itertools
-from mpi_kmeans import mpi_kmeans
 
 ######################################################
 ### INFO ####
