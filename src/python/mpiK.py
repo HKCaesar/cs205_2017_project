@@ -66,7 +66,7 @@ def reassign_labels(labels,centers,data):
 
     return np.array_equal(labels,old_labels)
 
-def mpi_kmeans(data, n_clusters, max_iter):
+def mpi4pykmeans(data, n_clusters, max_iter):
 
     all_data = data
 

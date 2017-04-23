@@ -70,7 +70,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ######################################################
 
 
-  means, labels, runtime = mpi4py(data=data, n_clusters=K, max_iter=limit)
+  means, labels, runtime = mpi4pykmeans(data=data, n_clusters=K, max_iter=limit)
   distortion = 0
   ai = 0
   count = 0
