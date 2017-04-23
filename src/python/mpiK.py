@@ -7,7 +7,7 @@ def allotment_to_indices(allotments):
     indices=np.append(indices,[0])
     indices=np.sort(indices)
     indices=np.column_stack([indices[:-1],indices[1:]])
-    return(indices)
+    return indices
 
 def partition(sequence, n_chunks):
     N = len(sequence)
@@ -17,8 +17,7 @@ def partition(sequence, n_chunks):
     left_over=([1]*left_over)+([0]*(n_chunks-left_over))
     np.random.shuffle(left_over)
     allocations = left_over+allocations
-    indexes = allotment_to_indices(allocations)
-    return allocations, [sequence[index[0]:index[1]] for index in indexes]
+    return allocations
 
 def compute_centers(labels, centers, data_chunk):
     K,D=centers.shape
@@ -44,11 +43,12 @@ def mpikmeans(data, initial_labels, K, D, limit, comm):
 
     # break up labels and data into roughly equal groups for each CPU in MPI.COMM_WORlD
     allocations,labels = partition(initial_labels.copy(),size)
-    print(allocations)
-    print(labels)
     indices = allotment_to_indices(allocations)
-    indices,labels = comm.scatter(zip(indices, labels), root=0)
-    data_chunk = data[indices[0]:indices[1]]
+    print(allocations)
+    print(indices)
+    index= comm.scatter(indices, root=0)
+    data_chunk = data[index[0]:index[1]]
+    labels_chunk = labels[index[0]:index[1]]
 
     for k in range(limit):
 
