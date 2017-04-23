@@ -2,37 +2,6 @@ import time
 import numpy as np
 from itertools import chain
 
-def allotment_to_indices(allotments):
-    indices = np.cumsum(allotments)
-    indices=np.append(indices,[0])
-    indices=np.sort(indices)
-    indices=np.column_stack([indices[:-1],indices[1:]])
-    return(indices)
-
-def partition(sequence, n_chunks):
-    N = len(sequence)
-    chunk_size = int(N/n_chunks)
-    left_over = N-n_chunks*chunk_size
-    allocations = np.array([chunk_size]*n_chunks)
-    left_over=([1]*left_over)+([0]*(n_chunks-left_over))
-    np.random.shuffle(left_over)
-    allocations = left_over+allocations
-    indexes = allotment_to_indices(allocations)
-    return allocations, [sequence[index[0]:index[1]]  for index in indexes]
-
-def compute_centers(labels, centers, data):
-    K,D=centers.shape
-    for k in range(K):
-        centers[k,:] = np.sum(data[labels==k],axis=0)
-    return centers
-
-def reassign_labels(labels,centers,data):
-    old_labels = labels.copy()
-    def minimize(x):
-        return np.argmin(np.sum((centers-x)**2,axis=1)) #finds closest cluster
-    labels[:] = np.apply_along_axis(minimize,1,data)
-    return np.array_equal(labels,old_labels)
-
 def hybridkmeans(data, initial_labels, kernel_fn, K, D, limit, comm):
 
     size = comm.Get_size()
