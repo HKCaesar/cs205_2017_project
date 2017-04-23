@@ -33,24 +33,17 @@ def partition(sequence, n_chunks):
     left_over=([1]*left_over)+([0]*(n_chunks-left_over))
     np.random.shuffle(left_over)
     allocations = left_over+allocations
-
     indexes = allotment_to_indices(allocations)
 
     return allocations, [sequence[index[0]:index[1]]  for index in indexes]
 
-def generate_initial_assignment(N,K):
-    W = np.empty(N,dtype=np.int)
-    for k in range(N): W[k] = k%K
-    np.random.shuffle(W)
-    return W
-
-def compute_means(labels, centers, data, sum_values=False):
+def compute_centers(labels, centers, data, sum_values=False):
     N,D=data.shape
     K,D=centers.shape
 
     for k in range(K):
         if sum_values==False:
-            centers[k,:] = np.mean(data[labels==k],axis=0)
+            centers[k,:] = np.center(data[labels==k],axis=0)
         else:
             centers[k,:] = np.sum(data[labels==k],axis=0)
 
@@ -66,30 +59,29 @@ def reassign_labels(labels,centers,data):
 
     return np.array_equal(labels,old_labels)
 
-def mpi4pykmeans(data, n_clusters, max_iter):
-
-    all_data = data
+def mpi4pykcenters(data, initial_labels, N, K, D, limit):
 
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
     size = comm.Get_size()
 
     start = time.time()
-    n_data, n_dimensions = data.shape
-    centers = np.zeros((n_clusters,n_dimensions))
-    labels = generate_initial_assignment(n_data,n_clusters)
+    centers = np.empty((K, D))
+    labels = initial_labels.copy()
+    clustern = np.empty(K)
+
     allocations,labels = partition(labels,size)
     indices = allotment_to_indices(allocations)
     indices,labels = comm.scatter(zip(indices, labels) , root=0)
     data = data[indices[0]:indices[1]]
 
-    for k in range(max_iter):
+    for k in range(limit):
 
-        compute_means(labels,centers,data,sum_values=True)
+        compute_centers(labels,centers,data,sum_values=True)
         centers = comm.gather(centers, root=0)
 
         if rank==0:
-            temp = np.zeros((n_clusters,n_dimensions))
+            temp = np.empty((K, D))
             for center in centers:
                 temp+=center
             centers = temp
@@ -97,7 +89,7 @@ def mpi4pykmeans(data, n_clusters, max_iter):
 
         if rank == 0:
             collected_labels = np.array(list(chain(*collected_labels)))
-            for j in range(n_clusters) :
+            for j in range(K) :
                 total = np.sum(collected_labels==j)
                 centers[j,:] = centers[j,:]/total
 

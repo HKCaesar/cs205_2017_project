@@ -13,7 +13,7 @@ import itertools
 # Parallel*:      Sequential:      Meaning:                 Dim:
 # data            X                reviewer data           (NxD)
 # labels          W                cluster assignments     (Nx1)
-# means           A                means                   (KxD)
+# centers           A              cluster centers         (KxD)
 # clustern        m                number per cluster      (1xK)
 
 # *h_ and d_ prefixes in parallel variable names indicate host vs. device copies
@@ -25,7 +25,7 @@ import itertools
 data_fn = "../../data/reviewer-data.csv"
 d_list = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
 
-kernel_fn = "../cuda/pycumean.c"
+kernel_fn = "pycuda.c"
 output_fn = "../../analysis/output.csv"
 
 erase=True
@@ -51,47 +51,47 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ### RUN SEQUENTIAL K-MEANS ####
   ######################################################
 
-  means, labels, count, runtime, distortion, ai = sequential(data, initial_labels, N, D, K, limit)
-  output.append(['sequential',runtime, count, distortion, ai, N, D, K, means])
-  ref_means=means
+  centers, labels, count, runtime, distortion, ai = sequential(data, initial_labels, N, D, K, limit)
+  output.append(['sequential',runtime, count, distortion, ai, N, D, K, centers])
+  ref_centers=centers
   ref_count=count
-  print_output(output[-1], ref_means, ref_count)
+  print_output(output[-1], ref_centers, ref_count)
 
   ######################################################
   ### RUN pyCUDA K-MEANS ####
   ######################################################
 
-  means, labels, count, runtime, distortion, ai = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
-  output.append(['pyCUDA', runtime, count, distortion, ai, N, D, K, means])
-  print_output(output[-1], ref_means, ref_count)
+  centers, labels, count, runtime, distortion, ai = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
+  output.append(['pyCUDA', runtime, count, distortion, ai, N, D, K, centers])
+  print_output(output[-1], ref_centers, ref_count)
 
   ######################################################
   ### RUN mpi4py K-MEANS ####
   ######################################################
 
 
-  means, labels, runtime = mpi4pykmeans(data=data, n_clusters=K, max_iter=limit)
+  centers, labels, runtime = mpi4pykmeans(data=data, n_clusters=K, max_iter=limit)
   distortion = 0
   ai = 0
   count = 0
-  output.append(['mpi4py',runtime, count, distortion, ai, N, D, K, means])
-  print_output(output[-1], ref_means, ref_count)
+  output.append(['mpi4py',runtime, count, distortion, ai, N, D, K, centers])
+  print_output(output[-1], ref_centers, ref_count)
 
   ######################################################
   ### RUN hybrid K-MEANS ####
   ######################################################
 
-  means, labels, count, runtime, distortion, ai = hybrid(data, initial_labels, kernel_fn, N, K, D, limit)
-  output.append(['hybrid',runtime, count, distortion, ai, N, D, K, means])
-  print_output(output[-1], ref_means, ref_count)
+  centers, labels, count, runtime, distortion, ai = hybrid(data, initial_labels, kernel_fn, N, K, D, limit)
+  output.append(['hybrid',runtime, count, distortion, ai, N, D, K, centers])
+  print_output(output[-1], ref_centers, ref_count)
 
   ######################################################
   ### RUN STOCK K-MEANS ####
   ######################################################
 
-  means, labels, count, runtime, distortion, ai = stock(data, K, ref_count)
-  output.append(['stock', runtime, count, distortion, ai, N, D, K, means])
-  print_output(output[-1], ref_means, ref_count)
+  centers, labels, count, runtime, distortion, ai = stock(data, K, ref_count)
+  output.append(['stock', runtime, count, distortion, ai, N, D, K, centers])
+  print_output(output, ref_centers, ref_count)
 
   ######################################################
   ### WRITE OUTPUT TO CSV ####

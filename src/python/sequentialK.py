@@ -7,7 +7,7 @@ import time
 ######################################################
 
 def sequential(data, initial_labels, N, D, K, limit):
-    means = np.empty((K, D))
+    centers = np.empty((K, D))
     labels = initial_labels.copy()
     clustern = np.empty(K)
     count = 0
@@ -18,27 +18,27 @@ def sequential(data, initial_labels, N, D, K, limit):
 
         converged = True
 
-        # compute means
+        # compute centers
         for k in range(K):
             for d in range(D):
-                means[k, d] = 0
+                centers[k, d] = 0
             clustern[k] = 0
         for n in range(N):
             for d in range(D):
-                means[labels[n], d] += data[n, d]
+                centers[labels[n], d] += data[n, d]
             clustern[labels[n]] += 1
         for k in range(K):
             for d in range(D):
-                means[k, d] = means[k, d] / clustern[k]
+                centers[k, d] = centers[k, d] / clustern[k]
 
-        # assign to closest mean
+        # assign to closest center
         for n in range(N):
             min_val = np.inf
             min_ind = -1
             for k in range(K):
                 temp = 0
                 for d in range(D):
-                    temp += (data[n, d] - means[k, d]) ** 2
+                    temp += (data[n, d] - centers[k, d]) ** 2
 
                 if temp < min_val:
                     min_val = temp
@@ -54,7 +54,7 @@ def sequential(data, initial_labels, N, D, K, limit):
     ai = 200 * count
     distortion = 100
 
-    return means, labels, count, runtime, distortion, ai
+    return centers, labels, count, runtime, distortion, ai
 
 
 ######################################################
