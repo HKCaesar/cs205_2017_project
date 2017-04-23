@@ -40,9 +40,6 @@ Ds = [6]       # max D for review data is 6 (we could increase this actually)
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
-size = comm.Get_size()
-print(size)
-print(rank)
 
 for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
@@ -76,7 +73,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
     ###########################
     ### RUN mpi4py K-MEANS ####
-    centers, labels, count, runtime, distortion, ai = mpikmeans(data, initial_labels, K, D, limit, rank, size, comm)
+    centers, labels, count, runtime, distortion, ai = mpikmeans(data, initial_labels, K, D, limit, comm)
     if rank == 0:
         output.append(['mpi4py',runtime, count, distortion, ai, N, D, K, centers])
         print_output(output[-1], ref_centers, ref_count)
