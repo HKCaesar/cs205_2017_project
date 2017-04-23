@@ -69,11 +69,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ### RUN mpi4py K-MEANS ####
   ######################################################
 
-
-  centers, labels, runtime = mpikmeans(data, initial_labels, K, D, limit)
-  distortion = 0
-  ai = 0
-  count = 0
+  centers, labels, count, runtime, distortion, ai = mpikmeans(data, initial_labels, K, D, limit)
   output.append(['mpi4py',runtime, count, distortion, ai, N, D, K, centers])
   print_output(output[-1], ref_centers, ref_count)
 

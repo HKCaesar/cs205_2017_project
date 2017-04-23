@@ -44,6 +44,7 @@ def mpikmeans(data, initial_labels, K, D, limit):
 
     start = time.time()
     centers = np.empty((K, D))
+    count = 0
 
     # break up labels and data into roughly equal groups for each CPU in MPI.COMM_WORlD
     allocations,labels = partition(initial_labels.copy(),size)
@@ -58,6 +59,7 @@ def mpikmeans(data, initial_labels, K, D, limit):
         collected_labels = comm.gather(labels, root=0)
 
         if rank==0:
+            count += 1
             temp_centers = np.empty((K, D))
             for center in centers:
                 temp_centers+=center
@@ -69,18 +71,18 @@ def mpikmeans(data, initial_labels, K, D, limit):
 
         centers = comm.bcast(centers, root=0)
         converged = reassign_labels(labels,centers,data)
-        converged = comm.allgather(converged)
-        print(converged)
-        converged = np.all(converged)
-        print(converged)
 
+
+        converged = comm.allgather(converged)
+        converged = np.all(converged)
         if converged: break
 
     labels = comm.gather(labels,root=0)
-
     if rank==0:
         labels = np.array(list(chain(*labels)))
-        timing = time.time()-start
-        return [centers,labels,timing]
+        runtime = time.time()-start
+        ai = 600 * count
+        distortion = 100
+        return centers, labels, count, runtime, distortion, ai
     else:
         sys.exit(0)
