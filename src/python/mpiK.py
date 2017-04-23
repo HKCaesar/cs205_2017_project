@@ -1,8 +1,6 @@
 import time
 import numpy as np
-from mpi4py import MPI
 from itertools import chain
-import sys
 
 def allotment_to_indices(allotments):
     indices = np.cumsum(allotments)

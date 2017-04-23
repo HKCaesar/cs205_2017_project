@@ -87,8 +87,9 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
         #print_output(output[-1], ref_centers, ref_count)
 
   ######################################################
-  ### WRITE OUTPUT TO CSV & CLOSE MPI ENVIRONMENT ####
+  ### WRITE OUTPUT TO CSV ONCE PER LOOP ####
     if rank ==0:
         write_output(output, output_fn)
-    else:
-        sys.exit(0)
+
+if rank != 0:
+    sys.exit(0)
