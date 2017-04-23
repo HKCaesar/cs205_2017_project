@@ -11,20 +11,6 @@ def allotment_to_indices(allotments):
     indices=np.column_stack([indices[:-1],indices[1:]])
     return(indices)
 
-def generate_random_subset(df, subset_size):
-    n = len(df)
-    indices = np.arange(n)
-    np.random.shuffle(indices)
-
-    if subset_size <= 1: subset_size = int(subset_size*n)
-    np.sort(indices)
-    indices = indices[:subset_size]
-
-    if isinstance(df,pd.core.frame.DataFrame):
-        return df.iloc[indices,:]
-
-    return indices, df[indices]
-
 def partition(sequence, n_chunks):
     N = len(sequence)
     chunk_size = int(N/n_chunks)
@@ -34,7 +20,6 @@ def partition(sequence, n_chunks):
     np.random.shuffle(left_over)
     allocations = left_over+allocations
     indexes = allotment_to_indices(allocations)
-
     return allocations, [sequence[index[0]:index[1]]  for index in indexes]
 
 def compute_centers(labels, centers, data):
@@ -47,12 +32,9 @@ def compute_centers(labels, centers, data):
 
 def reassign_labels(labels,centers,data):
     old_labels = labels.copy()
-
     def minimize(x):
         return np.argmin(np.sum((centers-x)**2,axis=1)) #finds closest cluster
-
     labels[:] = np.apply_along_axis(minimize,1,data)
-
     return np.array_equal(labels,old_labels)
 
 def mpikmeans(data, initial_labels, K, D, limit):
@@ -77,6 +59,7 @@ def mpikmeans(data, initial_labels, K, D, limit):
 
         compute_centers(labels,centers,data)
         centers = comm.gather(centers, root=0)
+        print(centers)
 
         if rank==0:
             temp = np.empty((K, D))
