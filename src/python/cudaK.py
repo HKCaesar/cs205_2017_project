@@ -54,7 +54,7 @@ def pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit):
         kernel2(d_data, d_labels, d_centers, d_converged_array, block=(K, D, 1), grid=(N, 1, 1))
         cuda.memcpy_dtoh(h_converged_array, d_converged_array)
         count += 1
-        if np.sum(h_converged_array) == 0: breakd
+        if np.sum(h_converged_array) == 0: break
 
     cuda.memcpy_dtoh(h_centers, d_centers)
     cuda.memcpy_dtoh(h_labels, d_labels)
