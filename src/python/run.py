@@ -37,8 +37,7 @@ Ks = [3]
 Ns = [100]     # max N for review data is 118684
 Ds = [6]       # max D for review data is 6 (we could increase this actually)
 
-#for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
-for N, D, K in [3,100,6]:
+for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
     
   output = []
 
@@ -56,7 +55,7 @@ for N, D, K in [3,100,6]:
   output.append(['sequential',runtime, count, distortion, ai, N, D, K, means])
   ref_means=means
   ref_count=count
-  print_output(output, ref_means, ref_count)
+  print_output(output[-1], ref_means, ref_count)
 
   ######################################################
   ### RUN pyCUDA K-MEANS ####
@@ -64,7 +63,7 @@ for N, D, K in [3,100,6]:
 
   means, labels, count, runtime, distortion, ai = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
   output.append(['pyCUDA', runtime, count, distortion, ai, N, D, K, means])
-  print_output(output, ref_means, ref_count)
+  print_output(output[-1], ref_means, ref_count)
 
   ######################################################
   ### RUN mpi4py K-MEANS ####
@@ -76,7 +75,7 @@ for N, D, K in [3,100,6]:
   ai = 0
   count = 0
   output.append(['mpi4py',runtime, count, distortion, ai, N, D, K, means])
-  print_output(output, ref_means, ref_count)
+  print_output(output[-1], ref_means, ref_count)
 
   ######################################################
   ### RUN hybrid K-MEANS ####
@@ -84,7 +83,7 @@ for N, D, K in [3,100,6]:
 
   means, labels, count, runtime, distortion, ai = hybrid(data, initial_labels, kernel_fn, N, K, D, limit)
   output.append(['hybrid',runtime, count, distortion, ai, N, D, K, means])
-  print_output(output, ref_means, ref_count)
+  print_output(output[-1], ref_means, ref_count)
 
   ######################################################
   ### RUN STOCK K-MEANS ####
@@ -92,7 +91,7 @@ for N, D, K in [3,100,6]:
 
   means, labels, count, runtime, distortion, ai = stock(data, K, ref_count)
   output.append(['stock', runtime, count, distortion, ai, N, D, K, means])
-  print_output(output, ref_means, ref_count)
+  print_output(output[-1], ref_means, ref_count)
 
   ######################################################
   ### WRITE OUTPUT TO CSV ####
