@@ -82,10 +82,10 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
     ###########################
     ### RUN hybrid K-MEANS ####
-    #centers, labels, count, runtime, distortion, ai = hybrid(data, initial_labels, kernel_fn, N, K, D, limit)
-    #if rank == 0:
-        #output.append(['hybrid',runtime, count, distortion, ai, N, D, K, centers])
-        #print_output(output[-1], ref_centers, ref_count)
+    centers, labels, count, runtime, distortion, ai = hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit)
+    if rank == 0:
+        output.append(['hybrid',runtime, count, distortion, ai, N, D, K, centers])
+        print_output(output[-1], ref_centers, ref_count)
 
   ######################################################
   ### WRITE OUTPUT TO CSV ONCE PER LOOP ####
