@@ -44,14 +44,11 @@ def mpikmeans(data, initial_labels, K, D, limit, comm):
 
     # break up labels and data into roughly equal groups for each CPU in MPI.COMM_WORlD
     allocations,labels = partition(initial_labels.copy(),size)
+    print(allocations)
+    print(labels)
     indices = allotment_to_indices(allocations)
     indices,labels = comm.scatter(zip(indices, labels), root=0)
     data_chunk = data[indices[0]:indices[1]]
-    print(indices)
-    print(labels)
-    print(labels.shape)
-    print(data_chunk[:10])
-    print(data_chunk.shape)
 
     for k in range(limit):
 
@@ -71,10 +68,6 @@ def mpikmeans(data, initial_labels, K, D, limit, comm):
             centers = temp_centers
 
         centers = comm.bcast(centers, root=0)
-        print(labels)
-        print(labels.shape)
-        print(data_chunk[:10])
-        print(data_chunk.shape)
         converged = reassign_labels(labels,centers,data_chunk)
 
         converged = comm.allgather(converged)
