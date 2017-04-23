@@ -8,26 +8,28 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, comm):
 
     size = comm.Get_size()
     rank = comm.Get_rank()
+    start = time.time()
     count = 0
     runtime = 0
     centers = np.empty((K, D))
-    start = time.time()
 
     # break up labels and data into roughly equal groups for each CPU in MPI.COMM_WORlD
-    allocations,labels = partition(initial_labels.copy(),size)
+    allocations = partition(N, size)
     indices = allotment_to_indices(allocations)
-    indices,labels = comm.scatter(zip(indices, labels), root=0)
+    index = comm.scatter(indices, root=0)
+    data_chunk = data[index[0]:index[1]]
+    labels_chunk = initial_labels[index[0]:index[1]]
 
     # prep CUDA stuff
     kernel1, kernel2 = parallel_mod(kernel_fn, N, K, D)
-    h_data, h_labels, h_centers, h_converged_array = prep_host(data[indices[0]:indices[1]], labels, K, D)
+    h_data, h_labels, h_centers, h_converged_array = prep_host(data_chunk, labels_chunk, K, D)
     d_data, d_labels, d_centers, d_converged_array = prep_device(h_data, h_labels, h_centers, h_converged_array)
 
     for k in range(limit):
 
-        compute_centers(labels,centers,data)
+        compute_centers(labels_chunk,centers,data_chunk)
         centers = comm.gather(centers, root=0)
-        collected_labels = comm.gather(labels, root=0)
+        collected_labels = comm.gather(labels_chunk, root=0)
 
         if rank==0:
             count += 1
@@ -41,13 +43,13 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, comm):
             centers = temp_centers
 
         centers = comm.bcast(centers, root=0)
-        converged = reassign_labels(labels,centers,data)
+        converged = reassign_labels(labels_chunk,centers,data_chunk)
 
         converged = comm.allgather(converged)
         converged = np.all(converged)
         if converged: break
 
-    labels = comm.gather(labels,root=0)
+    labels = comm.gather(labels_chunk,root=0)
     if rank==0: labels = np.array(list(chain(*labels)))
     labels = comm.bcast(labels, root=0)
     count = comm.bcast(count, root=0)
