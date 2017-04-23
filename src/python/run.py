@@ -55,6 +55,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   output.append(['sequential',runtime, count, distortion, ai, N, D, K, means])
   ref_means=means
   ref_count=count
+  print_output(output, ref_means, ref_count)
 
   ######################################################
   ### RUN pyCUDA K-MEANS ####
@@ -62,6 +63,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
   means, labels, count, runtime, distortion, ai = pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit)
   output.append(['pyCUDA', runtime, count, distortion, ai, N, D, K, means])
+  print_output(output, ref_means, ref_count)
 
   ######################################################
   ### RUN mpi4py K-MEANS ####
@@ -73,6 +75,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ai = 0
   count = 0
   output.append(['mpi4py',runtime, count, distortion, ai, N, D, K, means])
+  print_output(output, ref_means, ref_count)
 
   ######################################################
   ### RUN hybrid K-MEANS ####
@@ -80,6 +83,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
   means, labels, count, runtime, distortion, ai = hybrid(data, initial_labels, kernel_fn, N, K, D, limit)
   output.append(['hybrid',runtime, count, distortion, ai, N, D, K, means])
+  print_output(output, ref_means, ref_count)
 
   ######################################################
   ### RUN STOCK K-MEANS ####
@@ -87,10 +91,10 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
   means, labels, count, runtime, distortion, ai = stock(data, K, ref_count)
   output.append(['stock', runtime, count, distortion, ai, N, D, K, means])
+  print_output(output, ref_means, ref_count)
 
   ######################################################
-  ### MAKE GRAPHS & WRITE OUTPUT TO CSV ####
+  ### WRITE OUTPUT TO CSV ####
   ######################################################
 
-  print_output(output, output_fn, ref_means, ref_count)
   write_output(output, output_fn)

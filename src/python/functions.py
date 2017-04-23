@@ -51,10 +51,10 @@ def write_output(output, output_fn):
 ### PRINT OUTPUT ###
 ######################################################
 
-def print_output(output, output_fn, ref_means, ref_count):
+def print_output(output, ref_means, ref_count):
   
     # print some stuff
-    for o in output:
+    for o in output[-1]:
         print('\n-----'+o[0])
         if o[0][0]!='s':
             print('Equals reference (sequential) means: %s' % str(np.array_equal(ref_means,o[-1])))
