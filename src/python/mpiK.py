@@ -71,6 +71,10 @@ def mpikmeans(data, initial_labels, K, D, limit, comm):
             centers = temp_centers
 
         centers = comm.bcast(centers, root=0)
+        print(labels)
+        print(labels.shape)
+        print(data_chunk[:10])
+        print(data_chunk.shape)
         converged = reassign_labels(labels,centers,data_chunk)
 
         converged = comm.allgather(converged)
