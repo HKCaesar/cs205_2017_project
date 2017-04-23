@@ -10,7 +10,6 @@ def prep_data(data_fn, d_list, N, D, K):
 
     # import data file and subset data for k-means
     reviewdata = pd.read_csv(data_fn)
-    print(reviewdata.shape)
     data = reviewdata[d_list[:D]][:N].values
     data = np.ascontiguousarray(data, dtype=np.float64)
 
@@ -54,5 +53,10 @@ def write_output(output, output_fn):
 def print_output(output, ref_means, ref_count):
   
     # print some stuff
-    print(output[-1])
+    for o in output[-1]:
+        print('\n-----'+o[0])
+        if o[0][0]!='s':
+            print('Equals reference (sequential) means: %s' % str(np.array_equal(ref_means,o[-1])))
+            print('Equals reference (sequential) count: %s' % str(np.array_equal(ref_count,o[2])))
+        for p in o: print(p)
     return
