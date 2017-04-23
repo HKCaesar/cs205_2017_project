@@ -28,9 +28,12 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, comm):
 
     for k in range(limit):
 
-        compute_centers(labels_chunk,centers,data_chunk)
-        centers = comm.gather(centers, root=0)
-        collected_labels = comm.gather(labels_chunk, root=0)
+        #compute_centers(labels_chunk,centers,data_chunk)
+        kernel1(d_data, d_labels, d_centers, block=(K, D, 1), grid=(1, 1, 1))
+        cuda.memcpy_dtoh(h_centers, d_centers)
+        cuda.memcpy_dtoh(h_labels, d_labels)
+        centers = comm.gather(h_centers, root=0)
+        collected_labels = comm.gather(h_labels, root=0)
 
         if rank==0:
             count += 1
@@ -41,16 +44,23 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, comm):
             for j in range(K):
                 total = np.sum(collected_labels==j)
                 temp_centers[j,:] = temp_centers[j,:]/total
-            centers = temp_centers
+            h_centers = temp_centers
 
-        centers = comm.bcast(centers, root=0)
-        converged = reassign_labels(labels_chunk,centers,data_chunk)
-
+        centers = comm.bcast(h_centers, root=0)
+        cuda.memcpy_htod(d_centers, h_centers)
+        kernel2(d_data, d_labels, d_centers, d_converged_array, block=(K, D, 1), grid=(N, 1, 1))
+        cuda.memcpy_dtoh(h_converged_array, d_converged_array)
+        if np.sum(h_converged_array) == 0:
+            converged = True
+        else:
+            converged = False
         converged = comm.allgather(converged)
         converged = np.all(converged)
         if converged: break
 
-    labels = comm.gather(labels_chunk,root=0)
+    cuda.memcpy_dtoh(h_labels, d_labels)
+
+    labels = comm.gather(h_labels,root=0)
     if rank==0: labels = np.array(list(chain(*labels)))
     labels = comm.bcast(labels, root=0)
     count = comm.bcast(count, root=0)
@@ -59,4 +69,4 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, comm):
     if rank==0: runtime = time.time() - start
     runtime = comm.bcast(runtime, root=0)
 
-    return centers, labels, count, runtime, distortion, ai
+    return h_centers, labels, count, runtime, distortion, ai
