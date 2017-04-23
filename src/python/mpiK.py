@@ -35,11 +35,9 @@ def reassign_labels(labels,centers,data):
     labels[:] = np.apply_along_axis(minimize,1,data)
     return np.array_equal(labels,old_labels)
 
-def mpikmeans(data, initial_labels, K, D, limit):
+def mpikmeans(data, initial_labels, K, D, limit, size, rank):
 
-    comm = MPI.COMM_WORLD
-    rank = comm.Get_rank()
-    size = comm.Get_size()
+
 
     start = time.time()
     centers = np.empty((K, D))
@@ -82,5 +80,4 @@ def mpikmeans(data, initial_labels, K, D, limit):
         ai = 600 * count
         distortion = 100
         return centers, labels, count, runtime, distortion, ai
-    else:
-        sys.exit(0)
+

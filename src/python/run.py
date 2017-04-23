@@ -4,6 +4,7 @@ from mpiK import *
 from cudaK import *
 from hybridK import *
 
+from mpi4py import MPI
 import itertools
 
 ######################################################
@@ -39,40 +40,43 @@ Ds = [6]       # max D for review data is 6 (we could increase this actually)
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
+size = comm.Get_size()
 
 for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
-    
-  output = []
 
   ######################################################
   ### PREP DATA & INITIAL LABELS ####
   ######################################################
 
-  data, initial_labels = prep_data(data_fn, d_list, N, D, K)
+  if rank == 0:
+    output = []
+    data, initial_labels = prep_data(data_fn, d_list, N, D, K)
 
   ######################################################
   ### RUN SEQUENTIAL K-MEANS ####
   ######################################################
 
-  centers, labels, count, runtime, distortion, ai = seqkmeans(data, initial_labels, N, D, K, limit)
-  output.append(['sequential',runtime, count, distortion, ai, N, D, K, centers])
-  ref_centers=centers
-  ref_count=count
-  print_output(output[-1], ref_centers, ref_count)
+  if rank == 0:
+    centers, labels, count, runtime, distortion, ai = seqkmeans(data, initial_labels, N, D, K, limit)
+    output.append(['sequential',runtime, count, distortion, ai, N, D, K, centers])
+    ref_centers=centers
+    ref_count=count
+    print_output(output[-1], ref_centers, ref_count)
 
   ######################################################
   ### RUN pyCUDA K-MEANS ####
   ######################################################
 
-  centers, labels, count, runtime, distortion, ai = cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit)
-  output.append(['pyCUDA', runtime, count, distortion, ai, N, D, K, centers])
-  print_output(output[-1], ref_centers, ref_count)
+  if rank == 0:
+    centers, labels, count, runtime, distortion, ai = cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit)
+    output.append(['pyCUDA', runtime, count, distortion, ai, N, D, K, centers])
+    print_output(output[-1], ref_centers, ref_count)
 
   ######################################################
   ### RUN mpi4py K-MEANS ####
   ######################################################
 
-  centers, labels, count, runtime, distortion, ai = mpikmeans(data, initial_labels, K, D, limit)
+  centers, labels, count, runtime, distortion, ai = mpikmeans(data, initial_labels, K, D, limit, rank, size)
   output.append(['mpi4py',runtime, count, distortion, ai, N, D, K, centers])
   print_output(output[-1], ref_centers, ref_count)
 
@@ -88,12 +92,16 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
   ### RUN STOCK K-MEANS ####
   ######################################################
 
-  centers, labels, count, runtime, distortion, ai = stockkmeans(data, K, ref_count)
-  output.append(['stock', runtime, count, distortion, ai, N, D, K, centers])
-  print_output(output[-1], ref_centers, ref_count)
+  if rank == 0:
+    centers, labels, count, runtime, distortion, ai = stockkmeans(data, K, ref_count)
+    output.append(['stock', runtime, count, distortion, ai, N, D, K, centers])
+    print_output(output[-1], ref_centers, ref_count)
 
   ######################################################
   ### WRITE OUTPUT TO CSV ####
   ######################################################
 
-  write_output(output, output_fn)
+  if rank ==0:
+    write_output(output, output_fn)
+  else:
+    sys.exit(0)
