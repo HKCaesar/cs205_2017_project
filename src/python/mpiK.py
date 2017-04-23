@@ -76,14 +76,13 @@ def mpikmeans(data, initial_labels, K, D, limit, comm):
         if converged: break
 
     labels = comm.gather(labels,root=0)
-    if rank==0:
-        labels = np.array(list(chain(*labels)))
-        runtime = time.time() - start
+    if rank==0: labels = np.array(list(chain(*labels)))
     labels = comm.bcast(labels, root=0)
     count = comm.bcast(count, root=0)
-    runtime = comm.bcast(runtime, root=0)
     distortion = 100
     ai = 600*count
+    if rank==0: runtime = time.time() - start
+    runtime = comm.bcast(runtime, root=0)
 
     return centers, labels, count, runtime, distortion, ai
 
