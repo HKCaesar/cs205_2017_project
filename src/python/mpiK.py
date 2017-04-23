@@ -67,12 +67,20 @@ def mpikmeans(data, initial_labels, K, D, limit):
 
     start = time.time()
     centers = np.empty((K, D))
-    labels = initial_labels.copy()
 
-    allocations,labels = partition(labels,size)
+    allocations,labels = partition(initial_labels.copy(),size)
+    print(allocations)
+    print(labels)
+
     indices = allotment_to_indices(allocations)
+    print(indices)
+
     indices,labels = comm.scatter(zip(indices, labels) , root=0)
+    print(indices)
+    print(labels)
+
     data = data[indices[0]:indices[1]]
+    print(data)
 
     for k in range(limit):
 
