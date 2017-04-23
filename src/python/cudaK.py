@@ -58,6 +58,8 @@ def pyCUDA(data, initial_labels, kernel_fn, N, K, D, limit):
     cuda.memcpy_dtoh(h_means, d_means)
     cuda.memcpy_dtoh(h_labels, d_labels)
     runtime = time.time() - start
-    ai = 300 * count
 
-    return h_means, h_labels, count, runtime, distortion(data, h_labels, h_means), ai
+    ai = 300 * count
+    distortion = 100
+
+    return h_means, h_labels, count, runtime, distortion, ai

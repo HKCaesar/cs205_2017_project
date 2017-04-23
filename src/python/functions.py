@@ -27,14 +27,6 @@ def prep_data(data_fn, d_list, N, D, K):
   return data, initial_labels
 
 ######################################################
-### CALCULATE DISTORTION ###
-######################################################
-
-def distortion(data, labels, means):
-    #temp=np.sum((means[labels:]-data)**2) <---- FIX!!!!
-    return 100
-
-######################################################
 ### MAKE GRAPHS ###
 ######################################################
 

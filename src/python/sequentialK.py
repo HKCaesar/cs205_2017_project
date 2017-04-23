@@ -52,8 +52,9 @@ def sequential(data, initial_labels, N, D, K, limit):
 
     runtime = time.time() - start
     ai = 200 * count
+    distortion = 100
 
-    return means, labels, count, runtime, distortion(data, labels, means), ai
+    return means, labels, count, runtime, distortion, ai
 
 
 ######################################################
