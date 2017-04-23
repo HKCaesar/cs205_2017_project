@@ -4,20 +4,25 @@ from itertools import chain
 from mpiK import *
 from cudaK import *
 
-def hybridkmeans(data, initial_labels, kernel_fn, K, D, limit, comm):
+def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, comm):
 
     size = comm.Get_size()
     rank = comm.Get_rank()
-    start = time.time()
     count = 0
     runtime = 0
     centers = np.empty((K, D))
+    start = time.time()
 
     # break up labels and data into roughly equal groups for each CPU in MPI.COMM_WORlD
     allocations,labels = partition(initial_labels.copy(),size)
     indices = allotment_to_indices(allocations)
     indices,labels = comm.scatter(zip(indices, labels), root=0)
     data = data[indices[0]:indices[1]]
+
+    # prep CUDA stuff
+    kernel1, kernel2 = parallel_mod(kernel_fn, N, K, D)
+    h_data, h_labels, h_centers, h_converged_array = prep_host(data, labels, K, D)
+    d_data, d_labels, d_centers, d_converged_array = prep_device(h_data, h_labels, h_centers, h_converged_array)
 
     for k in range(limit):
 
