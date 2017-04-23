@@ -65,8 +65,9 @@ def mpikmeans(data, initial_labels, K, D, limit):
             for j in range(K):
                 total = np.sum(collected_labels==j)
                 temp_centers[j,:] = temp_centers[j,:]/total
+            centers = temp_centers
 
-        centers = comm.bcast(temp_centers, root=0)
+        centers = comm.bcast(centers, root=0)
         converged = reassign_labels(labels,centers,data)
         converged = comm.allgather(converged)
         print(converged)
