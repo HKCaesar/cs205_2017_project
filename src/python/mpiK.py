@@ -37,16 +37,12 @@ def partition(sequence, n_chunks):
 
     return allocations, [sequence[index[0]:index[1]]  for index in indexes]
 
-def compute_centers(labels, centers, data, sum_values=False):
-    N,D=data.shape
+def compute_centers(labels, centers, data):
     K,D=centers.shape
-
+    print(centers)
     for k in range(K):
-        if sum_values==False:
-            centers[k,:] = np.center(data[labels==k],axis=0)
-        else:
-            centers[k,:] = np.sum(data[labels==k],axis=0)
-
+        centers[k,:] = np.sum(data[labels==k],axis=0)
+    print(centers)
     return centers
 
 def reassign_labels(labels,centers,data):
@@ -70,21 +66,16 @@ def mpikmeans(data, initial_labels, K, D, limit):
 
     allocations,labels = partition(initial_labels.copy(),size)
     print(allocations)
-    print(labels)
-
     indices = allotment_to_indices(allocations)
-    print(indices)
-
     indices,labels = comm.scatter(zip(indices, labels) , root=0)
     print(indices)
     print(labels)
 
     data = data[indices[0]:indices[1]]
-    print(data)
 
     for k in range(limit):
 
-        compute_centers(labels,centers,data,sum_values=True)
+        compute_centers(labels,centers,data)
         centers = comm.gather(centers, root=0)
 
         if rank==0:
