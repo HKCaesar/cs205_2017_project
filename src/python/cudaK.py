@@ -49,7 +49,7 @@ def cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit):
     start = time.time()
     d_data, d_labels, d_centers, d_converged_array = prep_device(h_data, h_labels, h_centers, h_converged_array)
 
-    while count < limit:x
+    while count < limit:
         kernel1(d_data, d_labels, d_centers, block=(K, D, 1), grid=(1, 1, 1))
         kernel2(d_data, d_labels, d_centers, d_converged_array, block=(K, D, 1), grid=(N, 1, 1))
         cuda.memcpy_dtoh(h_converged_array, d_converged_array)
