@@ -27,7 +27,6 @@ def compute_centers(labels, centers, data):
     print(centers)
     for k in range(K):
         centers[k,:] = np.sum(data[labels==k],axis=0)
-    print(centers)
     return centers
 
 def reassign_labels(labels,centers,data):
@@ -55,20 +54,19 @@ def mpikmeans(data, initial_labels, K, D, limit):
     for k in range(limit):
 
         compute_centers(labels,centers,data)
-        all_centers = comm.gather(centers, root=0)
-        print(all_centers)
-
+        centers = comm.gather(centers, root=0)
+        print(centers)
         if rank==0:
             temp = np.empty((K, D))
-            for center in all_centers:
+            for center in centers:
                 temp+=center
             centers = temp
-        print(centers)
-        collected_labels = comm.gather(labels, root=0)
+            print(centers)
 
+        collected_labels = comm.gather(labels, root=0)
         if rank == 0:
             collected_labels = np.array(list(chain(*collected_labels)))
-            for j in range(K) :
+            for j in range(K):
                 total = np.sum(collected_labels==j)
                 centers[j,:] = centers[j,:]/total
 
