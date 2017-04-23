@@ -49,8 +49,9 @@ def mpikmeans(data, initial_labels, K, D, limit, comm):
     data_chunk = data[indices[0]:indices[1]]
     print(indices)
     print(labels)
-    print(len(labels))
-    print(len(data_chunk))
+    print(labels.shape)
+    print(data_chunk[:10])
+    print(data_chunk.shape)
 
     for k in range(limit):
 
