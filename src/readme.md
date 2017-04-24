@@ -2,21 +2,13 @@
 
 From the login node: 
 ```
-cd ~/cs205_2017_project/src/
-sbatch sbatch.run
-```
-
-## run interactive session with kmeans.py (doesn't run mpi4py, just pyCUDA)
-
-From the login node:
-```
-cd ~/cs205_2017_project/src/
-srun -p gpu -n 1 --mem-per-cpu=500 --gres=gpu:1 --constraint=cuda-7.5 --pty -t 0-01:00 /bin/bash
+srun -p holyseasgpu -n 2 --mem-per-cpu=2500 --gres=gpu:2 --constraint=cuda-7.5 --mpi=pmi2 --pty -t 0-04:00 /bin/bash
+cd ~/cs205_2017_project/src/python
 module load python/2.7.11-fasrc01
 module load cuda/7.5-fasrc02
 module load gcc/4.8.2-fasrc01 openmpi/1.10.2-fasrc01
 source activate pycuda
-git pull; python kmeans.py
+git pull; mpiexec -n 2 python run.py
 ```
 
 ## mpi4py + pyCUDA environment set-up (do once): 
