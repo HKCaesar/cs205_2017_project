@@ -18,16 +18,18 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_co
     index = comm.scatter(indices, root=0)
     data_chunk = data[index[0]:index[1]]
     labels_chunk = initial_labels[index[0]:index[1]]
+    comm.Barrier()
 
     # prep CUDA stuff
 
     h_data, h_labels, h_centers, h_converged_array = prep_host(data_chunk, labels_chunk, K, D)
     d_data, d_labels, d_centers, d_converged_array = prep_device(h_data, h_labels, h_centers, h_converged_array)
+    comm.Barrier()
 
     for k in range(loop_limit):
 
-        #compute_centers(labels_chunk,centers,data_chunk)
         kernel1(d_data, d_labels, d_centers, block=(K, D, 1), grid=(1, 1, 1))
+        comm.Barrier()
         cuda.memcpy_dtoh(h_centers, d_centers)
         cuda.memcpy_dtoh(h_labels, d_labels)
         centers = comm.gather(h_centers, root=0)

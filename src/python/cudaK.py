@@ -4,7 +4,7 @@ import string
 
 import pycuda.driver as cuda
 from pycuda.compiler import SourceModule
-import pycuda.autoinit
+#import pycuda.autoinit
 
 ######################################################
 ### pyCUDA K-MEANS  ####
@@ -61,6 +61,8 @@ def cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_coun
 
     cuda.memcpy_dtoh(h_centers, d_centers)
     cuda.memcpy_dtoh(h_labels, d_labels)
+    cuda.
+
     runtime = time.time() - start
 
     ai = 300 * count
