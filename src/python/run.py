@@ -30,18 +30,19 @@ d_list = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","k
 kernel_fn = "pycuda.c"
 output_fn = "../../analysis/output.csv"
 
-erase=True
-if erase==True: blank_output_file(output_fn)
-
-limit = 10
-standardize = 1
-    
 Ks = [3]
 Ns = [100]     # max N for review data is 118684
 Ds = [6]       # max D for review data is 6 (we could increase this actually)
 
+limit = 10
+erase=True
+standardize = 1
+
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
+
+if erase==True: blank_output_file(output_fn)
+if standardize==1: ref_count = 0
 
 for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
