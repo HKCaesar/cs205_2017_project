@@ -31,7 +31,7 @@ kernel_fn = "pycuda.c"
 output_fn = "../../analysis/output.csv"
 
 Ks = [3]
-Ns = [100, 10000, 50000]                # max N for review data is ANYTHING (can be over 118684)
+Ns = [100, 1000, 5000, 10000, 20000, 40000, 60000, 100000, 150000, 200000]                # max N for review data is ANYTHING (can be over 118684)
 Ds = [6]                    # max D for review data is 6 (we could increase this actually)
 
 limit = 10                  # max number of times the k-means loop can run (even if it doesn't converge)
