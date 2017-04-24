@@ -30,9 +30,9 @@ d_list = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","k
 kernel_fn = "pycuda.c"
 output_fn = "../../analysis/output.csv"
 
-Ks = [3]
-Ns = [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000]                # max N for review data is ANYTHING (can be over 118684)
-Ds = [6]                    # max D for review data is 6 (we could increase this actually)
+Ks = [3,4,5]
+Ns = [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000]                # max N for review data is ANYTHING (can be over 118684)
+Ds = [3,6]                    # max D for review data is 6 (we could increase this actually)
 
 limit = 10                  # max number of times the k-means loop can run (even if it doesn't converge)
 erase=True                  # start with a blank output file
