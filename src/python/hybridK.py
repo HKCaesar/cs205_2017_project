@@ -1,6 +1,3 @@
-import time
-import numpy as np
-from itertools import chain
 from mpiK import *
 from cudaK import *
 
@@ -46,7 +43,7 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, comm):
                 temp_centers[j,:] = temp_centers[j,:]/total
             h_centers = temp_centers
 
-        centers = comm.bcast(h_centers, root=0)
+        h_centers = comm.bcast(h_centers, root=0)
         cuda.memcpy_htod(d_centers, h_centers)
         kernel2(d_data, d_labels, d_centers, d_converged_array, block=(K, D, 1), grid=(N, 1, 1))
         cuda.memcpy_dtoh(h_converged_array, d_converged_array)
