@@ -79,8 +79,8 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
     ###########################
     ### RUN mpi4py K-MEANS ####
     comm.Barrier()
-    if standardize == 1: limit = comm.bcast(ref_count, root=0)
-    print(limit)
+    if standardize_count == 1: standardize_count = comm.bcast(ref_count, root=0)
+    print(standardize_count)
     centers, labels, count, runtime, distortion, ai = mpikmeans(data, initial_labels, N, K, D, limit, standardize_count, comm)
     comm.Barrier()
     if rank == 0:
