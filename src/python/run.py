@@ -58,7 +58,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
         ###############################
         ### RUN SEQUENTIAL K-MEANS ####
-        centers, labels, count, runtime, distortion, ai = seqkmeans(data, initial_labels, N, D, K, limit)
+        centers, labels, count, runtime, distortion, ai = seqkmeans(data, initial_labels, N, D, K, limit, standardize_count)
         output.append(['sequential',runtime, count, distortion, ai, N, D, K, centers])
         ref_centers=centers
         ref_count=count
