@@ -61,7 +61,6 @@ def cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_coun
 
     cuda.memcpy_dtoh(h_centers, d_centers)
     cuda.memcpy_dtoh(h_labels, d_labels)
-    cuda.
 
     runtime = time.time() - start
 
