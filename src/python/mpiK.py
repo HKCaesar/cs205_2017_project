@@ -31,14 +31,16 @@ def reassign_labels(labels,centers,data_chunk):
     labels[:] = np.apply_along_axis(minimize,1,data_chunk)
     return np.array_equal(labels,old_labels)
 
-def mpikmeans(data, initial_labels, N, K, D, limit, comm):
+def mpikmeans(data, initial_labels, N, K, D, limit, standardize_count, comm):
 
     size = comm.Get_size()
     rank = comm.Get_rank()
-    start = time.time()
     count = 0
     runtime = 0
     centers = np.empty((K, D))
+    if standardize_count>0: loop_limit = standardize_count
+    else: loop_limit=limit
+    start = time.time()
 
     # break up labels and data into roughly equal groups for each CPU in MPI.COMM_WORlD
     allocations = partition(N, size)
@@ -47,7 +49,8 @@ def mpikmeans(data, initial_labels, N, K, D, limit, comm):
     data_chunk = data[index[0]:index[1]]
     labels_chunk = initial_labels[index[0]:index[1]]
 
-    for k in range(limit):
+
+    for k in range(loop_limit):
 
         compute_centers(labels_chunk,centers,data_chunk)
         centers = comm.gather(centers, root=0)
@@ -69,7 +72,8 @@ def mpikmeans(data, initial_labels, N, K, D, limit, comm):
 
         converged = comm.allgather(converged)
         converged = np.all(converged)
-        if converged: break
+        if standardize_count == 0:
+            if converged: break
 
     labels = comm.gather(labels_chunk,root=0)
     if rank==0: labels = np.array(list(chain(*labels)))

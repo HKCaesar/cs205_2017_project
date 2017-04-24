@@ -1,13 +1,14 @@
 from mpiK import *
 from cudaK import *
 
-def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, comm):
+def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_count, comm):
 
     size = comm.Get_size()
     rank = comm.Get_rank()
     count = 0
     runtime = 0
-    centers = np.empty((K, D))
+    if standardize_count>0: loop_limit = standardize_count
+    else: loop_limit=limit
     kernel1, kernel2 = parallel_mod(kernel_fn, N, K, D)
     start = time.time()
 
@@ -23,7 +24,7 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, comm):
     h_data, h_labels, h_centers, h_converged_array = prep_host(data_chunk, labels_chunk, K, D)
     d_data, d_labels, d_centers, d_converged_array = prep_device(h_data, h_labels, h_centers, h_converged_array)
 
-    for k in range(limit):
+    for k in range(loop_limit):
 
         #compute_centers(labels_chunk,centers,data_chunk)
         kernel1(d_data, d_labels, d_centers, block=(K, D, 1), grid=(1, 1, 1))
@@ -53,7 +54,8 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, comm):
             converged = False
         converged = comm.allgather(converged)
         converged = np.all(converged)
-        if converged: break
+        if standardize_count == 0:
+            if converged: break
 
     cuda.memcpy_dtoh(h_labels, d_labels)
 

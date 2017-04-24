@@ -31,18 +31,18 @@ kernel_fn = "pycuda.c"
 output_fn = "../../analysis/output.csv"
 
 Ks = [3]
-Ns = [100]     # max N for review data is 118684
+Ns = [100000]     # max N for review data is ANYTHING (can be over 118684)
 Ds = [6]       # max D for review data is 6 (we could increase this actually)
 
 limit = 10
 erase=True
-standardize = 1
+standardize_count = 1
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
 if erase==True: blank_output_file(output_fn)
-if standardize==1: ref_count = 0
+if standardize_count==1: ref_count = 0
 
 for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
@@ -70,9 +70,9 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
         ###########################
         ### RUN pyCUDA K-MEANS ####
-        if standardize == 1: limit = ref_count
-        print(limit)
-        centers, labels, count, runtime, distortion, ai = cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit)
+        if standardize_count > 0: standardize_count = ref_count
+        print(standardize_count)
+        centers, labels, count, runtime, distortion, ai = cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_count)
         output.append(['pyCUDA', runtime, count, distortion, ai, N, D, K, centers])
         print_output(output[-1], ref_centers, ref_count)
 
@@ -81,7 +81,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
     comm.Barrier()
     if standardize == 1: limit = comm.bcast(ref_count, root=0)
     print(limit)
-    centers, labels, count, runtime, distortion, ai = mpikmeans(data, initial_labels, N, K, D, limit, comm)
+    centers, labels, count, runtime, distortion, ai = mpikmeans(data, initial_labels, N, K, D, limit, standardize_count, comm)
     comm.Barrier()
     if rank == 0:
         output.append(['mpi4py',runtime, count, distortion, ai, N, D, K, centers])
@@ -90,7 +90,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
     ###########################
     ### RUN hybrid K-MEANS ####
     comm.Barrier()
-    centers, labels, count, runtime, distortion, ai = hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, comm)
+    centers, labels, count, runtime, distortion, ai = hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_count, comm)
     comm.Barrier()
     if rank == 0:
         output.append(['hybrid',runtime, count, distortion, ai, N, D, K, centers])
