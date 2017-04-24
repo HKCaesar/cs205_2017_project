@@ -49,7 +49,6 @@ def mpikmeans(data, initial_labels, N, K, D, limit, standardize_count, comm):
     data_chunk = data[index[0]:index[1]]
     labels_chunk = initial_labels[index[0]:index[1]]
 
-
     for k in range(loop_limit):
 
         compute_centers(labels_chunk,centers,data_chunk)

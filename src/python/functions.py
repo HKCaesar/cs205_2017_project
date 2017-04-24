@@ -11,7 +11,7 @@ def prep_data(data_fn, d_list, N, D, K):
     # import data file and subset data for k-means
     reviewdata = pd.read_csv(data_fn)
     for n in range(int(N/118684)):
-        reviewdata = reviewdata + reviewdata
+        reviewdata = reviewdata.append(reviewdata)
         print(len(reviewdata))
     data = reviewdata[d_list[:D]][:N].values
     data = np.ascontiguousarray(data, dtype=np.float64)
