@@ -6,15 +6,16 @@ import time
 ### SEQUENTIAL K-MEANS ###
 ######################################################
 
-def seqkmeans(data, initial_labels, N, D, K, limit):
+def seqkmeans(data, initial_labels, N, D, K, limit, standardize_count):
     centers = np.empty((K, D))
     labels = initial_labels.copy()
     clustern = np.empty(K)
     count = 0
-    converged = False
+    if standardize_count>0: loop_limit = standardize_count
+    else: loop_limit=limit
     start = time.time()
 
-    while not converged:
+    for i in range(loop_limit):
 
         converged = True
 
@@ -48,11 +49,12 @@ def seqkmeans(data, initial_labels, N, D, K, limit):
                 converged = False
 
         count += 1
-        if count == limit: break
+        if standardize_count == 0:
+            if converged: break
 
     runtime = time.time() - start
-    ai = 200 * count
-    distortion = 100
+    ai = 0 * count
+    distortion = 0
 
     return centers, labels, count, runtime, distortion, ai
 
@@ -66,5 +68,5 @@ def stockkmeans(data, K, count):
     stockmeans = KMeans(n_clusters=K, n_init=count)
     stockmeans.fit(data)
     runtime = time.time() - start
-    ai = 100 * count
+    ai = 0 * count
     return stockmeans.cluster_centers_, stockmeans.labels_, count, runtime, stockmeans.inertia_, ai
