@@ -31,7 +31,7 @@ kernel_fn = "pycuda.c"
 output_fn = "../../analysis/output.csv"
 
 Ks = [3]
-Ns = [20000]                # max N for review data is ANYTHING (can be over 118684)
+Ns = [100, 20000]                # max N for review data is ANYTHING (can be over 118684)
 Ds = [6]                    # max D for review data is 6 (we could increase this actually)
 
 limit = 10                  # max number of times the k-means loop can run (even if it doesn't converge)
@@ -50,6 +50,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
     ### PREP DATA & INITIAL LABELS ####
     output = []
     data, initial_labels = prep_data(data_fn, d_list, N, D, K)
+    print('\n\n\n----- N:%d D:%d K:%d -----' % (N,D,K))
 
     ############################################################################################################
     if rank == 0:
