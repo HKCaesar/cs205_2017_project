@@ -31,12 +31,12 @@ kernel_fn = "pycuda.c"
 output_fn = "../../analysis/output.csv"
 
 Ks = [3]
-Ns = [20000]     # max N for review data is ANYTHING (can be over 118684)
-Ds = [6]       # max D for review data is 6 (we could increase this actually)
+Ns = [20000]                # max N for review data is ANYTHING (can be over 118684)
+Ds = [6]                    # max D for review data is 6 (we could increase this actually)
 
-limit = 10
-erase=True
-standardize_count = 0
+limit = 10                  # max number of times the k-means loop can run (even if it doesn't converge)
+erase=True                  # start with a blank output file
+standardize_count = 1       # use the same count for all k-means regardless of conversion
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
