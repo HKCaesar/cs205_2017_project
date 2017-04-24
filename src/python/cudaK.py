@@ -41,26 +41,29 @@ def parallel_mod(kernel_fn, N, K, D):
     return kernel1, kernel2
 
 # run pyCUDA
-def cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit):
+def cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_count):
     count = 0
     kernel1, kernel2 = parallel_mod(kernel_fn, N, K, D)
     h_data, h_labels, h_centers, h_converged_array = prep_host(data, initial_labels, K, D)
 
     start = time.time()
     d_data, d_labels, d_centers, d_converged_array = prep_device(h_data, h_labels, h_centers, h_converged_array)
+    if standardize_count>0: loop_limit = standardize_count
+    else: loop_limit=limit
 
-    while count < limit:
+    for i in range(loop_limit):
         kernel1(d_data, d_labels, d_centers, block=(K, D, 1), grid=(1, 1, 1))
         kernel2(d_data, d_labels, d_centers, d_converged_array, block=(K, D, 1), grid=(N, 1, 1))
         cuda.memcpy_dtoh(h_converged_array, d_converged_array)
         count += 1
-        if np.sum(h_converged_array) == 0: break
+        if standardize_count == 0:
+            if np.sum(h_converged_array) == 0: break
 
     cuda.memcpy_dtoh(h_centers, d_centers)
     cuda.memcpy_dtoh(h_labels, d_labels)
-    runtime = time.time() - start
 
-    ai = 300 * count
-    distortion = 100
+    runtime = time.time() - start
+    ai = 0 * count
+    distortion = 0
 
     return h_centers, h_labels, count, runtime, distortion, ai
