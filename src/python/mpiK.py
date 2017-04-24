@@ -57,6 +57,7 @@ def mpikmeans(data, initial_labels, N, K, D, limit, standardize_count, comm):
 
         if rank==0:
             count += 1
+            print(count)
             temp_centers = np.empty((K, D))
             for center in centers:
                 temp_centers+=center
