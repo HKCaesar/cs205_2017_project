@@ -66,7 +66,9 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
         ##########################
         ### RUN STOCK K-MEANS ####
-        centers, labels, count, runtime, distortion, ai = stockkmeans(data, K, ref_count)
+        if standardize_count > 0: loop_limit = standardize_count
+        else: loop_limit = limit
+        centers, labels, count, runtime, distortion, ai = stockkmeans(data, K, loop_limit)
         output.append(['stock', runtime, count, distortion, ai, N, D, K, centers])
         print_output(output[-1], ref_centers, ref_count)
 
