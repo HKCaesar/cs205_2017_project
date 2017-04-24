@@ -50,10 +50,10 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
     ### PREP DATA & INITIAL LABELS ####
     output = []
     data, initial_labels = prep_data(data_fn, d_list, N, D, K)
-    print('\n\n\n----- N:%d D:%d K:%d -----' % (N,D,K))
 
     ############################################################################################################
     if rank == 0:
+        print('\n\n\n----- N:%d D:%d K:%d -----' % (N, D, K))
 
         ###############################
         ### RUN SEQUENTIAL K-MEANS ####
@@ -101,6 +101,14 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
     if rank ==0:
         write_output(output, output_fn)
     comm.Barrier()
+
+    ### RESET LOOP VARS ####
+    data = None
+    initial_labels = None
+    N = None
+    K = None
+    D = None
+    output = None
 
 if rank != 0:
     sys.exit(0)
