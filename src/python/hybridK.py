@@ -18,16 +18,12 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_co
     index = comm.scatter(indices, root=0)
     data_chunk = data[index[0]:index[1]]
     labels_chunk = initial_labels[index[0]:index[1]]
-    comm.Barrier()
 
     # prep CUDA stuff
-    try:
-        print(cuda.mem_get_info())
-    except:
-        pass
+
+    print(cuda.mem_get_info())
     h_data, h_labels, h_centers, h_converged_array = prep_host(data_chunk, labels_chunk, K, D)
     d_data, d_labels, d_centers, d_converged_array = prep_device(h_data, h_labels, h_centers, h_converged_array)
-    comm.Barrier()
 
     for k in range(loop_limit):
 
@@ -63,10 +59,7 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_co
             if converged: break
 
     cuda.memcpy_dtoh(h_labels, d_labels)
-    try:
-        print(cuda.mem_get_info())
-    except:
-        pass
+    print(cuda.mem_get_info())
 
     labels = comm.gather(h_labels,root=0)
     if rank==0: labels = np.array(list(chain(*labels)))
