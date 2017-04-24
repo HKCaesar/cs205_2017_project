@@ -17,5 +17,6 @@ module load cuda/7.5-fasrc02
 module load gcc/4.8.2-fasrc01 openmpi/1.10.2-fasrc01
 source activate pycuda
 
+cd ~/cs205_2017_project/src/python
 git pull
 srun -n $SLURM_NTASKS --mpi=pmi2 python run.py
