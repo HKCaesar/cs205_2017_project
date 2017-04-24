@@ -51,8 +51,8 @@ def seqkmeans(data, initial_labels, N, D, K, limit):
         if count == limit: break
 
     runtime = time.time() - start
-    ai = 200 * count
-    distortion = 100
+    ai = 0 * count
+    distortion = 0
 
     return centers, labels, count, runtime, distortion, ai
 
@@ -66,5 +66,5 @@ def stockkmeans(data, K, count):
     stockmeans = KMeans(n_clusters=K, n_init=count)
     stockmeans.fit(data)
     runtime = time.time() - start
-    ai = 100 * count
+    ai = 0 * count
     return stockmeans.cluster_centers_, stockmeans.labels_, count, runtime, stockmeans.inertia_, ai
