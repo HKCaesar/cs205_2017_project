@@ -36,13 +36,13 @@ Ds = [6]                    # max D for review data is 6 (we could increase this
 
 limit = 10                  # max number of times the k-means loop can run (even if it doesn't converge)
 erase=True                  # start with a blank output file
-standardize_count = 1       # use the same count for all k-means regardless of conversion
+standardize_count = 7       # use the same count for all k-means regardless of conversion
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
 if erase==True: blank_output_file(output_fn)
-if standardize_count==1: ref_count = 0
+
 
 for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
@@ -72,7 +72,6 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
         ###########################
         ### RUN pyCUDA K-MEANS ####
-        if standardize_count > 0: standardize_count = ref_count
         centers, labels, count, runtime, distortion, ai = cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_count)
         output.append(['pyCUDA', runtime, count, distortion, ai, N, D, K, centers])
         print_output(output[-1], ref_centers, ref_count)
@@ -80,7 +79,6 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
     ###########################
     ### RUN mpi4py K-MEANS ####
     comm.Barrier()
-    if standardize_count > 0: standardize_count = comm.bcast(ref_count, root=0)
     centers, labels, count, runtime, distortion, ai = mpikmeans(data, initial_labels, N, K, D, limit, standardize_count, comm)
     comm.Barrier()
     if rank == 0:
