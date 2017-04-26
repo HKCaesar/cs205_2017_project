@@ -43,6 +43,7 @@ __global__ void reduce(double *data)//, int start, int width)
 
     int idx = (tid + start);
     int end = (start + width);
+    int redThd = width/2;
     
     if (width > 32) {
         if((width %2) !=0)
@@ -52,10 +53,10 @@ __global__ void reduce(double *data)//, int start, int width)
                 data[end - 1] += data[end];
             }
             width--;
+            redThd = width/2;
             __syncthreads();
         }
         
-        int redThd = width/2;
         
         while(redThd > 32)
         {
