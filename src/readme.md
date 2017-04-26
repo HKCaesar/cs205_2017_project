@@ -1,6 +1,16 @@
 # submit batch job with kmeans.py
 
 From the login node: 
+
+```
+cd ~/cs205_2017_project/src/python
+sbatch sbatch.run
+cat kmeans.out
+cat kmeans.err
+```
+
+or
+
 ```
 srun -p holyseasgpu -n 2 --mem-per-cpu=2500 --gres=gpu:2 --constraint=cuda-7.5 --mpi=pmi2 --pty -t 0-04:00 /bin/bash
 cd ~/cs205_2017_project/src/python
