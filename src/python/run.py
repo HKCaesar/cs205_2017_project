@@ -33,10 +33,10 @@ output_fn = "../../analysis/output.csv"
 ### SET RUNTIME VARIABLES ####
 ######################################################
 
-env_vars = []  # list N, n, and GPUs (to put in the output.csv)
+env_vars = [2,2,2]  # list N, n, and GPUs (to put in the output.csv)
 
-#Ns = [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000]                # max N for review data is ANYTHING (can be over 118684)
-Ns = [1000,90000]
+#Ns = [1000,10000]           # max N for review data is ANYTHING (can be over 118684)
+Ns = [1000, 5000, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000]
 Ds = [6]                    # max D for review data is 6 (we could increase this actually)
 Ks = [3]
 
@@ -82,7 +82,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
         if standardize_count > 0: loop_limit = standardize_count
         else: loop_limit = limit
         centers, labels, count, runtime = stockkmeans(data, K, loop_limit)
-        output.append(['stock', runtime, count N, D, K] + env_vars + [centers])
+        output.append(['stock', runtime, count, N, D, K] + env_vars + [centers])
         print_output(output[-1], ref_centers, ref_count)
 
         ###########################
