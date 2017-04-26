@@ -13,7 +13,7 @@
 #define  N $N
 #define  K $K
 #define  D $D
-#define  numThreads //set equal to blockDim.X for new means
+#define  numThreads = 256//set equal to blockDim.X for new means
 
 
 //need dist matrix NxK
@@ -27,12 +27,12 @@ __device__ int isPowerOfTwo(int x)
 }
 __device__ double maxd(double X, double Y)
 {
-    return (((X) > (Y)) ? (X) : (Y))
+    return (((X) > (Y)) ? (X) : (Y));
 }
 
 __device__ int mini(int X, int Y)
 {
-    return (((X) > (Y)) ? (X) : (Y))
+    return (((X) > (Y)) ? (X) : (Y));
 }
 
 __global__ void reduce(double *data, int start, int width)
@@ -117,7 +117,7 @@ __global__ void reduce(double *data, int start, int width)
 
 __global__ void dist(double *data, double *means, double *dist)
 {
-    int activeThd = mini(blockDim.x, (N - (blockDim.x * blockIdx.x)); //in case last piece of data doesn't need all warps have the min function
+    int activeThd = mini(blockDim.x, (N - (blockDim.x * blockIdx.x))); //in case last piece of data doesn't need all warps have the min function
     __shared__ double s_means[D]; //equivalent to a D vector
     __shared__ double s_data[numThreads];//equivalent to an N_subset vector
 
@@ -135,7 +135,7 @@ __global__ void dist(double *data, double *means, double *dist)
         __syncthreads();
 
         for(int n = bid + blockIdx.x * numThreads, int meanCol = 0;
-            n < (N*D), meanCol < D;
+            (n < (N*D)) && (meanCol < D);
             n += N, meanCol++)
         {//reads data and doubles and sums should iterate through columns (column major format)
             temp = data[n] - s_means[meanCol];
@@ -149,7 +149,7 @@ __global__ void dist(double *data, double *means, double *dist)
 
 __global__ void reassign(double *dist, double *label, int *conv_array)
 {
-    int activeThd = mini(blockDim.x, (N - (blockDim.x * blockIdx.x)); //in case last piece of data doesn't need all warps have the min function
+    int activeThd = mini(blockDim.x, (N - (blockDim.x * blockIdx.x))); //in case last piece of data doesn't need all warps have the min function
     __shared__ int s_label[numThreads]; //equivalent to a D vector
     __shared__ double s_min[numThreads];//equivalent to an N_subset vector
     __shared__ int s_conv[numThreads];//equivalent to an N_subset vector
@@ -167,7 +167,7 @@ __global__ void reassign(double *dist, double *label, int *conv_array)
         s_min[bid] = 1.0/0.0; //set min to infinity! and beyond
         
         for(int n = bid + blockIdx.x * numThreads, int meanCol = 0;
-            n < (N*K), meanCol < K;
+            (n < (N*K)) && (meanCol < K);
             n += N, meanCol++)
         {
             temp = dist[n];
@@ -179,7 +179,7 @@ __global__ void reassign(double *dist, double *label, int *conv_array)
         s_conv[bid] = ((s_label[bid] == label[dataid]) ? 1 : 0);
         __syncthreads();
         
-        reduce(&s_cov, 0 , activeThd);
+        reduce(&s_conv, 0 , activeThd);
         __syncthreads();
 
         
@@ -196,6 +196,7 @@ __global__ void countCluster(int *labels,int *clustern)
     
     int bid = threadIdx.x; //within block index
     int temp;
+    int k = blockDim.y; //which K mean are we talking about here
     
     // grid strided for loop
     s_labels[bid] = 0;
@@ -236,7 +237,7 @@ __global__ void newMeans(double *data, int *labels, double *means, int *clustern
     
     // grid strided for loop
     s_data[bid] = 0;
-    s_labels[bid] = 0;
+//    s_labels[bid] = 0;
          
     for(int n = bid;
          n < N;
