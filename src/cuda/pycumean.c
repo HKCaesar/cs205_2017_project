@@ -45,17 +45,17 @@ __global__ void reduce(double *data)//, int start, int width)
     int end = (start + width);
     int redThd = width/2;
     
-//    if (width > 32) {
-//        if((width %2) !=0)
-//        {
-//            if(idx == end)
-//            {
-//                data[end - 1] += data[end];
-//            }
-//            width--;
-//            redThd = width/2;
-//            __syncthreads();
-//        }
+    if (width > 32) {
+        if((width %2) !=0)
+        {
+            if(idx == end)
+            {
+                data[end - 1] += data[end];
+            }
+            width--;
+            redThd = width/2;
+            __syncthreads();
+        }
     
         
         while(redThd > 32)
@@ -96,26 +96,26 @@ __global__ void reduce(double *data)//, int start, int width)
             data[idx] += data[idx + 1];
             __syncthreads();
         }
-//    } else {
-//        
-//        while(!isPowerOfTwo(end))
-//        {
-//            if(tid == end) {
-//                data[idx - 1] += data[idx];
-//            }
-//            end--;
-//            __syncthreads();
-//        }
-//        width = end - start;
-//        
-//        for(int redThd = width/2; redThd > 0; redThd>>=1)
-//        {
-//            if (tid < redThd) {
-//                data[idx] += data[idx + redThd];
-//            }
-//            __syncthreads();
-//        }
-//    }
+    } else {
+        
+        while(!isPowerOfTwo(end))
+        {
+            if(tid == end) {
+                data[idx - 1] += data[idx];
+            }
+            end--;
+            __syncthreads();
+        }
+        width = end - start;
+        
+        for(int redThd = width/2; redThd > 0; redThd>>=1)
+        {
+            if (tid < redThd) {
+                data[idx] += data[idx + redThd];
+            }
+            __syncthreads();
+        }
+    }
 }
 
 
