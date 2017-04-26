@@ -45,17 +45,8 @@ __global__ void reduce(double *data)//, int start, int width)
     int end = (start + width);
     int redThd = width/2;
     
-    if (width > 32) {
-        if((width %2) !=0)
-        {
-            if(idx == end)
-            {
-                data[end - 1] += data[end];
-            }
-            width--;
-            redThd = width/2;
-            __syncthreads();
-        }
+    if (width > 32 & isPowerOfTwo(width)) {
+        
     
         
         while(redThd > 32)
@@ -66,18 +57,11 @@ __global__ void reduce(double *data)//, int start, int width)
             }
             __syncthreads();
             
-            if(redThd %2 != 0)
-            {
-                if(tid == redThd) data[idx - 1] += data[idx];
-                
-            }
-            __syncthreads();
-            
             redThd>>=1;
         }
-        data[253] = (double)redThd;
+        
         if (idx < 32)
-        {//need code to make sure gets to power of 2
+        {
             data[idx] += data[idx + 32];
             __syncthreads();
             
@@ -98,21 +82,31 @@ __global__ void reduce(double *data)//, int start, int width)
         }
     } else {
         
-        while(!isPowerOfTwo(end))
+        if((width %2) !=0)
         {
-            if(tid == end) {
-                data[idx - 1] += data[idx];
+            if(idx == end)
+            {
+                data[end - 1] += data[end];
             }
-            end--;
+            width--;
+            redThd = width/2;
             __syncthreads();
         }
-        width = end - start;
         
-        for(int redThd = width/2; redThd > 0; redThd>>=1)
+        while(redThd > 0)
         {
             if (tid < redThd) {
                 data[idx] += data[idx + redThd];
             }
+            redThd>>=1;
+            __syncthreads();
+            
+            if(redThd %2 != 0)
+            {
+                if(tid == redThd) data[idx - 1] += data[idx];
+                redThd--;
+            }
+            
             __syncthreads();
         }
     }
