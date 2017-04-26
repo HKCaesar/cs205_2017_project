@@ -45,7 +45,6 @@ __global__ void reduce(double *data)//, int start, int width)
     int end = (start + width);
     int redThd = width/2;
     
-    data[0] = 5.0//(double)redThd;
 //    if (width > 32) {
 //        if((width %2) !=0)
 //        {
@@ -59,23 +58,23 @@ __global__ void reduce(double *data)//, int start, int width)
 //        }
     
         
-//        while(redThd > 32)
-//        {
-//            if (tid < redThd)
-//            {
-//                data[idx] += data[idx + redThd];
-//            }
-//            __syncthreads();
-//            
-//            if(redThd %2 != 0)
-//            {
-//                if(tid == redThd) data[idx - 1] += data[idx];
-//                
-//            }
-//            __syncthreads();
-//            
-//            redThd>>=1;
-//        }
+        while(redThd > 32)
+        {
+            if (tid < redThd)
+            {
+                data[idx] += data[idx + redThd];
+            }
+            __syncthreads();
+            
+            if(redThd %2 != 0)
+            {
+                if(tid == redThd) data[idx - 1] += data[idx];
+                
+            }
+            __syncthreads();
+            
+            redThd>>=1;
+        }
 //        
 //        if (redThd < 32)
 //        {//need code to make sure gets to power of 2
