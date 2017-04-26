@@ -37,7 +37,7 @@ __device__ int mini(int X, int Y)
 
 __global__ void reduce(double *data)//, int start, int width)
 {
-    int tid = blockIdx.x;
+    int tid = threadIdx.x;
     int start = 0;
     int width = 256;
 
