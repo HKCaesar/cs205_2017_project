@@ -26,24 +26,36 @@ import sys
 
 data_fn = "../../data/reviewer-data.csv"
 d_list = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin"]
-
 kernel_fn = "pycuda.c"
 output_fn = "../../analysis/output.csv"
 
-Ks = [3]
+######################################################
+### SET RUNTIME VARIABLES ####
+######################################################
+
+env_vars = []  # list N, n, and GPUs (to put in the output.csv)
+
 #Ns = [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000]                # max N for review data is ANYTHING (can be over 118684)
 Ns = [1000,90000]
 Ds = [6]                    # max D for review data is 6 (we could increase this actually)
+Ks = [3]
 
 limit = 10                  # max number of times the k-means loop can run (even if it doesn't converge)
-erase=True                  # start with a blank output file
 standardize_count = 7       # use the same count for all k-means regardless of conversion
+
+algorithms_to_run = ["hybrid","mpi","cuda"]   # indicate which algorithms should run
+#algorithms_to_run = ["cuda"]
+#algorithms_to_run = ["mpi"]
+
+erase=True                  # start with a blank output file
+if erase==True: blank_output_file(output_fn)
+
+######################################################
+### MAIN LOOP TO RUN 5 K-MEANS ALGORITHMS ####
+######################################################
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
-
-if erase==True: blank_output_file(output_fn)
-
 
 for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
@@ -59,8 +71,8 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
 
         ###############################
         ### RUN SEQUENTIAL K-MEANS ####
-        centers, labels, count, runtime, distortion, ai = seqkmeans(data, initial_labels, N, D, K, limit, standardize_count)
-        output.append(['sequential',runtime, count, distortion, ai, N, D, K, centers])
+        centers, labels, count, runtime = seqkmeans(data, initial_labels, N, D, K, limit, standardize_count)
+        output.append(['sequential',runtime, count, N, D, K] + env_vars + [centers])
         ref_centers=centers
         ref_count=count
         print_output(output[-1], ref_centers, ref_count)
@@ -69,33 +81,36 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
         ### RUN STOCK K-MEANS ####
         if standardize_count > 0: loop_limit = standardize_count
         else: loop_limit = limit
-        centers, labels, count, runtime, distortion, ai = stockkmeans(data, K, loop_limit)
-        output.append(['stock', runtime, count, distortion, ai, N, D, K, centers])
+        centers, labels, count, runtime = stockkmeans(data, K, loop_limit)
+        output.append(['stock', runtime, count N, D, K] + env_vars + [centers])
         print_output(output[-1], ref_centers, ref_count)
 
         ###########################
         ### RUN pyCUDA K-MEANS ####
-        centers, labels, count, runtime, distortion, ai = cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_count)
-        output.append(['pyCUDA', runtime, count, distortion, ai, N, D, K, centers])
-        print_output(output[-1], ref_centers, ref_count)
+        if "cuda" in algorithms_to_run:
+            centers, labels, count, runtime = cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_count)
+            output.append(['pyCUDA', runtime, count, N, D, K] + env_vars + [centers])
+            print_output(output[-1], ref_centers, ref_count)
 
     ###########################
     ### RUN mpi4py K-MEANS ####
     comm.Barrier()
-    centers, labels, count, runtime, distortion, ai = mpikmeans(data, initial_labels, N, K, D, limit, standardize_count, comm)
-    comm.Barrier()
-    if rank == 0:
-        output.append(['mpi4py',runtime, count, distortion, ai, N, D, K, centers])
-        print_output(output[-1], ref_centers, ref_count)
+    if "mpi" in algorithms_to_run:
+        centers, labels, count, runtime = mpikmeans(data, initial_labels, N, K, D, limit, standardize_count, comm)
+        comm.Barrier()
+        if rank == 0:
+            output.append(['mpi4py',runtime, count, N, D, K] + env_vars + [centers])
+            print_output(output[-1], ref_centers, ref_count)
 
     ###########################
     ### RUN hybrid K-MEANS ####
     comm.Barrier()
-    centers, labels, count, runtime, distortion, ai = hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_count, comm)
-    comm.Barrier()
-    if rank == 0:
-        output.append(['hybrid',runtime, count, distortion, ai, N, D, K, centers])
-        print_output(output[-1], ref_centers, ref_count)
+    if "hybrid" in algorithms_to_run:
+        centers, labels, count, runtime = hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_count, comm)
+        comm.Barrier()
+        if rank == 0:
+            output.append(['hybrid',runtime, count, N, D, K] + env_vars + [centers])
+            print_output(output[-1], ref_centers, ref_count)
 
   ######################################################
   ### WRITE OUTPUT TO CSV ONCE PER LOOP ####

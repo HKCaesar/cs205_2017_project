@@ -65,9 +65,7 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_co
     if rank==0: labels = np.array(list(chain(*labels)))
     labels = comm.bcast(labels, root=0)
     count = comm.bcast(count, root=0)
-    distortion = 0
-    ai = 0*count
     if rank==0: runtime = time.time() - start
     runtime = comm.bcast(runtime, root=0)
 
-    return h_centers, labels, count, runtime, distortion, ai
+    return h_centers, labels, count, runtime

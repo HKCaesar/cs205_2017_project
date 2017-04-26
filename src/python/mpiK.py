@@ -80,10 +80,8 @@ def mpikmeans(data, initial_labels, N, K, D, limit, standardize_count, comm):
     if rank==0: labels = np.array(list(chain(*labels)))
     labels = comm.bcast(labels, root=0)
     count = comm.bcast(count, root=0)
-    distortion = 0
-    ai = 0*count
     if rank==0: runtime = time.time() - start
     runtime = comm.bcast(runtime, root=0)
 
-    return centers, labels, count, runtime, distortion, ai
+    return centers, labels, count, runtime
 

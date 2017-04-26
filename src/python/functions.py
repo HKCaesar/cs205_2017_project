@@ -36,7 +36,7 @@ def prep_data(data_fn, d_list, N, D, K):
 def blank_output_file(output_fn):
     with open(output_fn, 'w') as f:
         writer = csv.writer(f, delimiter = ',')
-        writer.writerow(['algorithm','time','convergence','distortion', 'arithmetic intensity', 'n','d','k'])
+        writer.writerow(['algorithm','time','convergence', 'n','d','k', 'Nodes N', 'Nodes n', 'GPUs'])
         f.close()
     return
 
