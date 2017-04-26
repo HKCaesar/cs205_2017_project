@@ -46,17 +46,17 @@ __global__ void reduce(double *data)//, int start, int width)
     int redThd = width/2;
     
 //    if (width > 32) {
-        if((width %2) !=0)
-        {
-            if(idx == end)
-            {
-                data[end - 1] += data[end];
-            }
-            width--;
-            redThd = width/2;
-            __syncthreads();
-        }
-        
+//        if((width %2) !=0)
+//        {
+//            if(idx == end)
+//            {
+//                data[end - 1] += data[end];
+//            }
+//            width--;
+//            redThd = width/2;
+//            __syncthreads();
+//        }
+    
         
         while(redThd > 32)
         {
@@ -66,12 +66,12 @@ __global__ void reduce(double *data)//, int start, int width)
             }
             __syncthreads();
             
-            if(redThd %2 != 0)
-            {
-                if(tid == redThd) data[idx - 1] += data[idx];
-                
-            }
-            __syncthreads();
+//            if(redThd %2 != 0)
+//            {
+//                if(tid == redThd) data[idx - 1] += data[idx];
+//                
+//            }
+//            __syncthreads();
             
             redThd>>=1;
         }
