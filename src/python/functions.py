@@ -44,7 +44,7 @@ def blank_output_file(output_fn):
 def write_output(output, output_fn):
     with open(output_fn, 'a') as f:
         writer = csv.writer(f, delimiter=',')
-        writer.writerows([o[:8] for o in output])
+        writer.writerows([o[:-1] for o in output])
         f.close()
     return
 

@@ -35,8 +35,8 @@ output_fn = "../../analysis/output.csv"
 
 env_vars = [2,2,2]  # list N, n, and GPUs (to put in the output.csv)
 
-#Ns = [1000,10000]           # max N for review data is ANYTHING (can be over 118684)
-Ns = [1000, 5000, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000]
+Ns = [1000,10000]           # max N for review data is ANYTHING (can be over 118684)
+#Ns = [1000, 5000, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000]
 Ds = [6]                    # max D for review data is 6 (we could increase this actually)
 Ks = [3]
 
