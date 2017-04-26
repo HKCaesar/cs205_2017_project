@@ -75,26 +75,26 @@ __global__ void reduce(double *data)//, int start, int width)
             redThd>>=1;
         }
         
-//        if (redThd < 32)
-//        {//need code to make sure gets to power of 2
-//            data[idx] += data[idx + 32];
-//            __syncthreads();
-//            
-//            data[idx] += data[idx + 16];
-//            __syncthreads();
-//            
-//            data[idx] += data[idx + 8];
-//            __syncthreads();
-//            
-//            data[idx] += data[idx + 4];
-//            __syncthreads();
-//            
-//            data[idx] += data[idx + 2];
-//            __syncthreads();
-//            
-//            data[idx] += data[idx + 1];
-//            __syncthreads();
-//        }
+        if (redThd < 32)
+        {//need code to make sure gets to power of 2
+            data[idx] += data[idx + 32];
+            __syncthreads();
+            
+            data[idx] += data[idx + 16];
+            __syncthreads();
+            
+            data[idx] += data[idx + 8];
+            __syncthreads();
+            
+            data[idx] += data[idx + 4];
+            __syncthreads();
+            
+            data[idx] += data[idx + 2];
+            __syncthreads();
+            
+            data[idx] += data[idx + 1];
+            __syncthreads();
+        }
     } else {
         
         while(!isPowerOfTwo(end))
