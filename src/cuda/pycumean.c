@@ -39,7 +39,7 @@ __global__ void reduce(double *data)//, int start, int width)
 {
     int tid = threadIdx.x;
     int start = 0;
-    int width = 256;
+    int width = 254;
 
     int idx = (tid + start);
     int end = (start + width);
