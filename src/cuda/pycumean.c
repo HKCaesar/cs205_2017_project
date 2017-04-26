@@ -14,8 +14,6 @@
 #define  K $K
 #define  D $D
 #define  numThreads = 256//set equal to blockDim.X for new means
-#define start = 0
-#define width = 256
 
 
 //need dist matrix NxK
@@ -40,8 +38,11 @@ __device__ int mini(int X, int Y)
 __global__ void reduce(double *data)//, int start, int width)
 {
     int tid = blockIdx.x;
-    int idx = tid + start;
-    int end = start + width;
+    int start = 0;
+    int width = 256;
+
+    int idx = (tid + start);
+    int end = (start + width);
     
     if (width > 32) {
         if((width %2) !=0)
