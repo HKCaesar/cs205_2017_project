@@ -75,7 +75,7 @@ __global__ void reduce(double *data)//, int start, int width)
             
             redThd>>=1;
         }
-
+        data[254] = (double)redThd;
         if (idx < 32)
         {//need code to make sure gets to power of 2
             data[idx] += data[idx + 32];
