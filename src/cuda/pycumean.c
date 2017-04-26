@@ -76,7 +76,7 @@ __global__ void reduce(double *data)//, int start, int width)
             redThd>>=1;
         }
 
-        if (redThd < 32)
+        if (idx < 32)
         {//need code to make sure gets to power of 2
             data[idx] += data[idx + 32];
             __syncthreads();
