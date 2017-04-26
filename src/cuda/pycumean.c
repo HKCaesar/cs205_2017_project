@@ -45,7 +45,7 @@ __global__ void reduce(double *data)//, int start, int width)
     int end = (start + width);
     int redThd = width/2;
     
-    data[0] = redThd;
+    data[0] = (double)redThd;
 //    if (width > 32) {
 //        if((width %2) !=0)
 //        {
