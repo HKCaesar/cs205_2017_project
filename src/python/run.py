@@ -26,7 +26,7 @@ import sys
 
 data_fn = "../../data/reviewer-data.csv"
 d_list = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin", "avgspph_avg", "app_reviewer_avg", "perf_reviewer_avg", "rptescorts_reviewers", "rvwduration_years_reviewer", "reviewno_escort_avg", "appgap_reviewer_avg", "age_cont2_avg", "height_cont2_avg", "breastsize_cont2_avg", "breastcup_cont_avg", "hairlength_cont_avg", "smokes_bin_avg", "avgpph_avg", "unqescorts_reviewers", "ethnicity_n", "build_n", "haircolor_n", "reviewno_escort_max", "reviewno_escort_min"]
-kernel_fn = "pycuda.c"
+kernel_fn = "../cuda/pycumean.c"
 output_fn = "../../analysis/output.csv"
 
 ######################################################
