@@ -15,7 +15,7 @@ def prep_data(data_fn, d_list, N, D, K):
     data = np.empty((M*total_iter, D))
     
     for n in range(int(N/M)):
-        data[(n * M):(n * M + M),] = reviewdata[d_list[:D]]
+        data[(n * M):(n * M + M),:] = reviewdata[:,d_list[:D]]
         print(len(data))
     data = data[d_list[:D]][:N].values
     data = np.ascontiguousarray(data, dtype=np.float64)
