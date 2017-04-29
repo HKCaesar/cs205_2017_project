@@ -26,8 +26,7 @@ import sys
 
 data_fn = "../../data/reviewer-data.csv"
 d_list = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin", "avgspph_avg", "app_reviewer_avg", "perf_reviewer_avg", "rptescorts_reviewers", "rvwduration_years_reviewer", "reviewno_escort_avg", "appgap_reviewer_avg", "age_cont2_avg", "height_cont2_avg", "breastsize_cont2_avg", "breastcup_cont_avg", "hairlength_cont_avg", "smokes_bin_avg", "avgpph_avg", "unqescorts_reviewers", "ethnicity_n", "build_n", "haircolor_n", "reviewno_escort_max", "reviewno_escort_min"]
-#kernel_fn = "../cuda/pycumean.c"
-kernel_fn = "pycuda.c"
+kernel_fn = "../cuda/pycumean.c"
 output_fn = "../../analysis/output.csv"
 
 ######################################################
@@ -37,12 +36,12 @@ output_fn = "../../analysis/output.csv"
 env_vars = [2,2,2]  # list N, n, and GPUs (to put in the output.csv)
 
 #Ns = [1000,10000]           # max N for review data is ANYTHING (can be over 118684)
-Ns = [1000, 5000, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000]
+Ns = [1000, 5000, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 500000, 1000000, 10000000]
 Ds = [3,6,12,24]                    # max D for review data is 26 (we could increase even more this actually)
-Ks = [3,6,12]
+Ks = [3,4,5,10,25,50,100]
 
-limit = 10                  # max number of times the k-means loop can run (even if it doesn't converge)
-standardize_count = 7       # use the same count for all k-means regardless of conversion
+limit = 1000                  # max number of times the k-means loop can run (even if it doesn't converge)
+standardize_count = 0       # use the same count for all k-means regardless of conversion
 
 algorithms_to_run = ["hybrid","mpi","cuda"]   # indicate which algorithms should run
 #algorithms_to_run = ["cuda"]
