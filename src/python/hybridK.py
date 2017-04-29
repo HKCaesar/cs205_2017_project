@@ -42,27 +42,15 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, numThreads, limit, st
         if rank==0:
             count += 1
             temp_centers = np.empty((K, D))
-            for center in centers:
-                temp_centers+=center
-            collected_labels = np.array(list(chain(*collected_labels)))
+            temp_count = np.empty(K)
+            for i in range(len(centers)):
+                temp_sum = center[i]
+                for k in range(K) : temp_sum[k,:] *= collected_count[i][k]
+                temp_centers += temp_sum
+                temp_count   += collected_count[i]
             for j in range(K):
-                total = np.sum(collected_labels==j)
-                temp_centers[j,:] = temp_centers[j,:]/total
+                temp_centers[j,:] = temp_centers[j,:]/temp_count[j]
             h_centers = temp_centers
-                # I'm not sure this calculation is correct? it looks like you have the centers summing but you need the centers from the workers multiplied by the number of observations in each center on the worker and then divide by the total observations.
-                #not sure if this commented code works so I'm leaving it commented out
-#        if rank==0:
-#            count += 1
-#            temp_centers = np.empty((K, D))
-#            temp_count = np.empty(K)
-#            for i in range(len(centers)):
-#                temp_sum = center[i]
-#                for k in range(K) : temp_sum[k,:] *= collected_count[i][k]
-#                temp_centers += temp_sum
-#                temp_count   += collected_count[i]
-#            for j in range(K):
-#                temp_centers[j,:] = temp_centers[j,:]/temp_count[j]
-#            h_centers = temp_centers
 
         h_centers = comm.bcast(h_centers, root=0)
         cuda.memcpy_htod(d_centers, h_centers)
