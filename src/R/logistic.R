@@ -1,7 +1,7 @@
 require(rstan)
 require(arm)
 
-data <- read.csv(file="reviewer-data.csv")
+data <- read.csv(file="../../data/reviewer-data.csv")
 
 d <- data[,grep("ct_bin", colnames(data))]
 d2 <- data[,!grepl("reviewerid|reviewno_reviewers", colnames(data))]
@@ -18,7 +18,7 @@ summary(probs)
 pca <- prcomp(probs, scale=TRUE)
 plot(pca$x[,1:2],pch=".")
 
-write.csv(probs, file="fittedVals.csv")
+write.csv(probs, file="../../data/fittedVals.csv")
 
 p.data <- apply(d2,2,as.numeric)
 p.data <- p.data[,apply(p.data,2,function(X) !any(is.na(X)))]
