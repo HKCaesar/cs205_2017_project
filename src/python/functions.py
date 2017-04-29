@@ -7,13 +7,17 @@ import csv
 ######################################################
 
 def prep_data(data_fn, d_list, N, D, K):
-
     # import data file and subset data for k-means
     reviewdata = pd.read_csv(data_fn)
-    for n in range(int(N/118684)):
-        reviewdata = reviewdata.append(reviewdata)
-        print(len(reviewdata))
-    data = reviewdata[d_list[:D]][:N].values
+    
+    M = 118684 # actual matrix size of real data
+    total_iter = int(N/M) + 1
+    data = np.empty((M*total_iter, D))
+    
+    for n in range(int(N/M)):
+        data[(n * M):(n * M + M),] = reviewdata[d_list[:D]]
+        print(len(data))
+    data = data[d_list[:D]][:N].values
     data = np.ascontiguousarray(data, dtype=np.float64)
 
     # assign random clusters & shuffle

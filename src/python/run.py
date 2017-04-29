@@ -27,7 +27,7 @@ import sys
 data_fn = "../../data/reviewer-data.csv"
 d_list = ["cunninlingus_ct_bin","fellatio_ct_bin","intercoursevaginal_ct_bin","kissing_ct_bin","manualpenilestimulation_ct_bin","massage_ct_bin", "avgspph_avg", "app_reviewer_avg", "perf_reviewer_avg", "rptescorts_reviewers", "rvwduration_years_reviewer", "reviewno_escort_avg", "appgap_reviewer_avg", "age_cont2_avg", "height_cont2_avg", "breastsize_cont2_avg", "breastcup_cont_avg", "hairlength_cont_avg", "smokes_bin_avg", "avgpph_avg", "unqescorts_reviewers", "ethnicity_n", "build_n", "haircolor_n", "reviewno_escort_max", "reviewno_escort_min"]
 kernel_fn = "../cuda/pycumean.c"
-output_fn = "../../analysis/output.csv"
+output_fn = "../../analysis/output_".csv"
 
 ######################################################
 ### SET RUNTIME VARIABLES ####
@@ -36,9 +36,10 @@ output_fn = "../../analysis/output.csv"
 env_vars = [2,2,2]  # list N, n, and GPUs (to put in the output.csv)
 
 #Ns = [1000,10000]           # max N for review data is ANYTHING (can be over 118684)
-Ns = [1000, 5000, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 500000, 1000000, 10000000]
+Ns = [1000, 5000, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 500000, 1000000, 5000000]
 Ds = [3,6,12,24]                    # max D for review data is 26 (we could increase even more this actually)
 Ks = [3,4,5,10,25,50,100]
+numThreads = 256
 
 limit = 1000                  # max number of times the k-means loop can run (even if it doesn't converge)
 standardize_count = 0       # use the same count for all k-means regardless of conversion
@@ -72,11 +73,11 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
         ###############################
         ### RUN SEQUENTIAL K-MEANS ####
         centers, labels, count, runtime = seqkmeans(data, initial_labels, N, D, K, limit, standardize_count)
-        output.append(['sequential',runtime, count, N, D, K] + env_vars + [centers])
+        #output.append(['sequential',runtime, count, N, D, K] + env_vars + [centers])
         ref_centers=centers
         ref_count=count
         print_output(output[-1], ref_centers, ref_count)
-
+        
         ##########################
         ### RUN STOCK K-MEANS ####
         if standardize_count > 0: loop_limit = standardize_count
@@ -84,11 +85,11 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
         centers, labels, count, runtime = stockkmeans(data, K, loop_limit)
         output.append(['stock', runtime, count, N, D, K] + env_vars + [centers])
         print_output(output[-1], ref_centers, ref_count)
-
+        
         ###########################
         ### RUN pyCUDA K-MEANS ####
         if "cuda" in algorithms_to_run:
-            centers, labels, count, runtime = cudakmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_count)
+            centers, labels, count, runtime = cudakmeans(data, initial_labels, kernel_fn, N, K, D, numThreads, limit, standardize_count)
             output.append(['pyCUDA', runtime, count, N, D, K] + env_vars + [centers])
             print_output(output[-1], ref_centers, ref_count)
 
@@ -106,7 +107,7 @@ for N, D, K in [x for x in list(itertools.product(Ns, Ds, Ks))]:
     ### RUN hybrid K-MEANS ####
     comm.Barrier()
     if "hybrid" in algorithms_to_run:
-        centers, labels, count, runtime = hybridkmeans(data, initial_labels, kernel_fn, N, K, D, limit, standardize_count, comm)
+        centers, labels, count, runtime = hybridkmeans(data, initial_labels, kernel_fn, N, K, D, numThreads, limit, standardize_count, comm)
         comm.Barrier()
         if rank == 0:
             output.append(['hybrid',runtime, count, N, D, K] + env_vars + [centers])
