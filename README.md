@@ -14,7 +14,7 @@ Kareem Carr, Eric Dunipace, Charlotte Lloyd
 </p>
 
 ```
-This repository was created in partial fulfillment of the requirements of CS 205 in Spring 2017.
+The video illustrates K-means for K=3 on the escort review data.
 ```
 
 ## Substantive Problem
