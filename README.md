@@ -29,15 +29,9 @@ We will use a unique data from the world’s largest sex work review website (ww
 
 > <i>K-means is a popular method of clustering that iteratively calculates group means and reassigns observations to clusters until convergence is achieved.</i>
 
-Invented in 1955, K-means is a simple clustering method that remains one of the most popular and widely used algorithms today (Jain 2010). The K-means problem produces a partitional clustering of the observed data with the smallest within-cluster variance, which can be interpreted as a residual sum of squares. The within-cluster variance is sensitive to the choice of the number of clusters K. Several solutions have been proposed to address this limitation. One of the most successful is the Gap statistic. Another approach suggested by Broderick et al is incorporating a penalty function. We will explore various approaches to determining K which will involve subsampling the data and iteratively incorporating distribution of estimates derived from subsamples.
+Invented in 1955, K-means is a simple clustering method that remains one of the most popular and widely used algorithms today (Jain 2010). The K-means problem produces a partitional clustering of the observed data with the smallest within-cluster variance, which can be interpreted as a residual sum of squares. The within-cluster variance is sensitive to the choice of the number of clusters K. Several solutions have been proposed to address this limitation. One of the most successful is the Gap statistic. Another approach suggested by Broderick et al is incorporating a penalty function. We will explore various approaches to determining K which will involve subsampling the data and iteratively incorporating distribution of estimates derived from subsamples. 
 
-Given the popularity of this clustering method, it is unsurprising that there has been corresponding interest in parallel implementations of K-means (Farivar et al. 2008; Hong-tao et al. 2009; Kanungo et al. 2002; Li et al. 2010; Shalom, Dash, and Tue 2008; Wu and Hong 2011; Zechner and Granitzer 2009; Zhao, Ma, and He 2009). [do we need to commment on this existing literature?]
-
-[should we mention existing pyCUDA implementations?]
-https://github.com/shackenberg/cukmeans.py
-https://github.com/dbelll/kmeans
-https://github.com/serban/kmeans
-https://bitbucket.org/malthejorgensen/kmeans-gpu-nbi
+Given the popularity of this clustering method, it is unsurprising that there has been corresponding interest in parallel implementations of K-means (Farivar et al. 2008; Hong-tao et al. 2009; Kanungo et al. 2002; Li et al. 2010; Shalom, Dash, and Tue 2008; Wu and Hong 2011; Zechner and Granitzer 2009; Zhao, Ma, and He 2009). 
 
 ## Parallel Architecture
 
@@ -60,12 +54,10 @@ However, due to the limitations of Odyssey's hardware configuration, we were not
 
 ## Performance
 
-> <i>Our purely pyCUDA implementation is fastest, followed by the "stock" K-means written purely in C and our hybrid mpi4py + pyCUDA algorithm. Both our mpi4py and pyCUDA implementations are faster than the sequential K-means algorithm written in Python. </i>
+> <i>Our purely pyCUDA implementation is fastest, followed closely by the "stock" K-means written purely in C and our hybrid mpi4py + pyCUDA algorithm. Relative to the pure pyCUDA and hybrid algorithm, the pure mpi4py algorithm is slow. Unsurprisingly, the sequential k-means algorithm written in Python is the slowest.</i>
 
-<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/time-bar-10000-6-3.png">
-<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/time-bar-30000-6-3.png">
-<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/time-bar-60000-6-3.png">
-<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/time-bar-90000-6-3.png">
+<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/time-perf.png">
+
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/time-line-n-6-3.png">
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/speedup-line-n-6-3.png">
 
