@@ -56,8 +56,7 @@ In an ideal hardware configuration, we would expect a host CPU to control <i>c</
 3. Third, the host CPU (rank 0 in the MPI framework) would re-assemble the results of the subsets into the final means, labels, and distortion score. 
 
 However, due to the limitations of Odyssey's hardware configuration, we were not able to implement our ideal parallel architecture described above. Unfortunately we were limited to only 2 CPUs with 2 GPUs each. 
-<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/holyseas
-.png">
+<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/holyseas.png">
 
 ## Performance
 
