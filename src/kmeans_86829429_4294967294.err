@@ -1,0 +1,12 @@
+discarding /n/sw/fasrcsw/apps/Core/Anaconda/2.5.0-fasrc01/x/bin from PATH
+prepending /n/home08/cs205u1709/.conda/envs/pycuda/bin to PATH
+Traceback (most recent call last):
+  File "run.py", line 62, in <module>
+Traceback (most recent call last):
+  File "run.py", line 62, in <module>
+    P = Comm.Get_size()
+NameError: name 'Comm' is not defined
+    P = Comm.Get_size()
+NameError: name 'Comm' is not defined
+srun: error: holyseasgpu10: task 1: Exited with exit code 1
+srun: error: holyseasgpu09: task 0: Exited with exit code 1
