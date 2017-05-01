@@ -55,12 +55,6 @@ def mpikmeans(data, initial_labels, N, K, D, limit, standardize_count, comm):
         centers = comm.gather(centers, root=0)
         collected_labels = comm.gather(labels_chunk, root=0)
 
-        for k in range(loop_limit):
-
-        compute_centers(labels_chunk,centers,data_chunk)
-        centers = comm.gather(centers, root=0)
-        collected_labels = comm.gather(labels_chunk, root=0)
-
         if rank==0:
             count += 1
             temp_centers = np.empty((K, D))
@@ -81,17 +75,6 @@ def mpikmeans(data, initial_labels, N, K, D, limit, standardize_count, comm):
         if standardize_count == 0:
             if converged: break
 
-    
-
-        comm.Barrier()
-        centers = comm.bcast(centers, root=0)
-        converged = reassign_labels(labels_chunk,centers,data_chunk)
-
-        converged = comm.allgather(converged)
-        converged = np.all(converged)
-        if standardize_count == 0:
-            if converged: break
-
     comm.Barrier()
     labels = comm.gather(labels_chunk,root=0)
     if rank==0: labels = np.array(list(chain(*labels)))
@@ -101,4 +84,3 @@ def mpikmeans(data, initial_labels, N, K, D, limit, standardize_count, comm):
     runtime = comm.bcast(runtime, root=0)
 
     return centers, labels, count, runtime
-
