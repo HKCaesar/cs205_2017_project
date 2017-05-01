@@ -3,8 +3,23 @@
 From the login node: 
 
 ```
-cd ~/cs205_2017_project/src/python
-sbatch sbatch.run
+cd ~/cs205_2017_project/src
+
+for PARAM1 in $(seq 1 10); do
+ for PARAM2 in 1 2; do
+  for PARAM3 in 1 2; do
+  #  #
+  echo "${PARAM1}, ${PARAM2}, ${PARAM3}"
+  export PARAM1 PARAM2 PARAM3
+  #
+  sbatch -N ${PARAM2} -n ${PARAM3} --gres=gpu:${PARAM3} \
+    sbatch.run
+   #
+   sleep 1 # pause to be kind to the scheduler
+  done
+ done
+done
+
 cat kmeans.out
 cat kmeans.err
 ```

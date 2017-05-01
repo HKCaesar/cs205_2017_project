@@ -84,4 +84,3 @@ def mpikmeans(data, initial_labels, N, K, D, limit, standardize_count, comm):
     runtime = comm.bcast(runtime, root=0)
 
     return centers, labels, count, runtime
-

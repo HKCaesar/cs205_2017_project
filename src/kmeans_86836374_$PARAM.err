@@ -1,0 +1,5 @@
+discarding /n/sw/fasrcsw/apps/Core/Anaconda/2.5.0-fasrc01/x/bin from PATH
+prepending /n/home08/cs205u1709/.conda/envs/pycuda/bin to PATH
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 86836374.0 ON holyseasgpu01 CANCELLED AT 2017-05-01T06:13:04 ***
+slurmstepd: error: *** JOB 86836374 ON holyseasgpu01 CANCELLED AT 2017-05-01T06:13:04 ***

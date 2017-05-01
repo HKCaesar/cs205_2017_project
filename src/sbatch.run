@@ -1,18 +1,19 @@
 #!/bin/bash
 #SBATCH -J kmeans_job
-#SBATCH -o kmeans.out
-#SBATCH -e kmeans.err
-#SBATCH -t 0-01:00
+#SBATCH -o kmeans_%A_${PARAM1}.out
+#SBATCH -e kmeans_%A_${PARAM1}.err
+#SBATCH -t 0-05:00
 #SBATCH --constraint=cuda-7.5
 
 #SBATCH -p holyseasgpu
-#SBATCH -N 4
-#SBATCH -n 4
 #SBATCH --ntasks-per-socket=1
-#SBATCH --gres=gpu:2
-#SBATCH --mem-per-cpu=12000
+#SBATCH --mem-per-cpu=10000
+#SBATCH -d singleton
 
 #SBATCH --begin=now+10
+
+#SBATCH --mail-type=END         # Type of email notification- BEGIN,END,FAIL,ALL
+#SBATCH --mail-user=edunipace@g.harvard.edu # Email to which notifications will be sent
 
 module load python/2.7.11-fasrc01
 module load cuda/7.5-fasrc02
@@ -21,4 +22,4 @@ source activate pycuda
 
 cd ~/cs205_2017_project/src/python
 git pull
-srun -n $SLURM_NTASKS --mpi=pmi2 python run.py
+srun -n ${SLURM_NTASKS} --mpi=pmi2 python run.py
