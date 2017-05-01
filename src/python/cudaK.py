@@ -74,7 +74,7 @@ def cudakmeans(data, initial_labels, kernel_fn, N, K, D, numThreads, limit, stan
         cuda.memcpy_dtoh(h_converged_array, d_converged_array)
         #        count += 1
         if standardize_count == 0:
-            if np.mean(h_converged_array) == 1: break
+            if np.all(h_converged_array): break
     
     cuda.memcpy_dtoh(h_centers, d_centers)
     cuda.memcpy_dtoh(h_labels, d_labels)

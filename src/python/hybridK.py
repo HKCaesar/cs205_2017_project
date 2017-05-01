@@ -22,9 +22,9 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, numThreads, limit, st
     # prep CUDA stuff
     
     print(cuda.mem_get_info())
-    blockDimX = N/numThreads
-    if (blockDimX*numThreads < N) : blockDimX += 1
-    h_data, h_labels, h_centers, h_converged_array, h_dist, h_clustern = prep_host(data, initial_labels, K, D, blockDimX)
+    blockDimX = data_chunk.shape[0]/numThreads
+    if (blockDimX*numThreads < data_chunk.shape[0]) : blockDimX += 1
+    h_data, h_labels, h_centers, h_converged_array, h_dist, h_clustern = prep_host(data_chunk, labels_chunk, K, D, blockDimX)
     d_data, d_labels, d_centers, d_converged_array, d_dist, d_clustern = prep_device(h_data, h_labels, h_centers, h_converged_array, h_dist, h_clustern)
     
     for k in range(loop_limit):
@@ -45,11 +45,14 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, numThreads, limit, st
             temp_count = np.empty(K)
             for i in range(len(centers)):
                 temp_sum = centers[i]
-                for k in range(K) : temp_sum[k,:] *= collected_count[i][k]
+                for k in range(K) : temp_sum[k,:] *= float(collected_count[i][k])
                 temp_centers += temp_sum
                 temp_count   += collected_count[i]
             for j in range(K):
-                temp_centers[j,:] = temp_centers[j,:]/temp_count[j]
+                if temp_count[j] != 0:
+                    temp_centers[j,:] = temp_centers[j,:]/float(temp_count[j])
+                else:
+                    temp_centers[j,:] = 0 #hacky way to prevent 0 division
             h_centers = temp_centers
         
         h_centers = comm.bcast(h_centers, root=0)
@@ -57,10 +60,7 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, numThreads, limit, st
         dist(d_data, d_centers, d_dist, block=(numThreads, 1, 1), grid=(blockDimX, K, 1))
         reassign(d_dist, d_labels, d_converged_array, block=(numThreads, 1, 1), grid=(blockDimX, 1, 1))
         cuda.memcpy_dtoh(h_converged_array, d_converged_array)
-        if np.mean(h_converged_array) == 1:
-            converged = True
-        else:
-            converged = False
+        converged = np.all(h_converged_array)
         converged = comm.allgather(converged)
         converged = np.all(converged)
         if standardize_count == 0:
