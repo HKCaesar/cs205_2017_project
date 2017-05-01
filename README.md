@@ -8,7 +8,7 @@ M. Manjunathaiah (Manju)
 Kareem Carr, Eric Dunipace, Charlotte Lloyd
 ------
 
-<figure>
+<figure align="center">
     <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/kmeans_colorblind_safe_escort_data.gif" width="650">
     <figcaption>K-means Clustering on Escort Review Dataset</figcaption>
 </figure>
