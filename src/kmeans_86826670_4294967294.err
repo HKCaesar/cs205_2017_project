@@ -1,0 +1,12 @@
+discarding /n/sw/fasrcsw/apps/Core/Anaconda/2.5.0-fasrc01/x/bin from PATH
+prepending /n/home08/cs205u1709/.conda/envs/pycuda/bin to PATH
+Traceback (most recent call last):
+  File "run.py", line 34, in <module>
+Traceback (most recent call last):
+  File "run.py", line 34, in <module>
+    output_fn = "../../analysis/output_"+ time.strftime('%Y%m%d_%H%M%S') +"_" + os.getenv('SLURM_ARRAY_INDEX')+".csv"
+TypeError: cannot concatenate 'str' and 'NoneType' objects
+    output_fn = "../../analysis/output_"+ time.strftime('%Y%m%d_%H%M%S') +"_" + os.getenv('SLURM_ARRAY_INDEX')+".csv"
+TypeError: cannot concatenate 'str' and 'NoneType' objects
+srun: error: holyseasgpu10: task 1: Exited with exit code 1
+srun: error: holyseasgpu03: task 0: Exited with exit code 1

@@ -22,9 +22,9 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, numThreads, limit, st
     # prep CUDA stuff
     
     print(cuda.mem_get_info())
-    h_data, h_labels, h_centers, h_converged_array, h_dist, h_clustern = prep_host(data, initial_labels, K, D, blockDimX)
-    blockDimX = N/numThreads
-    if (blockDimX*numThreads < N) : blockDimX += 1
+    blockDimX = data_chunk.shape[0]/numThreads
+    if (blockDimX*numThreads < data_chunk.shape[0]) : blockDimX += 1
+    h_data, h_labels, h_centers, h_converged_array, h_dist, h_clustern = prep_host(data_chunk, labels_chunk, K, D, blockDimX)
     d_data, d_labels, d_centers, d_converged_array, d_dist, d_clustern = prep_device(h_data, h_labels, h_centers, h_converged_array, h_dist, h_clustern)
     
     for k in range(loop_limit):
@@ -33,46 +33,34 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, numThreads, limit, st
         newMeans(d_data, d_labels, d_centers, d_clustern, block=(numThreads, 1, 1), grid=(K, D, 1))
         comm.Barrier()
         cuda.memcpy_dtoh(h_centers, d_centers)
-        cuda.memcpy_dtoh(h_labels, d_labels) # if use cluster count, don't need labels
+        #cuda.memcpy_dtoh(h_labels, d_labels) # if use cluster count, don't need labels
         cuda.memcpy_dtoh(h_clustern, d_clustern)
         centers = comm.gather(h_centers, root=0)
-        collected_labels = comm.gather(h_labels, root=0)
+        #collected_labels = comm.gather(h_labels, root=0)
         collected_count = comm.gather(h_clustern, root=0)
         
         if rank==0:
             count += 1
             temp_centers = np.empty((K, D))
-            for center in centers:
-                temp_centers+=center
-            collected_labels = np.array(list(chain(*collected_labels)))
+            temp_count = np.empty(K)
+            for i in range(len(centers)):
+                temp_sum = centers[i]
+                for k in range(K) : temp_sum[k,:] *= float(collected_count[i][k])
+                temp_centers += temp_sum
+                temp_count   += collected_count[i]
             for j in range(K):
-                total = np.sum(collected_labels==j)
-                temp_centers[j,:] = temp_centers[j,:]/total
+                if temp_count[j] != 0:
+                    temp_centers[j,:] = temp_centers[j,:]/float(temp_count[j])
+                else:
+                    temp_centers[j,:] = 0 #hacky way to prevent 0 division
             h_centers = temp_centers
-                # I'm not sure this calculation is correct? it looks like you have the centers summing but you need the centers from the workers multiplied by the number of observations in each center on the worker and then divide by the total observations.
-                #not sure if this commented code works so I'm leaving it commented out
-#        if rank==0:
-#            count += 1
-#            temp_centers = np.empty((K, D))
-#            temp_count = np.empty(K)
-#            for i in range(len(centers)):
-#                temp_sum = center[i]
-#                for k in range(K) : temp_sum[k,:] *= collected_count[i][k]
-#                temp_centers += temp_sum
-#                temp_count   += collected_count[i]
-#            for j in range(K):
-#                temp_centers[j,:] = temp_centers[j,:]/temp_count[j]
-#            h_centers = temp_centers
-
+        
         h_centers = comm.bcast(h_centers, root=0)
         cuda.memcpy_htod(d_centers, h_centers)
         dist(d_data, d_centers, d_dist, block=(numThreads, 1, 1), grid=(blockDimX, K, 1))
         reassign(d_dist, d_labels, d_converged_array, block=(numThreads, 1, 1), grid=(blockDimX, 1, 1))
         cuda.memcpy_dtoh(h_converged_array, d_converged_array)
-        if np.mean(h_converged_array) == 1:
-            converged = True
-        else:
-            converged = False
+        converged = np.all(h_converged_array)
         converged = comm.allgather(converged)
         converged = np.all(converged)
         if standardize_count == 0:

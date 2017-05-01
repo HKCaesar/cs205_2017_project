@@ -58,13 +58,18 @@ def mpikmeans(data, initial_labels, N, K, D, limit, standardize_count, comm):
         if rank==0:
             count += 1
             temp_centers = np.empty((K, D))
-            for center in centers:
-                temp_centers+=center
+            
+            for i in range(len(centers)):
+                for k in range(K): temp_centers[k,:] += centers[i][k,:] * float(np.sum(collected_labels[i]==k))
             collected_labels = np.array(list(chain(*collected_labels)))
             for j in range(K):
                 total = np.sum(collected_labels==j)
-                temp_centers[j,:] = temp_centers[j,:]/total
+                if total != 0:
+                    temp_centers[j,:] = temp_centers[j,:]/total
+                else:
+                    temp_centers[j,:] = 0
             centers = temp_centers
+    
 
         comm.Barrier()
         centers = comm.bcast(centers, root=0)
