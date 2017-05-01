@@ -8,12 +8,13 @@ M. Manjunathaiah (Manju)
 Kareem Carr, Eric Dunipace, Charlotte Lloyd
 ------
 
+
 <p align="center">
-<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/KmeansAnimation.gif" width="450">
+<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/kmeans_colorblind_safe_escort_data.gif" width="650">
 </p>
 
 ```
-This repository was created in partial fulfillment of the requirements of CS 205 in Spring 2017.
+The video illustrates K-means for K=3 on the escort review data.
 ```
 
 ## Substantive Problem
