@@ -55,13 +55,13 @@ In an ideal hardware configuration, we would expect a host CPU to control <i>c</
 2. Second, each CPU would communicate with its <i>g</i> GPUs to handle the arithmetically intense aspect of the K-means calculations, i.e. the computation of distance and reassigning of labels. 
 3. Third, the host CPU (rank 0 in the MPI framework) would re-assemble the results of the subsets into the final means, labels, and distortion score. 
 
-However, due to the limitations of Odyssey's hardware configuration, we were not able to implement our ideal parallel architecture described above. Instead.... 
-
-<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/arch-odyssey.png">
+However, due to the limitations of Odyssey's hardware configuration, we were not able to implement our ideal parallel architecture described above. Unfortunately we were limited to only 2 CPUs with 2 GPUs each. 
+<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/holyseas
+.png">
 
 ## Performance
 
-> <i>We have yet to complete a hybrid mpi4py + pyCUDA implemenation due to hardware difficulties on Odyssey. Currently, our pyCUDA implementation is fastest. Both our mpi4py and pyCUDA implementations are faster than the sequential K-means algorithm written in Python. However, the "stock" K-means written purely in C is still fastest up to n=100,000.</i>
+> <i>Our purely pyCUDA implementation is fastest, followed by the "stock" K-means written purely in C and our hybrid mpi4py + pyCUDA algorithm. Both our mpi4py and pyCUDA implementations are faster than the sequential K-means algorithm written in Python. </i>
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/time-bar-10000-6-3.png">
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/time-bar-30000-6-3.png">
