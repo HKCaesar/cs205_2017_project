@@ -35,7 +35,7 @@ Given the popularity of this clustering method, it is unsurprising that there ha
 
 ## Parallel Architecture
 
-> <i>We chose a MPI + CUDA approach for our hybrid parallel software solution. The Python versions of these softwares are mpi4py and pyCUDA.</i>
+> <i>We chose a MPI (mpi4py) + CUDA (pyCUDA) approach for our hybrid parallel software solution.</i>
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/arch-cpus.png"  width="400">
 
@@ -57,7 +57,9 @@ We chose to use pyCUDA as our computational base, with the following breakdown o
 
 ## Performance
 
-> <i>Our purely pyCUDA implementation is fastest, followed closely by the "stock" K-means written purely in C and our hybrid mpi4py + pyCUDA algorithm. Relative to the pure pyCUDA and hybrid algorithm, the pure mpi4py algorithm is slow. Unsurprisingly, the sequential k-means algorithm written in Python is the slowest.</i>
+> <i>We tested 5 algorithms: 2 sequential (sequential Python, stock C) and 3 parallel (pure mpi4py, pure pyCUDA, hybrid mpi4py + pyCUDA).</i>
+
+Overall, our purely pyCUDA implementation is fastest, followed closely by the "stock" K-means written purely in C and our hybrid mpi4py + pyCUDA algorithm. Relative to the pure pyCUDA and hybrid algorithm, the pure mpi4py algorithm is slow. Unsurprisingly, the sequential k-means algorithm written in Python is the slowest.
 
 Due to the limitations of Odyssey's hardware configuration, we were not able to implement our ideal parallel architecture described above. Unfortunately we were limited to only 2 CPUs with 2 GPUs each. 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/holyseasgpu.png">
