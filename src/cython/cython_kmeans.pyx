@@ -1,4 +1,3 @@
-%%cython --compile-args=-fopenmp --link-args=-fopenmp --force -a
 
 import numpy as np
 import time
