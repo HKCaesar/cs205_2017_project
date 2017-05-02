@@ -8,7 +8,7 @@ import numpy
 ### list all .pyx files
 
 our_modules = [
-    Extension("cython_kmeans", ["cython_kmeans.pyx", "../C/cython_kmeans.c"],
+    Extension("cython_kmeans", ["cython_kmeans.pyx", "cython_kmeans.c"],
     language="c",
     extra_link_args=['-fopenmp'], include_dirs=[numpy.get_include()])
 ]
