@@ -1,3 +1,4 @@
+
 from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Build import cythonize
@@ -8,7 +9,7 @@ import numpy
 
 our_modules = [
     Extension("cython_kmeans", ["cython_kmeans.pyx", "../C/cython_kmeans.c"],
-    language="c++",
+    language="c",
     xtra_compile_args=['-fopenmp','-O3'],
     extra_link_args=['-fopenmp'], include_dirs=[numpy.get_include()])
 ]
