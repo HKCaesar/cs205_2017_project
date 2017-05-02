@@ -27,25 +27,25 @@ def cython_kmeans(double [:,:] data, int [:] initial_labels, int N, int D, int K
         converged = 1
 
         # compute centers
-        for k in prange(K,schedule='dynamic',nogil=True):
-            for d in prange(D,schedule='dynamic',nogil=True):
+        for k in prange(K):
+            for d in prange(D):
                 centers[k, d] = 0
             clustern[k] = 0
         for n in prange(N,schedule='dynamic',nogil=True):
             for d in range(D):
                 centers[labels[n], d] += data[n, d]
             clustern[labels[n]] += 1
-        for k in prange(K,schedule='dynamic',nogil=True):
+        for k in prange(K):
             for d in range(D):
                 centers[k, d] = centers[k, d] / clustern[k]
 
         # assign to closest center
-        for n in prange(N,schedule='dynamic',nogil=True):
+        for n in prange(N):
             min_val = np.inf
             min_ind = -1
             for k in range(K):
                 temp = 0
-                for d in range(D):
+                for d in prange(D,schedule='dynamic',nogil=True):
                     temp += (data[n, d] - centers[k, d]) ** 2
 
                 if temp < min_val:
