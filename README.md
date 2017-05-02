@@ -66,7 +66,7 @@ Overall, our purely pyCUDA implementation is fastest, followed closely by our hy
 
 Performance wise, the parallel implementations performed better than the serial implementations. The algorithm is typically broken down into K clusters and an NxD matrix. This gives operations on the order of NK(D + D + D - 1)xiter. Using this approximation, we can get a sense of throughput in terms of GFLOPs.
 
-# Timings and throughput
+## Timings and throughput
 For almost every problem sizes, the pyCUDA code performed the best in terms of throughput. As the problems became larger, the hybrid code started to perform closer to the pure pyCUDA code, which can be seen for these performance plots on large dimensional matrices with large numbers of clusters. Holding the columns of the matrix and the number of clusters fixed, we can see how well the CUDA code does right off the bat. Unfortunately, the peak GFLOPs hits only about 10\% of the peak capability of the Tesla cores
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/GFLOPs-line-n-1000-5.png">
@@ -77,7 +77,7 @@ Similarly, when we look at the total problem size, $NKD$, CUDA clearly dominates
 
 It is important to remember that we do expect these graphs to differ since they are constrained to where the hardware and software limitations allowed us to measure timings---due to a packed cluster yesterday---but also one measurement treats the number of columns and the number of clusters as fixed, while the other only looks at total problem size and is limited to where other algorithms also have data points. 
 
-# Weak Scaling
+## Weak Scaling
 Finally, when we look at weak scaling, the results are sensitive to the shared usage on the cluster. For $$K=5, D=100, N = 51200$$ there appears to be a large bonus to adding more processors. 
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/mpi_proc.png">
