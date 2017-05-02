@@ -17,7 +17,7 @@ def cython_kmeans(double [:,:] data, int [:] initial_labels, int N, int D, int K
 
     for i in range(loop_limit):
 
-        cdef int converged = True
+        cdef int converged = 1
 
         # compute centers
         for k in prange(K,schedule='dynamic',nogil=True):
@@ -46,7 +46,7 @@ def cython_kmeans(double [:,:] data, int [:] initial_labels, int N, int D, int K
                     min_ind = k
             if min_ind != labels[n]:
                 labels[n] = min_ind
-                converged = False
+                converged = 0
 
         count += 1
         if standardize_count == 0:
