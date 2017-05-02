@@ -28,7 +28,7 @@ def cython_kmeans(double [:,:] data, int [:] initial_labels, int N, int D, int K
 
         # compute centers
         for k in prange(K,schedule='dynamic',nogil=True):
-            for d in range(D):
+            for d in prange(D,schedule='dynamic',nogil=True):
                 centers[k, d] = 0
             clustern[k] = 0
         for n in prange(N,schedule='dynamic',nogil=True):
