@@ -37,7 +37,7 @@ Given the popularity of this clustering method, it is unsurprising that there ha
 
 > <i>summary</i>
 
-<img align="left" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/arch-cpus.png"  width="400">
+<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/arch-cpus.png"  width="400">
 
 In this crowded field, our contribution is to create a flexible K-means implementation using mpi4py + pyCUDA that will be accessible and useful to data scientist, many of whom are most comfortable programming in Python rather than in traditional languages of parallel processing including Fortran, C, and C++. Since data scientists may be deeply unfamiliar with parallel hardware, we paid special attention to designing a flexible architecture suitable for any configuration involving at least one CUDA-ready GPU. 
 
@@ -76,10 +76,6 @@ The K-means clustering of consumption patterns revealed three major groups: ...
 Reviewers were clustered based on their average participation in 15 commonly reported sexual acts as well as their modal preference for 6 features of escorts (hair color, hair type. The dendrogram shows a prominent division between what I subsequently characterized as GFE cluster and the non-GFE cluster, which is further subdivided into “Massage” and “Release” groups. 
 
 Compared to the other two groups, reviewers assigned to the Massage group demonstrate much lower engagement in fellatio (39%) and vaginal intercourse (48%) in their ISSP encounters (Table 1). Instead, they show the highest averages of massage (57%) and hand job activity (16%), suggestive of the “happy ending” service provided by many sensual masseuses. In contrast, the most common activities in both the Release and GFE groups are vaginal intercourse (70-74%) and fellatio (78-83%). The difference between these two groups centers on the GFE propensity to engage in kissing (72%) and cunninlingus (53%)—acts that are associated with the more emotionally intimate, mutually pleasurable dynamic of the girlfriend experience. Interestingly, reviewers in the GFE group were also more likely to engage in low-incidence sexual acts such as anal/oral play and threesomes. 
-
-
-
-<img align="center" src="">
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/substantive-clusters.png">
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/substantive-grouplogits.png">
