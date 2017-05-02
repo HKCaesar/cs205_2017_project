@@ -15,9 +15,11 @@ def cython_kmeans(double [:,:] data, int [:] initial_labels, int N, int D, int K
     else: loop_limit=limit
     start = time.time()
 
+    cdef int converged
+
     for i in range(loop_limit):
 
-        cdef int converged = 1
+        converged = 1
 
         # compute centers
         for k in prange(K,schedule='dynamic',nogil=True):
