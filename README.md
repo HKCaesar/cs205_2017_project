@@ -4,12 +4,11 @@ CS205, Spring 2017
 Computing Foundations for Computational Science
 M. Manjunathaiah (Manju)
 
+We would like to recognize the generous help of the [Extremadura Center for Advanced Technologies (CETA-CIEMAT)](http://www.ceta-ciemat.es/) for cluster support in testing our product. 
+
 ------
 #### Kareem Carr, Eric Dunipace, Charlotte Lloyd
-
-We would like to recognize the generous help of the [Extremadura Center for Advanced Technologies (CETA-CIEMAT)](http://www.ceta-ciemat.es/) for cluster support in testing our product. 
 ------
-
 
 <p align="center">
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/kmeans_colorblind_safe_escort_data.gif" width="650">
