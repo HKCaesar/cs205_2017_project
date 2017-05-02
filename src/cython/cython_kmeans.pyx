@@ -45,7 +45,7 @@ def cython_kmeans(double [:,:] data, int [:] initial_labels, int N, int D, int K
             min_ind = -1
             for k in range(K):
                 temp = 0
-                for d in prange(D,schedule='dynamic',nogil=True):
+                for d in prange(D):
                     temp += (data[n, d] - centers[k, d]) ** 2
 
                 if temp < min_val:
