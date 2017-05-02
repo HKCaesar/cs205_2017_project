@@ -70,15 +70,11 @@ Due to the limitations of Odyssey's hardware configuration, we were not able to 
 
 ## Substantive Findings
 
-> <i>summary</i>
+> <i>The K-means clustering shows 3 major groups of clients based on revealed preferences in the review data: the "Girlfriend Experience", “Massage” and “Release."</i>
 
-Reviewers were clustered based on their average participation in 15 sexual acts as self-reported in reviews as well as their modal revealed preference for 6 attributes listed in sex worker profiles. We chose k=3 clusters of clients based on previous clustering models as well as natural breaks shown in this dendrogram: 
+Reviewers were clustered based on their average participation in 15 sexual acts as self-reported in reviews as well as their modal revealed preference for 6 attributes listed in sex worker profiles. We chose k=3 clusters of clients based on previous clustering models as well as natural breaks shown in this dendrogram (left). The K-means clustering of consumption patterns revealed three major groups that we subsequently characterized as the "Girlfriend Experience", “Massage” and “Release” groups (right). 
 
-<img align="center" width="600" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/substantive-hcluster.png">
-
-The K-means clustering of consumption patterns revealed three major groups that we subsequently characterized as the "Girlfriend Experience", “Massage” and “Release” groups. 
-
-<img align="center" width="600" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/substantive-clusters.png">
+<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/substantive4.png">
 
 Compared to the other two groups, reviewers assigned to the Massage group demonstrate the lowest engagement in fellatio and vaginal intercourse in their  encounters with sex workers. Instead, they show the highest averages of massage and hand job activity, suggestive of the “happy ending” service provided by many sensual masseuses. In contrast, the most common activities in both the Release and GFE groups are vaginal intercourse and fellatio. The difference between these two groups centers on the GFE propensity to engage in kissing and cunninlingus—acts that are associated with the more emotionally intimate, mutually pleasurable dynamic of the girlfriend experience. Interestingly, reviewers in the GFE group were also more likely to engage in low-incidence sexual acts such as anal/oral play and threesomes. 
 
