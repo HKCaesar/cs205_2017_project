@@ -56,7 +56,7 @@ We chose to use pyCUDA as our computational base, with the following breakdown o
 
 > <i>We tested 5 algorithms: 2 sequential (sequential Python, stock C) and 3 parallel (pure mpi4py, pure pyCUDA, hybrid mpi4py + pyCUDA).</i>
 
-Overall, our purely pyCUDA implementation is fastest, followed closely by the "stock" K-means written purely in C and our hybrid mpi4py + pyCUDA algorithm. Relative to the pure pyCUDA and hybrid algorithm, the pure mpi4py algorithm is slow. Unsurprisingly, the sequential k-means algorithm written in Python is the slowest.
+Overall, our purely pyCUDA implementation is fastest, followed closely by our hybrid mpi4py + pyCUDA algorithm and then the "stock" K-means written purely in C. Relative to the pure pyCUDA and hybrid algorithm, the pure mpi4py algorithm is slow. Unsurprisingly, the sequential k-means algorithm written in Python is the slowest.
 
 Due to the limitations of Odyssey's hardware configuration, we were not able to implement our ideal parallel architecture described above. Unfortunately we were limited to only 2 CPUs with 2 GPUs each. 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/holyseasgpu.png">
@@ -65,6 +65,15 @@ Due to the limitations of Odyssey's hardware configuration, we were not able to 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/time-line-n-6-3.png">
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/speedup-line-n-6-3.png">
 
+Performance wise, the parallel implementations performed better than the serial implementations. The algorithm is typically broken down into $K$ clusters and an $N \times D$ matrix. This gives operations on the order of $NK(D + D + D - 1)iter$. Using this approximation, we can get a sense of throughput in terms of GFLOPs.
+
+For almost every problem sizes, the pyCUDA code performed the best in terms of throughput. As the problems became larger, the hybrid code started to perform closer to the pure pyCUDA code, which can be seen for these performance plots on large dimensional matrices with large numbers of clusters. Holding the columns of the matrix and the number of clusters fixed, we can see how well the CUDA code does right off the bat.
+<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/cs205_2017_project/analysis/plots/GFLOPs-line-n-1000-5.png">
+Similarly, when we look at the total problem size, $NKD$, CUDA clearly dominates. 
+<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/cs205_2017_project/cs205_2017_project/analysis/plots/GFLOPs-line-problemSize.png">
+It is important to remember that we do expect these graphs to differ since they are constrained to where the hardware and software limitations allowed us to measure timings---do to a packed cluster yesterday---but also one measurement treats the number of columns and the number of clusters as fixed, while the other only looks at total problem size and is limited to where other algorithms also have data points. 
+
+Finally, when we look at strong scaling
 ## Substantive Findings
 
 > <i>The K-means clustering shows 3 major groups of clients based on revealed preferences in the review data: the "Girlfriend Experience", “Massage” and “Release."</i>
@@ -106,3 +115,5 @@ Compared to the other two groups, reviewers assigned to the Massage group demons
 <sub>Zechner, M., & Granitzer, M. (2009). Accelerating K-Means on the Graphics Processor via CUDA. In 2009 First International Conference on Intensive Applications and Services (pp. 7–15). https://doi.org/10.1109/INTENSIVE.2009.19 </sub>
 
 <sub>Zhao, W., Ma, H., & He, Q. (2009). Parallel K-Means Clustering Based on MapReduce. In SpringerLink (pp. 674–679). Springer, Berlin, Heidelberg. https://doi.org/10.1007/978-3-642-10665-1_71 </sub>
+
+<sub>Y. Li, K. Zhao, X. Chu, and J. Liu, “Speeding up k-Means algorithm by GPUs,” J. Comput. Syst. Sci., vol. 79, no. 2, pp. 216–229, 2013.
