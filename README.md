@@ -5,9 +5,9 @@ Computing Foundations for Computational Science
 M. Manjunathaiah (Manju)
 
 ------
-Kareem Carr, Eric Dunipace, Charlotte Lloyd
+#### Kareem Carr, Eric Dunipace, Charlotte Lloyd
 
-######  Extremadura Center for Advanced Technologies (CETA-CIEMAT)
+We would like to recognize the generous help of the [Extremadura Center for Advanced Technologies (CETA-CIEMAT)](http://www.ceta-ciemat.es/) for cluster support in testing our product. 
 ------
 
 
