@@ -51,7 +51,7 @@ In an ideal hardware configuration, we would expect a host CPU to control <i>c</
 
 We chose to use CUDA as our base, with the following breakdown of work between 4 different kernels, each customized with efficient thread block and grid strucutres for the computation at hand: 
 
-<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/kernelworkflow.png">
+<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/kernel-flow.jpg">
 
 ## Performance
 
