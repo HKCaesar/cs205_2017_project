@@ -52,14 +52,14 @@ We chose to use pyCUDA as our computational base, with the following breakdown o
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/kernel-flow.jpg">
 
+Due to the limitations of Odyssey's hardware configuration, unfortunately we were limited to only 2 CPUs with 2 GPUs each and were not able to test the performance of our hybrid alogrithm with different numbers of processors. 
+<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/holyseasgpu.png">
+
 ## Performance
 
 > <i>We tested 5 algorithms: 2 sequential (sequential Python, stock C) and 3 parallel (pure mpi4py, pure pyCUDA, hybrid mpi4py + pyCUDA).</i>
 
 Overall, our purely pyCUDA implementation is fastest, followed closely by our hybrid mpi4py + pyCUDA algorithm and then the "stock" K-means written purely in C. Relative to the pure pyCUDA and hybrid algorithm, the pure mpi4py algorithm is slow. Unsurprisingly, the sequential k-means algorithm written in Python is the slowest.
-
-Due to the limitations of Odyssey's hardware configuration, we were not able to implement our ideal parallel architecture described above. Unfortunately we were limited to only 2 CPUs with 2 GPUs each. 
-<img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/holyseasgpu.png">
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/time-line-n-6-3.png">
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/speedup-line-n-6-3.png">
@@ -87,7 +87,6 @@ Additionally, the througput goes up as one would expect when more workers are ca
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/mpi_flop.png">
 
 The other multiprocessors (CUDA and the hybrid MPI + CUDA) also show a benefit from adding a processor but due to the limitations of the architecture this effect is not that large.
-
 
 ## Substantive Findings
 
