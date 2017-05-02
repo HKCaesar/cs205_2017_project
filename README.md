@@ -64,7 +64,7 @@ Overall, our purely pyCUDA implementation is fastest, followed closely by our hy
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/time-line-n-6-3.png">
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/plots/speedup-line-n-6-3.png">
 
-Performance wise, the parallel implementations performed better than the serial implementations. The algorithm is typically broken down into $$K$$ clusters and an $$N \times D$$ matrix. This gives operations on the order of $$NK(D + D + D - 1)iter$$. Using this approximation, we can get a sense of throughput in terms of GFLOPs.
+Performance wise, the parallel implementations performed better than the serial implementations. The algorithm is typically broken down into K clusters and an NxD matrix. This gives operations on the order of NK(D + D + D - 1)xiter. Using this approximation, we can get a sense of throughput in terms of GFLOPs.
 
 #Timings and throughput
 For almost every problem sizes, the pyCUDA code performed the best in terms of throughput. As the problems became larger, the hybrid code started to perform closer to the pure pyCUDA code, which can be seen for these performance plots on large dimensional matrices with large numbers of clusters. Holding the columns of the matrix and the number of clusters fixed, we can see how well the CUDA code does right off the bat. Unfortunately, the peak GFLOPs hits only about 10\% of the peak capability of the Tesla cores
