@@ -9,7 +9,6 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, numThreads, limit, st
     runtime = 0
     if standardize_count>0: loop_limit = standardize_count
     else: loop_limit=limit
-    dist, reassign, countCluster, newMeans = parallel_mod(kernel_fn, N, K, D, numThreads)
     start = time.time()
     
     # break up labels and data into roughly equal groups for each CPU in MPI.COMM_WORlD
@@ -24,6 +23,7 @@ def hybridkmeans(data, initial_labels, kernel_fn, N, K, D, numThreads, limit, st
     print(cuda.mem_get_info())
     blockDimX = data_chunk.shape[0]/numThreads
     if (blockDimX*numThreads < data_chunk.shape[0]) : blockDimX += 1
+    dist, reassign, countCluster, newMeans = parallel_mod(kernel_fn, data_chunk.shape[0], K, D, numThreads)
     h_data, h_labels, h_centers, h_converged_array, h_dist, h_clustern = prep_host(data_chunk, labels_chunk, K, D, blockDimX)
     d_data, d_labels, d_centers, d_converged_array, d_dist, d_clustern = prep_device(h_data, h_labels, h_centers, h_converged_array, h_dist, h_clustern)
     
