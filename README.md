@@ -46,11 +46,14 @@ Our hybrid parallel approach works as follows:
 
 1. First, the host CPU (rank 0 in the MPI framework) partitions the data into <i>c</i> subsets.  
 2. Second, each CPU communicates with its <i>g</i> GPUs to handle the arithmetically intense aspect of the K-means calculations, i.e. the computation of distance and reassigning of labels. 
-3. Third, the host CPU (rank 0 in the MPI framework) re-assembles the results of the subsets into the final means, labels, and distortion score. 
+3. Third, the GPUs report if their subset of data has converged or not to their CPU, which in turn reports to the host CPU. If all subsets have not reached convergence, the 
+4. Finally, when all subsets have converged the host CPU (rank 0 in the MPI framework) re-assembles the results of the subsets into the final means, labels, and distortion score. 
 
 We chose to use pyCUDA as our computational base, with the following breakdown of work between 4 different kernels, each customized with efficient thread block and grid strucutres for the computation at hand: 
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/kernel-flow.jpg">
+
+This approach takes care to minimize costly data transfer as much as possible: the subsets are only transferred to the CPUs and GPUs once at the beginning. Between each iteration of k-means, only a single binary variable is transferred back to check for convergence. At the end, only the final cluster positions (a small kxd matrix) are transferred back. 
 
 Due to the limitations of Odyssey's hardware configuration, unfortunately we were limited to only 2 CPUs with 2 GPUs each and were not able to test the performance of our hybrid alogrithm with different numbers of processors. 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/holyseasgpu.png">
@@ -92,7 +95,7 @@ The other multiprocessors (CUDA and the hybrid MPI + CUDA) also show a benefit f
 
 > <i>The K-means clustering shows 3 major groups of clients based on revealed preferences in the review data: the "Girlfriend Experience", “Massage” and “Release."</i>
 
-Reviewers were clustered based on their average participation in 15 sexual acts as self-reported in reviews as well as their modal revealed preference for 6 attributes listed in sex worker profiles. We chose k=3 clusters of clients based on previous clustering models as well as natural breaks shown in this dendrogram (left). The K-means clustering of consumption patterns revealed three major groups that we subsequently characterized as the "Girlfriend Experience", “Massage” and “Release” groups (right). 
+Reviewers were clustered based on their average participation in 15 sexual acts as self-reported in reviews as well as their modal revealed preference for 6 attributes listed in sex worker profiles. We chose k=3 clusters of clients based on previous clustering models as well as natural breaks shown in this dendrogram (left). We also smoothed the data due to some anomalies in the original data. The K-means clustering of consumption patterns revealed three major groups that we subsequently characterized as the "Girlfriend Experience", “Massage” and “Release” groups (right). 
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/substantive4.png">
 
