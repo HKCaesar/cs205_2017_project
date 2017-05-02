@@ -17,6 +17,11 @@ def cython_kmeans(double [:,:] data, int [:] initial_labels, int N, int D, int K
 
     cdef int converged
 
+    cdef double temp
+
+    cdef double min_val
+    cdef int min_ind
+
     for i in range(loop_limit):
 
         converged = 1
