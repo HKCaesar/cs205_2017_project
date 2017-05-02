@@ -35,7 +35,7 @@ Given the popularity of this clustering method, it is unsurprising that there ha
 
 ## Parallel Architecture
 
-> <i>summary</i>
+> <i>We chose a MPI + CUDA approach for our hybrid parallel software solution. The Python versions of these softwares are mpi4py and pyCUDA.</i>
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/arch-cpus.png"  width="400">
 
@@ -45,11 +45,13 @@ In an ideal hardware configuration, we would expect a host CPU to control <i>c</
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/arch-ideal.png">
 
-1. First, the host CPU (rank 0 in the MPI framework) would partition the data into <i>c</i> subsets.  
-2. Second, each CPU would communicate with its <i>g</i> GPUs to handle the arithmetically intense aspect of the K-means calculations, i.e. the computation of distance and reassigning of labels. 
-3. Third, the host CPU (rank 0 in the MPI framework) would re-assemble the results of the subsets into the final means, labels, and distortion score. 
+Our hybrid parallel approach works as follows: 
 
-We chose to use CUDA as our base, with the following breakdown of work between 4 different kernels, each customized with efficient thread block and grid strucutres for the computation at hand: 
+1. First, the host CPU (rank 0 in the MPI framework) partitions the data into <i>c</i> subsets.  
+2. Second, each CPU communicates with its <i>g</i> GPUs to handle the arithmetically intense aspect of the K-means calculations, i.e. the computation of distance and reassigning of labels. 
+3. Third, the host CPU (rank 0 in the MPI framework) re-assembles the results of the subsets into the final means, labels, and distortion score. 
+
+We chose to use pyCUDA as our computational base, with the following breakdown of work between 4 different kernels, each customized with efficient thread block and grid strucutres for the computation at hand: 
 
 <img align="center" src="https://raw.githubusercontent.com/kareemcarr/cs205_2017_project/master/analysis/writeup/kernel-flow.jpg">
 
